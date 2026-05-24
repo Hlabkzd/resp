@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interstitial Lung Disease | RCSI Resp</title>
+<style>
+  :root {
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #ddd9d0;
+    --text: #1a1a18;
+    --text2: #555550;
+    --accent: #c0392b;
+    --accent2: #922b21;
+    --accent-light: #fdecea;
+    --tab-active: #c0392b;
+    --tab-inactive: #e8e5e0;
+    --correct: #27ae60;
+    --wrong: #e74c3c;
+    --correct-bg: #eafaf1;
+    --wrong-bg: #fdedec;
+    --tag-occ: #2980b9;
+    --tag-idio: #8e44ad;
+    --tag-ards: #e67e22;
+    --tag-sarc: #16a085;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] {
+    --bg: #16161a;
+    --surface: #1e1e24;
+    --surface2: #26262e;
+    --border: #35353f;
+    --text: #e8e8e0;
+    --text2: #9090a0;
+    --accent: #e05446;
+    --accent2: #c0392b;
+    --accent-light: #2a1210;
+    --tab-active: #e05446;
+    --tab-inactive: #26262e;
+    --correct: #2ecc71;
+    --wrong: #e74c3c;
+    --correct-bg: #0d2b1a;
+    --wrong-bg: #2b0d0d;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    transition: background 0.25s, color 0.25s;
+  }
+  /* HEADER */
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header-title { font-size: 1.15rem; font-weight: bold; letter-spacing: 0.01em; }
+  .header-sub { font-size: 0.78rem; opacity: 0.85; margin-top: 2px; }
+  .header-meta { display: flex; align-items: center; gap: 12px; }
+  .back-link {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.82rem;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .back-link:hover { background: rgba(255,255,255,0.15); }
+  .theme-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: background 0.15s;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,0.25); }
+  /* MAIN */
+  main { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  /* INTRO CARD */
+  .intro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .intro-card h2 { font-size: 1rem; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .intro-card ul { padding-left: 18px; color: var(--text2); }
+  .intro-card li { margin-bottom: 4px; font-size: 0.9rem; }
+  /* TABS */
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0; }
+  .tab-btn {
+    padding: 9px 18px;
+    border: 1px solid var(--border);
+    background: var(--tab-inactive);
+    color: var(--text2);
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: all 0.15s;
+    border-bottom: none;
+  }
+  .tab-btn:hover { background: var(--surface2); color: var(--text); }
+  .tab-btn.active {
+    background: var(--tab-active);
+    color: #fff;
+    border-color: var(--tab-active);
+    font-weight: bold;
+  }
+  .tab-content {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0 6px 6px 6px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .tab-content.active { display: block; }
+  /* SECTION HEADINGS */
+  .section-heading {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid var(--accent-light);
+    padding-bottom: 6px;
+    margin: 24px 0 14px;
+  }
+  .section-heading:first-child { margin-top: 0; }
+  /* INFO BLOCKS */
+  .info-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .info-block h4 { font-size: 0.9rem; color: var(--text); margin-bottom: 6px; font-weight: bold; }
+  .info-block p, .info-block li { font-size: 0.88rem; color: var(--text2); }
+  .info-block ul, .info-block ol { padding-left: 18px; }
+  .info-block li { margin-bottom: 3px; }
+  /* COMPARISON TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 16px; }
+  th {
+    background: var(--accent);
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+  }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--surface2); }
+  tr:hover td { background: var(--accent-light); }
+  /* ZONE TABLE */
+  .zone-table th:nth-child(1) { background: #2471a3; }
+  .zone-table th:nth-child(2) { background: #1a7a5e; }
+  .zone-table th:nth-child(3) { background: #8e44ad; }
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .tag-occ { background: var(--tag-occ); }
+  .tag-idio { background: var(--tag-idio); }
+  .tag-ards { background: var(--tag-ards); }
+  .tag-sarc { background: var(--tag-sarc); }
+  /* HIGHLIGHT BOXES */
+  .alert {
+    border-radius: 5px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 0.88rem;
+    border-left: 4px solid;
+  }
+  .alert-red { background: var(--accent-light); border-color: var(--accent); color: var(--text); }
+  .alert-blue { background: #ebf5fb; border-color: #2980b9; color: var(--text); }
+  [data-theme="dark"] .alert-blue { background: #0d1f2b; }
+  .alert-green { background: #eafaf1; border-color: #27ae60; color: var(--text); }
+  [data-theme="dark"] .alert-green { background: #0d2b1a; }
+  .alert strong { font-weight: bold; }
+  /* KEY POINT */
+  .key-point {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 5px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    margin: 14px 0;
+  }
+  .key-point strong { display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; }
+  /* TWO COLUMN */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+  /* MCQ */
+  .mcq-container { display: flex; flex-direction: column; gap: 22px; }
+  .mcq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .mcq-q {
+    font-weight: bold;
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .mcq-q span { color: var(--accent); margin-right: 6px; }
+  .mcq-options { display: flex; flex-direction: column; gap: 7px; }
+  .mcq-opt {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.87rem;
+    background: var(--surface2);
+    transition: all 0.15s;
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .mcq-opt:hover:not(:disabled) { background: var(--accent-light); border-color: var(--accent); }
+  .mcq-opt.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); font-weight: bold; }
+  .mcq-opt.wrong { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong); }
+  .mcq-opt:disabled { cursor: default; }
+  .mcq-feedback {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 0.86rem;
+    display: none;
+    line-height: 1.5;
+  }
+  .mcq-feedback.show { display: block; }
+  .mcq-feedback.correct { background: var(--correct-bg); border: 1px solid var(--correct); color: var(--correct); }
+  .mcq-feedback.wrong { background: var(--wrong-bg); border: 1px solid var(--wrong); color: var(--wrong); }
+  .mcq-score {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text);
+    display: none;
+    margin-bottom: 18px;
+  }
+  .mcq-score.show { display: block; }
+  .reset-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-family: inherit;
+    display: block;
+    margin: 0 auto 18px;
+    transition: background 0.15s;
+  }
+  .reset-btn:hover { background: var(--accent2); }
+  /* PATHWAY BOX */
+  .pathway {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    margin: 10px 0;
+  }
+  .pw-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--text);
+  }
+  .pw-arrow { color: var(--accent); font-weight: bold; font-size: 1rem; }
+  /* DEFINITION BOX */
+  .def-box {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .def-term {
+    background: var(--accent);
+    color: #fff;
+    padding: 7px 14px;
+    font-weight: bold;
+    font-size: 0.88rem;
+  }
+  .def-body {
+    padding: 10px 14px;
+    font-size: 0.87rem;
+    color: var(--text2);
+    background: var(--surface2);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Interstitial Lung Disease</div>
+      <div class="header-sub">Dr Clive Kilgallen · RCSI Year 1 Respiratory Medicine · Pathology</div>
+    </div>
+    <div class="header-meta">
+      <a href="index.html" class="back-link">← Back</a>
+      <button class="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="intro-card">
+    <h2>Learning Outcomes</h2>
+    <ul>
+      <li>Describe the pathogenesis of interstitial lung diseases</li>
+      <li>List the causes of interstitial lung diseases (5 main categories)</li>
+      <li>Describe the pathological changes in pulmonary fibrosis</li>
+      <li>List causes of occupational lung disease; describe coal dust, silica and asbestos pathology</li>
+      <li>Describe pathological features, clinical presentation and investigations of Extrinsic Allergic Alveolitis (EAA / Hypersensitivity Pneumonitis)</li>
+      <li>Describe pathological features, clinical presentation and investigations of Sarcoidosis</li>
+      <li>Describe pathological features, clinical presentation and investigations of ARDS</li>
+    </ul>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('occupational')">Occupational</button>
+    <button class="tab-btn" onclick="showTab('idiopathic')">Idiopathic (Sarc/IPF)</button>
+    <button class="tab-btn" onclick="showTab('ards')">ARDS</button>
+    <button class="tab-btn" onclick="showTab('mcq')">MCQs ✎</button>
+  </div>
+
+  <!-- TAB 1: OVERVIEW -->
+  <div id="tab-overview" class="tab-content active">
+    <div class="section-heading">What is ILD?</div>
+    <div class="info-block">
+      <p>Interstitial Lung Disease (ILD) = a multitude of diseases causing <strong>FIBROSIS</strong> of the pulmonary parenchyma/interstitium. The hallmark is fibrosis or scarring, resulting in a <strong>restrictive ventilatory defect</strong>.</p>
+      <ul style="margin-top:8px;">
+        <li>Normal lung: spongy, full of air spaces</li>
+        <li>Fibrotic lung: hard, dense, poor function — alveolar walls thickened, gas diffusion impaired → <strong>hypoxaemia and dyspnoea</strong></li>
+      </ul>
+    </div>
+
+    <div class="section-heading">5 Main Aetiological Categories</div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4><span class="tag tag-occ">Occupational</span> Environmental</h4>
+        <ul>
+          <li><strong>Inorganic:</strong> Asbestosis, silicosis, coal, beryllium</li>
+          <li><strong>Organic:</strong> EAA/hypersensitivity pneumonitis (mouldy hay, bird faeces, cotton)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4><span class="tag tag-idio">Idiopathic</span></h4>
+        <ul>
+          <li>IPF (Idiopathic Pulmonary Fibrosis)</li>
+          <li>Sarcoidosis</li>
+          <li>Langerhans cell histiocytosis</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Drug / Treatment</h4>
+        <ul>
+          <li>Amiodarone, bleomycin, radiotherapy</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Connective Tissue Disorders</h4>
+        <ul>
+          <li>SLE, Rheumatoid arthritis, scleroderma, dermatomyositis</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-block">
+      <h4>Post-infectious</h4>
+      <ul><li>TB</li></ul>
+    </div>
+
+    <div class="section-heading">Interstitial Space — 3 Subdivisions</div>
+    <div class="two-col">
+      <div class="def-box">
+        <div class="def-term">Bronchovascular</div>
+        <div class="def-body">Surrounds bronchi, arteries and veins from root of lung to the respiratory bronchiole</div>
+      </div>
+      <div class="def-box">
+        <div class="def-term">Parenchymal</div>
+        <div class="def-body">Situated between the alveolar and capillary basement membranes</div>
+      </div>
+    </div>
+    <div class="def-box" style="margin-bottom:14px;">
+      <div class="def-term">Subpleural</div>
+      <div class="def-body">Situated beneath the pleura, and includes the interlobular septae</div>
+    </div>
+
+    <div class="section-heading">Radiologic Classification by Zone of Fibrosis</div>
+    <table class="zone-table">
+      <thead>
+        <tr>
+          <th>Upper Zone</th>
+          <th>Mid Zone</th>
+          <th>Lower Zone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sarcoidosis</td>
+          <td>Tuberculosis</td>
+          <td>Rheumatoid arthritis</td>
+        </tr>
+        <tr>
+          <td>Langerhans cell histiocytosis</td>
+          <td>Chronic EAA</td>
+          <td>Asbestosis</td>
+        </tr>
+        <tr>
+          <td>Coal workers' pneumoconiosis</td>
+          <td></td>
+          <td>IPF</td>
+        </tr>
+        <tr>
+          <td>Ankylosing spondylitis</td>
+          <td></td>
+          <td>Drugs</td>
+        </tr>
+        <tr>
+          <td>Radiation</td>
+          <td></td>
+          <td>Scleroderma</td>
+        </tr>
+        <tr>
+          <td>Silicosis</td>
+          <td></td>
+          <td>Collagen vascular disease</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-heading">Diagnosis</div>
+    <div class="alert alert-red">
+      <strong>Clinicopathological Correlation (CPC) is essential.</strong> ILD is diagnosed by combining radiographic features with clinical signs and symptoms. The interstitium is <em>not normally visible radiographically</em> — it only becomes visible when diseased (increased volume and attenuation).
+    </div>
+
+    <div class="section-heading">Pathogenesis (General)</div>
+    <div class="info-block">
+      <h4>Particle Inhalation → Pneumoconiosis</h4>
+      <p>Pneumoconiosis = lung disease caused by inhalation of dusts/particles. Pathogenicity depends on:</p>
+      <ul style="margin-top:6px;">
+        <li><strong>Size:</strong> 1–5 µm most dangerous (reach alveoli); &gt;5–10 µm rarely reach distal alveoli; &lt;0.5 µm act like gases and do little damage</li>
+        <li><strong>Shape:</strong> Long, thin fibres (e.g. asbestos) more pathogenic</li>
+        <li>Also: chemical composition, concentration, solubility, particle reactivity, duration of exposure</li>
+      </ul>
+    </div>
+    <div class="key-point">
+      <strong>Pathogenesis of Pneumoconiosis</strong>
+      Particles inhaled → taken up by alveolar macrophages → macrophages release <strong>fibrogenic factors</strong> (TNF, PDGF, IGF-1, fibronectin → recruit fibroblasts, collagen production), <strong>toxic factors</strong> (proteases, O₂ free radicals → lung injury), and <strong>pro-inflammatory factors</strong> (LTB4, IL-8, IL-6, TNF, MIP-1α → recruit inflammatory cells) → ultimately FIBROSIS.
+    </div>
+  </div>
+
+  <!-- TAB 2: OCCUPATIONAL -->
+  <div id="tab-occupational" class="tab-content">
+    <div class="section-heading"><span class="tag tag-occ">Coal</span> Coal Workers' Pneumoconiosis</div>
+    <div class="info-block">
+      <h4>Coal components</h4>
+      <p>Carbon, trace metals, inorganic minerals, crystalline silica</p>
+    </div>
+    <table>
+      <thead><tr><th>Type</th><th>Features</th><th>Complications</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Pulmonary Anthracosis</strong></td>
+          <td>Most innocuous. Carbon pigments taken up by macrophages, accumulate along lymphatics and in lymph nodes. Seen in urban dwellers &amp; smokers.</td>
+          <td>None usually</td>
+        </tr>
+        <tr>
+          <td><strong>Simple CWP</strong></td>
+          <td>Coal macules (dust-laden macrophages) + coal nodules (collagen fibres). Focal dust around respiratory bronchioles. Upper zone predominant.</td>
+          <td>Centrilobular emphysema. Usually NOT functionally disabling.</td>
+        </tr>
+        <tr>
+          <td><strong>Complicated CWP / PMF</strong></td>
+          <td>Progressive Massive Fibrosis — develops after 10–20 years. Coalescence of nodules → intensely black scars. Dense collagen + pigment, often central necrosis (ischaemia). Upper zone.</td>
+          <td>Pulmonary dysfunction, pulmonary hypertension, cor pulmonale</td>
+        </tr>
+        <tr>
+          <td><strong>Caplan Syndrome</strong></td>
+          <td>Co-existence of rheumatoid arthritis + pneumoconiosis → distinctive nodular pulmonary lesions developing rapidly. Central necrosis surrounded by palisading fibroblasts, plasma cells, macrophages with coal dust + collagen.</td>
+          <td>Also occurs in asbestosis &amp; silicosis</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-heading"><span class="tag tag-occ">Silica</span> Silicosis</div>
+    <div class="info-block">
+      <h4>Cause</h4>
+      <p>Inhalation of crystalline silica. Crystalline forms (quartz, cristobalite, tridymite) more toxic/fibrogenic than amorphous forms.</p>
+      <p style="margin-top:6px;"><strong>Occupations:</strong> Rock cutting, mining, drilling, tunnelling, stonemasons, sandblasters, glass/pottery making</p>
+    </div>
+    <table>
+      <thead><tr><th>Form</th><th>Features</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Acute silicosis</strong></td>
+          <td>Very high exposure, rapid onset. Tachypnoea, cough, cyanosis, respiratory failure. Histology: interstitial inflammation + proteinaceous fluid in alveolar spaces.</td>
+        </tr>
+        <tr>
+          <td><strong>Chronic (nodular)</strong></td>
+          <td>Prolonged exposure. Characteristic fibrotic silicotic nodules. Upper zone and subpleural predominant.<br><em>Silicotic nodule pathway:</em> Silica inhaled → macrophages take up particles → macrophage disintegrates, releases silica → fibroblasts activated → fibrous tissue develops → dense nodule of scar tissue (whorled collagen).</td>
+        </tr>
+        <tr>
+          <td><strong>Complicated (conglomerate)</strong></td>
+          <td>PMF — expansion and coalescence of nodules, destruction of lung parenchyma.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-red">
+      <strong>Silicosis associations:</strong> Increased risk of TB · Caplan syndrome · Lung carcinoma · Progressive respiratory failure, pulmonary hypertension, cor pulmonale
+    </div>
+
+    <div class="section-heading"><span class="tag tag-occ">Asbestos</span> Asbestosis</div>
+    <div class="info-block">
+      <h4>Background</h4>
+      <p>Asbestos = family of crystalline hydrated silicates. Sources: construction materials, insulation, cement, roofing, electric motors, textiles.</p>
+      <p style="margin-top:6px;"><strong>Fibre types:</strong></p>
+      <ul>
+        <li><strong>Serpentine</strong> (curly, flexible) — e.g. chrysotile (most used in industry)</li>
+        <li><strong>Amphibole</strong> (straight, stiff, brittle) — e.g. amosite, crocidolite — <em>more pathogenic</em></li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h4>Pathology of Asbestosis</h4>
+      <ul>
+        <li>Fibres inhaled → surrounded by macrophages → coated in iron → dumbbell-shaped <strong>ferruginous bodies</strong></li>
+        <li>Latency period: <strong>10–30 years</strong></li>
+        <li>Diffuse pulmonary interstitial fibrosis — begins around respiratory bronchioles/alveolar ducts, extends to alveolar sacs/alveoli</li>
+        <li>Enlarged air spaces enclosed by thick fibrous walls → <strong>honeycombing</strong></li>
+        <li>Begins in <strong>lower lobes subpleurally</strong>, progresses upward</li>
+      </ul>
+    </div>
+    <div class="section-heading">Asbestos-Related Disorders (Summary)</div>
+    <table>
+      <thead><tr><th>Condition</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pleural plaques</strong> (commonest)</td><td>Well-circumscribed plaques of dense collagen on parietal pleura</td></tr>
+        <tr><td><strong>Pleural effusions</strong></td><td>Exudative</td></tr>
+        <tr><td><strong>Asbestosis</strong></td><td>Diffuse interstitial fibrosis; lower zone predominant</td></tr>
+        <tr><td><strong>Mesothelioma</strong></td><td>Pleural and peritoneal; highly aggressive</td></tr>
+        <tr><td><strong>Bronchogenic carcinoma</strong></td><td>Concomitant smoking greatly increases risk</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-heading"><span class="tag tag-occ">Organic</span> Hypersensitivity Pneumonitis (EAA)</div>
+    <div class="key-point">
+      <strong>Key distinction</strong>
+      Inorganic dusts cause direct tissue injury. Organic antigens cause a <strong>Type III hypersensitivity reaction</strong> — circulating antibodies react with inhaled antigen, precipitating antigen/antibody complexes in the lung. Can progress to chronic Type IV hypersensitivity → pulmonary fibrosis in upper zones.
+    </div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Clinical Features (Acute)</h4>
+        <ul>
+          <li>Acute febrile episodes</li>
+          <li>Headache, malaise, cough, dyspnoea</li>
+          <li>Bibasal crepitations</li>
+          <li>Onset <strong>6–8 hours</strong> after antigen exposure</li>
+          <li>Acute symptoms last ~24 hours</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Common Antigens</h4>
+        <ul>
+          <li><strong>Farmer's lung:</strong> Mouldy hay (thermophilic actinomyces, Aspergillus)</li>
+          <li><strong>Pigeon fancier's lung:</strong> Avian antigens (bird faeces, feathers)</li>
+          <li>Cotton fibre (byssinosis)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-block">
+      <h4>Pathology</h4>
+      <p>Alveolar walls infiltrated by lymphocytes, plasma cells, macrophages, granulomas. Chronic phase → fibrosis (often subtle clinically).</p>
+    </div>
+    <div class="info-block">
+      <h4>Investigations &amp; Management</h4>
+      <ul>
+        <li><strong>History essential</strong> — exposure history, timing, repeat episodes</li>
+        <li>Serum precipitins, specific IgE</li>
+        <li><strong>Management:</strong> Avoidance of allergen, air-driven mask, steroids</li>
+        <li>Good prognosis overall if allergen avoided</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TAB 3: IDIOPATHIC -->
+  <div id="tab-idiopathic" class="tab-content">
+    <div class="section-heading"><span class="tag tag-sarc">Sarcoidosis</span></div>
+    <div class="info-block">
+      <h4>Definition</h4>
+      <p>Multisystemic disease of <strong>unknown aetiology</strong> characterised by <strong>non-caseating granulomata</strong> in many tissues. Involves lungs in 90–95% of cases.</p>
+      <p style="margin-top:6px;"><strong>Sarcoidosis is a diagnosis of exclusion</strong> — many diseases (TB, berylliosis, hypersensitivity pneumonitis, silicosis, lymphoma) also cause granulomatous inflammation. Always requires clinicopathological correlation.</p>
+    </div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Epidemiology</h4>
+        <ul>
+          <li>11/100,000 in whites; 36/100,000 in African Americans</li>
+          <li>Female &gt; Male (2:1)</li>
+          <li>Age of onset: 25–40 years</li>
+          <li>High incidence: Sweden, Denmark, US African Americans</li>
+          <li>Higher prevalence in non-smokers</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Aetiology</h4>
+        <ul>
+          <li>Unknown — disordered immune regulation in genetically predisposed individuals</li>
+          <li>T cells central; accumulation of <strong>CD4 T lymphocytes</strong> + IL-2 release</li>
+          <li>Possible environmental antigen trigger</li>
+          <li>No unequivocal infectious cause</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading">Sites Involved</div>
+    <table>
+      <thead><tr><th>Site</th><th>Frequency</th><th>Manifestations</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Lungs</strong></td><td>90–95%</td><td>Bihilar adenopathy; interstitial inflammation → diffuse fibrosis → pulmonary HTN → cor pulmonale</td></tr>
+        <tr><td><strong>Skin</strong></td><td>25%</td><td>Erythema nodosum (lower legs/ankles), lupus pernio (facial sores)</td></tr>
+        <tr><td><strong>Eyes</strong></td><td>20–50%</td><td>Iritis, iridocyclitis, retinitis, optic nerve involvement</td></tr>
+        <tr><td><strong>Parotid</strong></td><td>10%</td><td>Painful enlargement</td></tr>
+        <tr><td><strong>Bone marrow</strong></td><td>40%</td><td>—</td></tr>
+        <tr><td><strong>Other</strong></td><td>Variable</td><td>Spleen, liver, heart, brain, kidneys, musculoskeletal, cranial nerves</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-heading">Clinical Features</div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Presentations</h4>
+        <ul>
+          <li>Often <strong>asymptomatic / incidental</strong> (e.g. screening CXR)</li>
+          <li>30% present with respiratory symptoms: SOB, dry cough</li>
+          <li>Non-specific: fever, fatigue, weight loss, night sweats, anorexia</li>
+          <li>Peripheral lymphadenopathy, cutaneous lesions, eye involvement, neurosarcoid</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Named Syndromes</h4>
+        <ul>
+          <li><strong>Löfgren's syndrome:</strong> Fever + erythema nodosum + polyarthritis (often ankles) + bilateral hilar lymphadenopathy</li>
+          <li><strong>Mikulicz's syndrome:</strong> Combined uveoparotid involvement (uveitis + parotitis)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-blue">
+      <strong>CXR findings in sarcoidosis:</strong> Bilateral hilar lymphadenopathy · Right paratracheal strip enlargement · Bilateral infiltrates predominantly in the mid zones (upper zone on zone table)
+    </div>
+
+    <div class="section-heading">Investigations &amp; Diagnosis</div>
+    <div class="info-block">
+      <ul>
+        <li>CXR, CT thorax</li>
+        <li>PFTs (restrictive defect)</li>
+        <li>ECG (cardiac involvement)</li>
+        <li>Bloods: <strong>Calcium often raised</strong> (granulomas produce 1,25-dihydroxyvitamin D), alkaline phosphatase, <strong>serum ACE</strong> (elevated in ~75%), renal/liver/bone profile</li>
+        <li>Tissue sampling: most common site = <strong>hilar nodes</strong> via <strong>EBUS-TBNA</strong> (endobronchial ultrasound, transbronchial needle aspiration) → shows non-caseating granulomatous inflammation</li>
+        <li>Sample MUST go to microbiology (C&amp;S) to exclude TB and other infectious causes</li>
+        <li>Case discussed at multidisciplinary meeting</li>
+      </ul>
+    </div>
+
+    <div class="section-heading">Clinical Course</div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Course</h4>
+        <ul>
+          <li>Unpredictable; may remain asymptomatic</li>
+          <li>Periods of activity interspersed with remission</li>
+          <li>Respiratory involvement progresses to diffuse interstitial fibrosis in 10–15% → pulmonary hypertension → cor pulmonale</li>
+          <li>Visual impairment possible</li>
+          <li><strong>Usually steroid responsive</strong></li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Pathology</h4>
+        <ul>
+          <li>Non-caseating granulomas: central collection of epithelioid macrophages + giant cells, surrounded by lymphocytes</li>
+          <li>No central necrosis (contrast with TB!)</li>
+          <li>Can progress to fibrosis with hyalinisation of granulomas</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading"><span class="tag tag-idio">IPF</span> Idiopathic Pulmonary Fibrosis</div>
+    <div class="info-block">
+      <h4>Definition</h4>
+      <p>Pulmonary disorder of <strong>unknown aetiology</strong> characterised histologically by diffuse interstitial fibrosis. Diagnosis of exclusion — must rule out asbestosis, CTDs, drugs etc. before calling it "idiopathic".</p>
+      <p style="margin-top:6px;"><strong>Demographics:</strong> M &gt; F; 2/3 &gt;60 years</p>
+      <p><strong>Histological term:</strong> Usual Interstitial Pneumonia (UIP)</p>
+    </div>
+    <div class="info-block">
+      <h4>Pathogenesis</h4>
+      <div class="pathway">
+        <div class="pw-step">Unknown injury / antigen</div>
+        <div class="pw-arrow">→</div>
+        <div class="pw-step">Alveolar wall injury</div>
+        <div class="pw-arrow">→</div>
+        <div class="pw-step">Alveolitis (oedema + inflammatory cells)</div>
+        <div class="pw-arrow">→</div>
+        <div class="pw-step">Persistent injury → macrophage/lymphocyte/neutrophil activation</div>
+        <div class="pw-arrow">→</div>
+        <div class="pw-step">Fibroblast proliferation + collagen production</div>
+        <div class="pw-arrow">→</div>
+        <div class="pw-step">Progressive interstitial fibrosis</div>
+      </div>
+      <p style="margin-top:8px;font-size:0.86rem;color:var(--text2);">Key mediators: PDGF, TGF-β, TNF-α, MMPs. Macrophages activated by immune complexes + cytokines from T cells → release oxidants/proteases → injure Type I pneumocytes → Type II pneumocyte hyperplasia (repair) → fibroblast activation → ECM deposition.</p>
+    </div>
+    <div class="info-block">
+      <h4>Pathologic Features (UIP)</h4>
+      <ul>
+        <li><strong>Heterogeneous</strong> appearance: areas of fibrosis/inflammation alternating with areas of <strong>normal lung</strong> (temporal heterogeneity)</li>
+        <li>Inflammation usually <strong>patchy</strong></li>
+        <li>Advanced: "honeycomb change" — lung spaces separated by inflammatory fibrous tissue</li>
+        <li>Fibrosis begins subpleurally in <strong>lower lobes</strong></li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h4>Clinical Features</h4>
+      <ul>
+        <li>Insidious onset: <strong>dry cough + progressive dyspnoea</strong></li>
+        <li>Age &gt;60 years</li>
+        <li><strong>Clubbing</strong></li>
+        <li>Physical exam: characteristic <strong>"velcro crackles"</strong> on inspiration (bibasal)</li>
+        <li>Progressive disease → cyanosis, cor pulmonale (loud P2, parasternal heave, raised JVP), peripheral oedema</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h4>Investigations</h4>
+      <ul>
+        <li>CXR: bilateral interstitial shadowing, patchy/nodular, lower zone bilateral</li>
+        <li>HRCT Thorax: <strong>honeycombing + traction bronchiectasis</strong>, reticular opacities, subpleural lower zone predominant</li>
+        <li>PFTs: restrictive defect (↓ FVC, ↓ TLC, ↓ DLCO)</li>
+        <li>Bloods: FBC, U&amp;E, LFTs, calcium, ABG</li>
+        <li>+/- Biopsy via VATS (video-assisted thoracoscopic surgery) — only if atypical presentation</li>
+      </ul>
+    </div>
+    <div class="alert alert-red">
+      <strong>IPF vs Sarcoidosis — key differences:</strong> IPF: M&gt;F, &gt;60 yrs, lower zone, no granulomas, poor prognosis. Sarcoidosis: F&gt;M, 25–40 yrs, upper/mid zone, non-caseating granulomas, often steroid responsive.
+    </div>
+  </div>
+
+  <!-- TAB 4: ARDS -->
+  <div id="tab-ards" class="tab-content">
+    <div class="section-heading"><span class="tag tag-ards">ARDS</span> Acute Respiratory Distress Syndrome</div>
+    <div class="info-block">
+      <h4>Definition</h4>
+      <p>Syndrome of <strong>reduced pulmonary gas exchange</strong> caused by diffuse injury to the alveolar-capillary barrier. A form of <strong>noncardiogenic pulmonary oedema</strong> resulting from acute alveolar damage.</p>
+    </div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Direct Lung Injury</h4>
+        <ul>
+          <li>Pneumonia</li>
+          <li>Aspiration of gastric contents</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Indirect Lung Injury</h4>
+        <ul>
+          <li>Sepsis</li>
+          <li>Severe trauma with shock</li>
+          <li>Multiple transfusions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading">Pathophysiology</div>
+    <div class="info-block">
+      <h4>Alveolar Epithelial Barrier</h4>
+      <ul>
+        <li><strong>Type I pneumocytes:</strong> Flat, 90% of alveolar surface, <em>easily injured</em></li>
+        <li><strong>Type II pneumocytes:</strong> Cuboidal, <em>more resistant to injury</em>, produce surfactant, proliferate to repair</li>
+      </ul>
+    </div>
+    <div class="key-point">
+      <strong>Acute Phase — Diffuse Alveolar Damage (DAD)</strong>
+      Injury → diffuse alveolar damage → sloughing of bronchial and alveolar epithelial cells → protein-rich <strong>hyaline membranes</strong> form on the denuded basement membrane (hallmark histological finding). Neutrophils accumulate in early stages. Alveoli filled with proteinaceous fluid.
+    </div>
+    <div class="info-block">
+      <h4>Ventilation-Induced Lung Injury (VILI)</h4>
+      <p>Mechanical ventilation can worsen injury. Alveolar overdistension and repeated collapse/reopening stimulate inflammatory cytokine release (volutrauma, atelectrauma).</p>
+    </div>
+    <div class="info-block">
+      <h4>Outcomes</h4>
+      <ul>
+        <li>If uncomplicated → rapid resolution</li>
+        <li>Others progress to <strong>fibrotic lung injury</strong></li>
+        <li>Most patients will die without supplemental O₂ and assisted ventilation</li>
+      </ul>
+    </div>
+
+    <div class="section-heading">Clinical Diagnosis</div>
+    <div class="alert alert-red">
+      <strong>ARDS Diagnostic Criteria</strong> (Berlin Definition): In an at-risk patient, <strong>rapid onset</strong> of respiratory failure within 1 week of clinical insult + bilateral pulmonary infiltrates on CXR (not explained by cardiac failure/fluid overload) + PaO₂/FiO₂ ≤300 mmHg.
+    </div>
+    <div class="two-col">
+      <div class="info-block">
+        <h4>Clinical Features</h4>
+        <ul>
+          <li>Rapid onset respiratory failure</li>
+          <li>Arterial hypoxaemia — difficult to treat</li>
+          <li>Tachypnoea, tachycardia</li>
+          <li>Cyanosis</li>
+          <li>Bilateral crackles</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Investigations</h4>
+        <ul>
+          <li>CXR: <strong>bilateral pulmonary infiltrates</strong> ("white out")</li>
+          <li>ABG: severe hypoxaemia</li>
+          <li>Echo/BNP to exclude cardiogenic oedema</li>
+          <li>Identify underlying cause</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-green">
+      <strong>Management principles:</strong> Treat underlying cause · Lung-protective ventilation (low tidal volume 6 mL/kg) · PEEP to keep alveoli open · Prone positioning in severe ARDS · Supportive care (fluids, nutrition, sedation)
+    </div>
+  </div>
+
+  <!-- TAB 5: MCQ -->
+  <div id="tab-mcq" class="tab-content">
+    <div class="mcq-score" id="mcq-score"></div>
+    <button class="reset-btn" id="reset-btn" onclick="resetMCQ()" style="display:none;">Reset Quiz</button>
+    <div class="mcq-container" id="mcq-container"></div>
+  </div>
+
+</main>
+
+<script>
+// THEME
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+}
+
+// TABS
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// MCQ DATA
+const questions = [
+  {
+    q: "Which particle size range is MOST dangerous for causing interstitial lung disease?",
+    opts: ["< 0.5 µm","1–5 µm","5–10 µm","> 10 µm"],
+    ans: 1,
+    exp: "Particles of 1–5 µm can reach the alveoli and are the most dangerous size. < 0.5 µm act like gases and move in/out without causing damage; > 5–10 µm are unlikely to reach distal alveoli."
+  },
+  {
+    q: "Caplan syndrome is characterised by the co-existence of pneumoconiosis with:",
+    opts: ["SLE","Rheumatoid arthritis","Ankylosing spondylitis","Dermatomyositis"],
+    ans: 1,
+    exp: "Caplan syndrome = co-existence of rheumatoid arthritis with a pneumoconiosis (coal, silica, or asbestos), leading to distinctive rapidly developing nodular pulmonary lesions with central necrosis."
+  },
+  {
+    q: "Asbestos bodies (ferruginous bodies) are formed when asbestos fibres are:",
+    opts: ["Calcified by Type II pneumocytes","Coated in iron by macrophages","Engulfed by eosinophils","Bound by IgE antibodies"],
+    ans: 1,
+    exp: "Asbestos fibres are surrounded by macrophages and coated in iron (haemosiderin), producing a dumbbell-shaped ferruginous body. This iron coating gives them their name."
+  },
+  {
+    q: "Extrinsic Allergic Alveolitis (Hypersensitivity Pneumonitis) primarily involves which type of hypersensitivity reaction?",
+    opts: ["Type I (IgE-mediated)","Type II (cytotoxic)","Type III (immune complex)","Type IV (delayed)"],
+    ans: 2,
+    exp: "EAA is primarily a Type III (immune complex) hypersensitivity reaction. Circulating antibodies react with inhaled organic antigen, forming complexes that precipitate in the lung. Chronic disease can also involve Type IV."
+  },
+  {
+    q: "In the radiological classification of ILD, which disease causes predominantly UPPER ZONE fibrosis?",
+    opts: ["Asbestosis","IPF","Rheumatoid arthritis","Sarcoidosis"],
+    ans: 3,
+    exp: "Sarcoidosis causes upper zone fibrosis. Asbestosis, IPF, and rheumatoid arthritis are all lower zone predominant."
+  },
+  {
+    q: "The hallmark histological finding in Usual Interstitial Pneumonia (UIP/IPF) is:",
+    opts: ["Non-caseating granulomas","Ferruginous bodies","Temporal heterogeneity — fibrosis and normal lung alternating","Hyaline membranes"],
+    ans: 2,
+    exp: "The hallmark of UIP is temporal heterogeneity: areas of fibrosis and inflammation alternating with areas of normal lung, in a patchy distribution. This distinguishes it from other ILDs."
+  },
+  {
+    q: "Sarcoidosis is a diagnosis of exclusion. Which blood marker is characteristically elevated?",
+    opts: ["D-dimer","Serum ACE","Anti-dsDNA","Rheumatoid factor"],
+    ans: 1,
+    exp: "Serum ACE (angiotensin-converting enzyme) is elevated in approximately 75% of patients with active sarcoidosis. Calcium is also often raised (granulomas produce 1,25-dihydroxyvitamin D)."
+  },
+  {
+    q: "Complicated coal workers' pneumoconiosis (PMF) is characterised by:",
+    opts: ["Focal dust accumulation around respiratory bronchioles only","Dense black scars with central necrosis due to ischaemia","Non-caseating granulomas in hilar lymph nodes","Hyaline membranes on alveolar basement membranes"],
+    ans: 1,
+    exp: "PMF (Progressive Massive Fibrosis) features intensely black, usually multiple scars. Microscopically they consist of dense collagen and pigment, often with central necrosis due to ischaemia. They develop after 10–20 years on a background of simple CWP."
+  },
+  {
+    q: "The most pathogenic form of asbestos fibre is:",
+    opts: ["Chrysotile (serpentine)","Amphibole (straight, stiff)","Crocidolite only","All forms are equally pathogenic"],
+    ans: 1,
+    exp: "Amphibole fibres (straight, stiff, brittle — including crocidolite and amosite) are more pathogenic than serpentine fibres (e.g. chrysotile). However, chrysotile is the most widely used in industry."
+  },
+  {
+    q: "Which procedure is most commonly used to sample hilar lymph nodes in suspected sarcoidosis?",
+    opts: ["CT-guided biopsy","Open thoracotomy","EBUS-TBNA","Bronchoalveolar lavage alone"],
+    ans: 2,
+    exp: "EBUS-TBNA (Endobronchial Ultrasound-guided Transbronchial Needle Aspiration) is the procedure of choice for sampling hilar/mediastinal lymph nodes in suspected sarcoidosis. It is minimally invasive."
+  },
+  {
+    q: "In ARDS, which cell type makes up 90% of the alveolar surface and is MOST easily injured?",
+    opts: ["Type I pneumocytes","Type II pneumocytes","Alveolar macrophages","Clara cells"],
+    ans: 0,
+    exp: "Type I pneumocytes are flat cells making up ~90% of the alveolar surface. They are easily injured. Type II pneumocytes are cuboidal, more resistant to injury, produce surfactant, and proliferate to repair after injury."
+  },
+  {
+    q: "The hallmark histological finding in the acute phase of ARDS is:",
+    opts: ["Non-caseating granulomas","Silicotic nodules with whorled collagen","Protein-rich hyaline membranes on the denuded basement membrane","Ferruginous bodies in alveolar macrophages"],
+    ans: 2,
+    exp: "In the acute phase of ARDS (diffuse alveolar damage), sloughing of bronchial and alveolar epithelial cells leads to formation of protein-rich hyaline membranes on the denuded basement membrane. This is the pathological hallmark."
+  },
+  {
+    q: "Löfgren's syndrome is a presentation of sarcoidosis consisting of:",
+    opts: ["Iritis + parotitis + facial palsy","Fever + erythema nodosum + polyarthritis + bilateral hilar lymphadenopathy","Bilateral pleural plaques + mesothelioma","Pulmonary fibrosis + cor pulmonale + cyanosis"],
+    ans: 1,
+    exp: "Löfgren's syndrome: fever + erythema nodosum + polyarthritis (often ankles) + bilateral hilar lymphadenopathy. It is associated with a good prognosis."
+  },
+  {
+    q: "Which ILD characteristically presents with 'velcro crackles' on auscultation, clubbing, and age > 60 years?",
+    opts: ["Sarcoidosis","Hypersensitivity pneumonitis","Idiopathic pulmonary fibrosis (IPF)","Silicosis"],
+    ans: 2,
+    exp: "IPF presents insidiously with dry cough, progressive dyspnoea, digital clubbing, and characteristic 'velcro crackles' on auscultation. It typically affects patients over 60 years old, with M > F ratio."
+  },
+  {
+    q: "In the pathogenesis of pneumoconiosis, which fibrogenic factor recruits fibroblasts and promotes collagen production?",
+    opts: ["LTB4 and IL-8","O₂ free radicals and proteases","PDGF, TNF, IGF-1, and fibronectin","IL-6 and MIP-1α"],
+    ans: 2,
+    exp: "PDGF (platelet-derived growth factor), TNF, IGF-1, and fibronectin are fibrogenic factors released by activated macrophages that recruit fibroblasts and promote collagen production, ultimately leading to fibrosis. LTB4/IL-8/IL-6/MIP-1α are pro-inflammatory factors; O₂ free radicals/proteases are toxic factors."
+  }
+];
+
+let answered = 0;
+let correct = 0;
+
+function buildMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  answered = 0; correct = 0;
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.innerHTML = `
+      <div class="mcq-q"><span>Q${i+1}.</span>${q.q}</div>
+      <div class="mcq-options">
+        ${q.opts.map((o, j) => `<button class="mcq-opt" data-q="${i}" data-idx="${j}" onclick="checkAnswer(this,${i},${j})">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}
+      </div>
+      <div class="mcq-feedback" id="fb-${i}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function checkAnswer(btn, qi, idx) {
+  const q = questions[qi];
+  const card = btn.closest('.mcq-card');
+  const opts = card.querySelectorAll('.mcq-opt');
+  opts.forEach(b => b.disabled = true);
+  const fb = document.getElementById('fb-' + qi);
+  const isCorrect = idx === q.ans;
+  opts[q.ans].classList.add('correct');
+  if (!isCorrect) btn.classList.add('wrong');
+  fb.textContent = (isCorrect ? '✓ Correct! ' : '✗ Incorrect. ') + q.exp;
+  fb.className = 'mcq-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  answered++;
+  if (isCorrect) correct++;
+  if (answered === questions.length) {
+    const score = document.getElementById('mcq-score');
+    const pct = Math.round((correct / questions.length) * 100);
+    score.textContent = `Score: ${correct} / ${questions.length} (${pct}%) ${pct >= 80 ? '🎉 Excellent!' : pct >= 60 ? '👍 Good effort!' : '📚 Keep reviewing!'}`;
+    score.classList.add('show');
+    document.getElementById('reset-btn').style.display = 'block';
+  }
+}
+
+function resetMCQ() {
+  document.getElementById('mcq-score').classList.remove('show');
+  document.getElementById('reset-btn').style.display = 'none';
+  buildMCQ();
+}
+
+buildMCQ();
+</script>
+</body>
+</html>

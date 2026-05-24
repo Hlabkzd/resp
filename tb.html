@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuberculosis | RCSI RESP Year 1</title>
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0f1117;
+    --bg2: #181c27;
+    --bg3: #1e2336;
+    --border: #2a3050;
+    --text: #e8ecf5;
+    --text2: #9aa3c0;
+    --accent: #e03c3c;
+    --accent2: #2d8cf0;
+    --path-green: #3dba78;
+    --med-blue: #5b9cf6;
+    --tab-active-bg: #e03c3c;
+    --tab-active-text: #fff;
+    --card: #1e2336;
+    --correct: #2a6b3f;
+    --wrong: #7a2020;
+    --highlight: #2a3050;
+    --tag-path: rgba(61,186,120,0.15);
+    --tag-med: rgba(91,156,246,0.12);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f6fb;
+    --bg2: #ffffff;
+    --bg3: #edf0f8;
+    --border: #d0d8ef;
+    --text: #1a1f35;
+    --text2: #5a6480;
+    --accent: #c82828;
+    --accent2: #1a6ed4;
+    --path-green: #1f9055;
+    --med-blue: #2563c0;
+    --tab-active-bg: #c82828;
+    --tab-active-text: #fff;
+    --card: #ffffff;
+    --correct: #d1f0dc;
+    --wrong: #fde0e0;
+    --highlight: #e8ecf8;
+    --tag-path: rgba(31,144,85,0.12);
+    --tag-med: rgba(37,99,192,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; flex-direction: column; }
+  .header-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .header-meta {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .back-btn {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all .2s;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--text2); }
+  .theme-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    cursor: pointer;
+    padding: 6px 13px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .theme-btn:hover { color: var(--text); border-color: var(--text2); }
+
+  /* ── Tab nav ── */
+  .tab-nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    letter-spacing: .02em;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Layout ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Section headers ── */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--bg3);
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 13.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+  .section-header .dot.green { background: var(--path-green); }
+  .section-header .dot.blue  { background: var(--med-blue); }
+  .section-body { padding: 18px 20px; }
+
+  /* ── Lists ── */
+  ul.content-list { padding-left: 0; list-style: none; }
+  ul.content-list li {
+    padding: 7px 0 7px 18px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14.5px;
+  }
+  ul.content-list li:last-child { border-bottom: none; }
+  ul.content-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── Tags ── */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-path { background: var(--tag-path); color: var(--path-green); }
+  .tag-med  { background: var(--tag-med);  color: var(--med-blue);  }
+
+  /* ── Key concept callout ── */
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: var(--highlight);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .callout.green { border-left-color: var(--path-green); }
+  .callout.blue  { border-left-color: var(--med-blue); }
+  .callout strong { color: var(--accent); }
+  .callout.green strong { color: var(--path-green); }
+  .callout.blue  strong { color: var(--med-blue); }
+
+  /* ── Two-col comparison ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .compare-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .compare-card h4.red   { color: var(--accent); }
+  .compare-card h4.green { color: var(--path-green); }
+  .compare-card h4.blue  { color: var(--med-blue); }
+  .compare-card ul { padding-left: 16px; }
+  .compare-card li { font-size: 13.5px; margin-bottom: 5px; color: var(--text); }
+
+  /* ── Drug table ── */
+  .drug-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .drug-table th {
+    background: var(--bg3);
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text2);
+    border-bottom: 2px solid var(--border);
+  }
+  .drug-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .drug-table tr:last-child td { border-bottom: none; }
+  .drug-table tr:hover td { background: var(--highlight); }
+
+  /* ── Flow step ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-num.green { background: var(--path-green); }
+  .step-num.blue  { background: var(--med-blue); }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+  .step-desc { font-size: 13.5px; color: var(--text2); }
+
+  /* ── Organism diagram (text-based) ── */
+  .organism-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .organism-box .name {
+    font-weight: 800;
+    font-size: 15.5px;
+    color: var(--path-green);
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  /* ── MCQ ── */
+  #mcq-panel .q-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .q-header {
+    background: var(--bg3);
+    padding: 12px 18px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .q-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: .05em;
+  }
+  .q-body { padding: 16px 18px; }
+  .q-text { font-size: 14.5px; font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-family: inherit;
+    transition: all .15s;
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: var(--highlight);
+  }
+  .opt-btn.correct { background: var(--correct) !important; border-color: var(--path-green) !important; color: var(--text) !important; }
+  .opt-btn.wrong   { background: var(--wrong) !important;   border-color: var(--accent) !important; color: var(--text) !important; }
+  .explanation {
+    margin-top: 12px;
+    padding: 11px 14px;
+    background: var(--highlight);
+    border-left: 4px solid var(--path-green);
+    border-radius: 0 7px 7px 0;
+    font-size: 13.5px;
+    color: var(--text);
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .mcq-score-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .score-display { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .score-label { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .reset-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    transition: all .2s;
+  }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── LO grid ── */
+  .lo-grid { display: flex; flex-direction: column; gap: 10px; }
+  .lo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .lo-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .lo-text { font-size: 14px; color: var(--text); }
+  .lo-text .tag { margin-left: 6px; }
+
+  p.body-text { font-size: 14.5px; color: var(--text); margin-bottom: 10px; }
+
+  /* ── EPTB site grid ── */
+  .site-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .site-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="header-label">RCSI · Year 1 · Respiratory</span>
+    <span class="header-title">Tuberculosis</span>
+    <span class="header-meta">Dr C. Kilgallen (Path) &amp; Dr D. Kalinska-Lysiak (Med) · 14 May 2026</span>
+  </div>
+  <div class="header-right">
+    <a class="back-btn" href="index.html">← Back</a>
+    <button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="showTab('pathology')">Pathology</button>
+  <button class="tab-btn" onclick="showTab('clinical')">Clinical</button>
+  <button class="tab-btn" onclick="showTab('investigations')">Investigations</button>
+  <button class="tab-btn" onclick="showTab('management')">Management</button>
+  <button class="tab-btn" onclick="showTab('eptb')">Extra-Pulmonary</button>
+  <button class="tab-btn" onclick="showTab('hiv')">HIV Co-Infection</button>
+  <button class="tab-btn" onclick="showTab('mcq')">MCQs ✦</button>
+</nav>
+
+<div class="container">
+
+  <!-- ══════════ OVERVIEW ══════════ -->
+  <div id="overview" class="tab-panel active">
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Learning Outcomes</div>
+      <div class="section-body">
+        <div class="lo-grid">
+          <div class="lo-item"><div class="lo-num">1</div><div class="lo-text">Summarise the epidemiology of tuberculosis <span class="tag tag-med">Med</span></div></div>
+          <div class="lo-item"><div class="lo-num">2</div><div class="lo-text">Discuss and explain the pathological processes of TB, primary and post-primary <span class="tag tag-path">Path</span></div></div>
+          <div class="lo-item"><div class="lo-num">3</div><div class="lo-text">List and identify systemic TB throughout the body <span class="tag tag-path">Path</span></div></div>
+          <div class="lo-item"><div class="lo-num">4</div><div class="lo-text">Recognise the clinical features, signs and symptoms of TB <span class="tag tag-path">Path</span></div></div>
+          <div class="lo-item"><div class="lo-num">5</div><div class="lo-text">List the appropriate investigations and diagnostic tests for TB <span class="tag tag-med">Med</span></div></div>
+          <div class="lo-item"><div class="lo-num">6</div><div class="lo-text">Discuss the clinical management of TB <span class="tag tag-med">Med</span></div></div>
+          <div class="lo-item"><div class="lo-num">7</div><div class="lo-text">Discuss TB and HIV co-infection <span class="tag tag-med">Med</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Introduction &amp; Epidemiology</div>
+      <div class="section-body">
+        <p class="body-text">Tuberculosis is caused by <em>Mycobacterium tuberculosis</em>, an aerobic, intracellular gram-positive bacillus. It remains one of the leading infectious causes of death globally.</p>
+        <ul class="content-list">
+          <li>~⅓ of the world's population infected — majority in Africa and Asia</li>
+          <li>Responsible for <strong>1.6 million deaths</strong> worldwide in 2017 (20% HIV co-infected)</li>
+          <li>Growing incidence of multidrug-resistant (MDR) and extensively drug-resistant (XDR) strains</li>
+          <li>Airborne transmission via respiratory droplets (coughing, sneezing, spitting)</li>
+          <li>Only a small inoculum is required to establish infection</li>
+        </ul>
+        <div class="callout green" style="margin-top:14px;">
+          <strong>Key stat:</strong> 90% of those infected develop <em>latent TB</em> (LTBI) — asymptomatic, non-infectious. Only 10% lifetime risk of progression to active disease (higher with HIV).
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Risk Factors — Developed World</div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>Contact with high-risk groups (e.g. healthcare workers, prisons, homeless shelters)</li>
+          <li>Origin from or frequent travel to high-incidence countries</li>
+          <li>Immune deficiency — HIV, corticosteroids, chemotherapy, anti-TNF agents, diabetes, chronic kidney disease, malnutrition</li>
+          <li>Lifestyle factors — drug/alcohol use, homelessness, overcrowding</li>
+          <li>Genetic susceptibility — polymorphisms affecting macrophage function</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+  <!-- ══════════ PATHOLOGY ══════════ -->
+  <div id="pathology" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>The Organism <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <div class="organism-box">
+          <div class="name">Mycobacterium tuberculosis</div>
+          <ul class="content-list" style="margin-top:0;">
+            <li>Aerobic, obligate intracellular pathogen</li>
+            <li>Slow-growing (divides every ~18–24 hours)</li>
+            <li>Thick, waxy <strong>mycolic acid capsule</strong> — protects from reactive oxygen species in phagolysosome</li>
+            <li><strong>Acid-fast</strong> — retains carbol-fuchsin dye on Ziehl–Neelsen stain (appears red/pink)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Beginnings of Infection <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num green">1</div>
+            <div class="step-content">
+              <div class="step-title">Inhalation</div>
+              <div class="step-desc">Mycobacteria reach the alveolar air sacs. Alveolar macrophages are the first host cell.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num green">2</div>
+            <div class="step-content">
+              <div class="step-title">Phagocytosis attempt</div>
+              <div class="step-desc">Macrophage engulfs the bacterium into a <strong>phagosome</strong>, which fuses with the lysosome to form a <strong>phagolysosome</strong>. Reactive oxygen species (ROS) attempt to destroy the pathogen.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num green">3</div>
+            <div class="step-content">
+              <div class="step-title">Mycolic acid protection</div>
+              <div class="step-desc">The waxy mycolic acid cell wall shields the bacterium from ROS. MTB survives and replicates intracellularly, eventually killing the macrophage.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num green">4</div>
+            <div class="step-content">
+              <div class="step-title">Immune recruitment</div>
+              <div class="step-desc">Infected macrophages release chemokines → recruit neutrophils &amp; more macrophages. TNF-α and IFN-γ accelerate inflammatory cell recruitment. T cells are critical for macrophage activation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Granulomatous Inflammation <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <p class="body-text">TB is the classic granulomatous inflammatory disease. Granulomas are aggregates of <strong>epithelioid macrophages</strong>.</p>
+        <ul class="content-list">
+          <li>Macrophages fuse to form <strong>Langhans giant cells</strong> (multinucleated)</li>
+          <li>With activated T cells: macrophages at centre, surrounded by a rim of lymphocytes</li>
+          <li>The bacillus uses the granuloma to <em>evade</em> the immune system</li>
+          <li>Bacilli inside the granuloma become <strong>dormant</strong> → latent infection</li>
+          <li>Centre of granuloma often develops <strong>caseous necrosis</strong> (cheese-like, white material)</li>
+        </ul>
+        <div class="callout green">
+          <strong>Key immune players:</strong> CD4+ T cells activate macrophages to kill bacilli. CD8+ cytotoxic T cells release perforin/granzymes to destroy infected cells. Cross-talk via TNF-α, IFN-γ, and GM-CSF. If balance tips in favour of the bacterium → dissemination.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Primary Tuberculosis <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <p class="body-text">Usually occurs in childhood. Following inhalation, a small subpleural focus of granulomatous inflammation develops in the mid-zone — the <strong>Ghon focus</strong>.</p>
+        <ul class="content-list">
+          <li>Lymphatic spread carries macrophages to tracheobronchial and mediastinal lymph nodes</li>
+          <li><strong>Primary complex</strong> = Ghon focus + hilar/mediastinal lymph nodes</li>
+          <li>&lt;5% develop active disease on initial contact; rises to ~10% by the first year</li>
+        </ul>
+        <div style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); margin-bottom:8px;">Natural History of Primary Complex</div>
+        <ul class="content-list">
+          <li><strong>Healing (commonest)</strong> — Ghon focus undergoes complete fibrosis/calcification</li>
+          <li>Pleural effusion or tuberculous empyaema</li>
+          <li>Enlarged hilar nodes → bronchial obstruction</li>
+          <li>Damage to bronchial lymphatics → ulceration → <strong>bronchiectasis</strong></li>
+          <li>TB bronchopneumonia (early)</li>
+          <li>Blood vessel invasion → haematogenous spread → <strong>miliary TB</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Secondary (Reactivation) Tuberculosis <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <p class="body-text">The majority of active TB cases result from <strong>reactivation</strong> of latent infection, sometimes years or decades after initial exposure.</p>
+        <ul class="content-list">
+          <li>Lesions occur in <strong>posterior subapical / upper lobe</strong> regions — aeration exceeds blood flow here, favouring growth of this aerobic organism</li>
+          <li>Caseous necrosis occurs; cell-mediated immunity kills many bacteria and macrophages</li>
+          <li>May heal with dense scar or a fibrosed caseous mass (<strong>tuberculoma</strong>)</li>
+        </ul>
+        <div style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); margin-bottom:8px;">Natural History of Secondary TB</div>
+        <ul class="content-list">
+          <li>Necrotising process erodes bronchus → <strong>cavity formation</strong></li>
+          <li>Diffuse pulmonary fibrosis, pleural fibrosis, shrunken lungs</li>
+          <li>Vascular obliteration (endarteritis) — but rupture can cause <strong>haemoptysis</strong></li>
+          <li>TB cavity super-infected by <em>Aspergillus</em> → <strong>mycetoma</strong></li>
+          <li>TB bronchopneumonia</li>
+          <li>Miliary TB</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Miliary Tuberculosis <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <p class="body-text">Haematogenous spread of a large burden of bacilli into the bloodstream.</p>
+        <ul class="content-list">
+          <li>Lungs and all organs can be seeded</li>
+          <li>Miliary tubercles ~1–2 mm on gross pathology</li>
+          <li>Usually generalised; death most commonly from <strong>TB meningitis</strong></li>
+          <li>May initially be confined to the lungs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Reactivation Risk Factors <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>HIV co-infection <span class="tag tag-med" style="margin-left:4px;">highest risk</span></li>
+          <li>Immunosuppressant therapy (steroids, anti-TNF agents)</li>
+          <li>Diabetes mellitus</li>
+          <li>Chronic end-stage renal disease</li>
+          <li>Malnutrition</li>
+          <li>Aging</li>
+          <li>Gastrectomy</li>
+          <li>Silica dust exposure (coal workers)</li>
+          <li>Laboratory workers in contact with infected material</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Non-Tuberculous Mycobacteria (NTM) <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li><em>M. avium-intracellulare</em> complex (MAC) — usually in HIV patients; nodular interstitial infiltrates</li>
+          <li><em>M. kansasii</em> — pulmonary lung disease</li>
+          <li><em>M. marinum</em> — soft tissue / skin infection; fish tank granuloma</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /pathology -->
+
+  <!-- ══════════ CLINICAL ══════════ -->
+  <div id="clinical" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Latent vs Active TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <div class="compare-grid">
+          <div class="compare-card">
+            <h4 class="blue">Latent TB (LTBI)</h4>
+            <ul>
+              <li>~90% of infected people</li>
+              <li><strong>No symptoms or signs</strong></li>
+              <li>Not transmissible</li>
+              <li>Dormant bacteria "walled off" in granulomas</li>
+              <li>CXR and bloods normal</li>
+              <li>5–10% lifetime reactivation risk</li>
+            </ul>
+          </div>
+          <div class="compare-card">
+            <h4 class="red">Active TB</h4>
+            <ul>
+              <li>~5% on initial exposure; ~5% reactivation</li>
+              <li>Symptomatic, signs present</li>
+              <li><strong>Transmissible</strong> (pulmonary)</li>
+              <li>CXR often abnormal</li>
+              <li>Microbiological diagnosis required</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout blue" style="margin-top:14px;">
+          On exposure: ~5% clear bacteria entirely, ~5% develop active disease, ~90% develop latent TB.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Symptoms — Pulmonary TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">Pulmonary TB is a <em>bacterial pneumonia</em> with an <strong>insidious onset</strong> — symptoms typically persist for weeks to months (unlike acute bacterial pneumonia which resolves in days).</p>
+        <ul class="content-list">
+          <li><strong>Drenching night sweats</strong></li>
+          <li><strong>Weight loss</strong> / cachexia</li>
+          <li><strong>Fever</strong></li>
+          <li><strong>Productive cough</strong></li>
+          <li><strong>Haemoptysis</strong> (coughing blood) — vascular erosion by cavity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Symptoms — Extra-Pulmonary TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">Constitutional symptoms (night sweats, weight loss, fever) are common across all sites. Site-specific symptoms:</p>
+        <ul class="content-list">
+          <li><strong>TB lymphadenitis:</strong> swollen cervical / supraclavicular lymph nodes</li>
+          <li><strong>TB osteomyelitis / Pott's disease:</strong> chronic back pain (spinal involvement), caseous material tracking along psoas muscles</li>
+          <li><strong>TB meningitis:</strong> drowsiness, confusion, headache, photophobia, neck stiffness — often more vague onset than bacterial meningitis</li>
+          <li>Extra-pulmonary TB is generally <strong>not transmissible</strong> (no coughing up bacilli)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Signs <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li><strong>Cachexia</strong> — generalised wasting</li>
+          <li><strong>Digital clubbing</strong> — due to suppurative lung disease</li>
+          <li><strong>Coarse crackles</strong> on auscultation over affected lung area</li>
+          <li><strong>Palpable lymph nodes</strong> — cervical / supraclavicular in TB lymphadenitis</li>
+          <li><strong>Tenderness</strong> over bone in osteomyelitis</li>
+          <li><strong>Kernig's sign</strong> / low GCS / drowsiness in meningitis</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /clinical -->
+
+  <!-- ══════════ INVESTIGATIONS ══════════ -->
+  <div id="investigations" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Investigating Latent TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">Goal: prove prior exposure to TB (not current active infection). Two methods:</p>
+        <div class="compare-grid">
+          <div class="compare-card">
+            <h4 class="blue">Tuberculin Skin Test (Mantoux)</h4>
+            <ul>
+              <li>Intradermal injection of tuberculin PPD</li>
+              <li>Read at 72 hours — skin induration</li>
+              <li>Requires 2 patient visits</li>
+              <li>Subjective interpretation</li>
+              <li>Cheaper</li>
+              <li>Positive after BCG vaccination (false positive)</li>
+            </ul>
+          </div>
+          <div class="compare-card">
+            <h4 class="green">QuantiFERON (IGRA)</h4>
+            <ul>
+              <li>Blood test — measures IFN-γ release by T cells exposed to TB antigens</li>
+              <li>Single visit, objective result</li>
+              <li>Not affected by BCG vaccine</li>
+              <li>More expensive</li>
+              <li>Electronic record persists long-term</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:14px;">
+          <strong>Important:</strong> Neither Mantoux nor QuantiFERON can diagnose <em>active</em> TB. A positive result only confirms prior exposure. <strong>Never use these tests to diagnose active TB.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Investigating Active TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">The diagnosis of active TB is <strong>microbiological</strong> — proving the presence of <em>M. tuberculosis</em>.</p>
+        <table class="drug-table">
+          <thead>
+            <tr><th>Test</th><th>Method</th><th>Speed</th><th>Key Limitation</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Culture</strong> <span class="tag tag-path">Gold Standard</span></td>
+              <td>Grows on Löwenstein–Jensen or MGIT media</td>
+              <td>Days – 8 weeks</td>
+              <td>Slow; determines full drug sensitivity</td>
+            </tr>
+            <tr>
+              <td><strong>Microscopy (ZN stain)</strong></td>
+              <td>Ziehl–Neelsen stain; acid-fast bacilli appear red</td>
+              <td>Hours</td>
+              <td>Cannot identify species or sensitivities; may miss low-burden samples</td>
+            </tr>
+            <tr>
+              <td><strong>TB GeneXpert (PCR)</strong></td>
+              <td>Detects TB DNA; also tests for Rifampicin resistance</td>
+              <td>~2 hours</td>
+              <td>Cannot determine full drug sensitivities; culture still required</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout blue" style="margin-top:14px;">
+          <strong>GeneXpert advantages:</strong> Result in 2 hours, works on microscopy-negative samples, simultaneously tests for Rifampicin resistance (the backbone of standard treatment).
+        </div>
+
+        <div style="margin-top:18px; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); margin-bottom:10px;">Samples by Site</div>
+        <ul class="content-list">
+          <li><strong>Pulmonary TB:</strong> sputum (for microscopy, culture, GeneXpert)</li>
+          <li><strong>TB lymphadenitis:</strong> lymph node biopsy</li>
+          <li><strong>TB osteomyelitis:</strong> bone biopsy</li>
+          <li><strong>TB meningitis:</strong> lumbar puncture (CSF — lymphocytes, ↑protein, ↓glucose)</li>
+        </ul>
+
+        <div style="margin-top:18px; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); margin-bottom:10px;">Non-Specific Investigations</div>
+        <ul class="content-list">
+          <li><strong>Chest X-ray:</strong> classical upper-lobe cavitation, consolidation, calcified Ghon focus; raises suspicion but does NOT diagnose TB</li>
+          <li><strong>CT thorax:</strong> better delineates cavitation, mediastinal lymphadenopathy, miliary pattern</li>
+          <li><strong>Routine bloods:</strong> non-specific; ESR/CRP elevated. <em>Normal in latent TB.</em></li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /investigations -->
+
+  <!-- ══════════ MANAGEMENT ══════════ -->
+  <div id="management" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Latent TB Treatment <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">Eliminates dormant bacteria and prevents future reactivation. A common clinical scenario: screening with QuantiFERON before starting immunosuppressive therapy (e.g. anti-TNF agents).</p>
+        <table class="drug-table">
+          <thead><tr><th>Regimen</th><th>Duration</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Rifampicin</strong></td><td>4 months</td><td>Single drug; preferred if shorter course needed</td></tr>
+            <tr><td><strong>Isoniazid</strong></td><td>9 months</td><td>Requires pyridoxine (B6) supplementation to prevent peripheral neuropathy</td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:14px;">
+          A single drug is sufficient in latent TB because the bacterial burden is very low → low risk of resistance developing. <br><br>
+          <strong>Legal note:</strong> Latent TB treatment can be refused by the patient. Active pulmonary TB patients can be <em>detained</em> under public health legislation if they refuse treatment.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Active TB Treatment — Standard Regimen <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <p class="body-text">Always combination therapy (typically 4 drugs) to prevent resistance developing. Uses the mnemonic <strong>RIPE</strong>:</p>
+        <table class="drug-table">
+          <thead><tr><th>Drug</th><th>Phase</th><th>Action</th><th>Key Side Effect</th></tr></thead>
+          <tbody>
+            <tr><td><strong>R</strong>ifampicin</td><td>2 months intensive + 4 months continuation</td><td>Bactericidal — inhibits RNA polymerase</td><td>Orange urine/secretions, hepatotoxicity, enzyme inducer</td></tr>
+            <tr><td><strong>I</strong>soniazid (INH)</td><td>All 6 months</td><td>Bactericidal — inhibits mycolic acid synthesis</td><td>Peripheral neuropathy (give pyridoxine), hepatotoxicity</td></tr>
+            <tr><td><strong>P</strong>yrazinamide (PZA)</td><td>First 2 months</td><td>Bactericidal in acidic environment (inside macrophages)</td><td>Hepatotoxicity, hyperuricaemia, gout</td></tr>
+            <tr><td><strong>E</strong>thambutol</td><td>First 2 months</td><td>Bacteriostatic — inhibits arabinosyl transferase (cell wall)</td><td>Optic neuritis (check visual acuity)</td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:14px;">
+          <strong>Standard regimen:</strong> 2 months RIPE → 4 months RI (total 6 months for drug-sensitive pulmonary TB). Duration extends to 2 years for drug-resistant TB or CNS disease.
+        </div>
+        <div class="callout blue" style="margin-top:10px;">
+          <strong>Why 4 drugs?</strong> Resistance mutations occur spontaneously. With millions of bacteria in active disease, resistance to any single drug is almost guaranteed. Each additional drug provides coverage against resistant mutants, making combined resistance extremely unlikely.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Drug-Resistant TB <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li><strong>MDR-TB:</strong> resistant to at least Rifampicin and Isoniazid</li>
+          <li><strong>XDR-TB:</strong> MDR-TB + resistance to fluoroquinolones and injectable second-line agents</li>
+          <li>Requires longer treatment with second-line agents (e.g. bedaquiline, linezolid, clofazimine)</li>
+          <li>Associated with HIV co-infection, incomplete courses, and poor adherence</li>
+          <li>GeneXpert detects Rifampicin resistance in hours — key for early identification</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /management -->
+
+  <!-- ══════════ EXTRA-PULMONARY ══════════ -->
+  <div id="eptb" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Extra-Pulmonary TB (EPTB) Overview <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <p class="body-text">EPTB occurs when <em>M. tuberculosis</em> infects organs other than the lungs via haematogenous or lymphatic spread. Diagnosis is often delayed due to non-specific presentation.</p>
+        <div style="font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:var(--text2); margin-bottom:10px;">Sites Affected</div>
+        <div class="site-grid">
+          <div class="site-chip">CNS / Meninges</div>
+          <div class="site-chip">Lymph Nodes</div>
+          <div class="site-chip">Bone &amp; Joints</div>
+          <div class="site-chip">GI Tract</div>
+          <div class="site-chip">Urinary Tract</div>
+          <div class="site-chip">Peritoneum</div>
+          <div class="site-chip">Pericardium</div>
+          <div class="site-chip">Adrenal Gland</div>
+          <div class="site-chip">Pituitary Gland</div>
+          <div class="site-chip">Skin (Lupus vulgaris)</div>
+          <div class="site-chip">Eye (Ocular TB)</div>
+          <div class="site-chip">Breast</div>
+          <div class="site-chip">Female Genital</div>
+          <div class="site-chip">ENT</div>
+        </div>
+        <div class="callout green" style="margin-top:14px;">
+          <strong>Pathological pattern at any site:</strong> tissue destruction, fibrosis &amp; scarring, tuberculoma with mass effect, dense fibrinous exudate, cold abscesses.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>CNS Tuberculosis <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>Spread via blood to subarachnoid space</li>
+          <li>Dense fibrous exudate at base of brain</li>
+          <li>Numerous white tubercles adjacent to blood vessels</li>
+          <li>CSF findings: lymphocytes, raised protein, <strong>low glucose</strong></li>
+          <li>Can form TB cerebral abscess (tuberculoma)</li>
+          <li>Untreated TB meningitis is <strong>almost universally fatal</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Bone TB (Pott's Disease) <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>Haematogenous spread to spine and growing ends of long bones</li>
+          <li>Vertebral destruction + caseous material tracks along psoas muscles → <strong>cold abscess</strong></li>
+          <li>Pott's disease = TB spondylitis → kyphosis (gibbus deformity)</li>
+          <li>Also causes TB osteomyelitis of long bones and TB arthritis</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot green"></div>Diagnosis of EPTB <span class="tag tag-path">Path</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>AFB smear has <strong>low sensitivity</strong> on extra-pulmonary specimens</li>
+          <li>Tissue biopsy is often required — demonstrates caseating granulomas histologically</li>
+          <li>GeneXpert can be applied to biopsy material</li>
+          <li>Culture remains gold standard for diagnosis and sensitivities</li>
+          <li>Diagnosis often delayed due to slow, non-specific presentation</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /eptb -->
+
+  <!-- ══════════ HIV CO-INFECTION ══════════ -->
+  <div id="hiv" class="tab-panel">
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>TB &amp; HIV Co-Infection <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>TB incidence closely mirrors HIV incidence — highest in Africa, Indian subcontinent, Eastern Europe, Russia</li>
+          <li>HIV is present in ~10% of TB cases worldwide</li>
+          <li>TB is responsible for ~¼ of all AIDS-related deaths</li>
+          <li>HIV destroys CD4+ T cells → cannot activate macrophages → granulomas fail to contain MTB → dissemination</li>
+        </ul>
+        <div class="callout" style="margin-top:14px;">
+          <strong>Why HIV dramatically increases TB risk:</strong> CD4+ T cells are essential for macrophage activation (the key killing mechanism for MTB). HIV depletes CD4+ cells, collapsing the granuloma's containment and causing latent TB to reactivate. The risk of reactivation increases from 10% lifetime to ~10% per year with untreated HIV.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot blue"></div>Management of TB/HIV Co-Infection <span class="tag tag-med">Med</span></div>
+      <div class="section-body">
+        <ul class="content-list">
+          <li>Requires close collaboration between respiratory/ID physicians and HIV specialists</li>
+          <li>Treat TB first, then introduce antiretroviral therapy (ART) — timing depends on CD4 count</li>
+          <li><strong>Drug interactions:</strong> Rifampicin is a potent CYP450 inducer → reduces levels of many antiretrovirals (particularly protease inhibitors and NNRTIs). Rifabutin may be substituted.</li>
+          <li>Immune reconstitution inflammatory syndrome (IRIS) can occur when ART is introduced — worsening TB paradoxical reaction as immunity recovers</li>
+          <li>MDR-TB is disproportionately associated with HIV co-infection</li>
+        </ul>
+        <div class="callout blue" style="margin-top:14px;">
+          <strong>In HIV, TB presentation may be atypical:</strong> lower-lobe or diffuse disease on CXR (not classical upper-lobe cavitation), more extra-pulmonary disease, smear-negative pulmonary TB is more common, miliary TB more frequent.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hiv -->
+
+  <!-- ══════════ MCQ ══════════ -->
+  <div id="mcq" class="tab-panel" id="mcq-panel">
+
+    <div class="mcq-score-bar">
+      <div>
+        <div class="score-display" id="score-display">0 / 15</div>
+        <div class="score-label">Questions answered correctly</div>
+      </div>
+      <button class="reset-btn" onclick="resetMCQ()">↺ Reset All</button>
+    </div>
+
+    <div id="mcq-questions"></div>
+
+  </div><!-- /mcq -->
+
+</div><!-- /container -->
+
+<script>
+// ── Theme ──
+function toggleTheme() {
+  const root = document.documentElement;
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+}
+
+// ── Tabs ──
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── MCQ Data ──
+const questions = [
+  {
+    q: "What is the characteristic pathological hallmark of tuberculosis on histology?",
+    opts: [
+      "Fibrinous pleuritis with neutrophil infiltration",
+      "Caseating granulomas with Langhans giant cells",
+      "Hyaline membrane formation",
+      "Non-caseating granulomas with eosinophils"
+    ],
+    ans: 1,
+    exp: "TB produces caseating granulomas — aggregates of epithelioid macrophages with central caseous (cheese-like) necrosis. Langhans giant cells (multinucleated fused macrophages) are characteristic. Non-caseating granulomas are more typical of sarcoidosis."
+  },
+  {
+    q: "A patient with primary TB develops the combination of a peripheral lung lesion and ipsilateral hilar lymphadenopathy visible on CXR. What is this called?",
+    opts: [
+      "Rasmussen aneurysm",
+      "Ghon focus",
+      "Ranke complex (primary complex)",
+      "Mycetoma"
+    ],
+    ans: 2,
+    exp: "The Ghon focus is the initial subpleural lung lesion. The Ghon focus + hilar/mediastinal lymphadenopathy = the primary complex (also called the Ranke complex). The Ghon focus alone is just the pulmonary lesion."
+  },
+  {
+    q: "Why does secondary (reactivation) TB characteristically affect the posterior subapical and upper lobes of the lungs?",
+    opts: [
+      "These areas have the richest lymphatic drainage",
+      "Blood-borne spread preferentially deposits here",
+      "Aeration is in relative excess to blood flow, favouring this aerobic organism",
+      "These are the most immunologically naïve areas of the lung"
+    ],
+    ans: 2,
+    exp: "In the upper lobes and posterior segments, the ventilation-perfusion ratio is higher — oxygen tension is greater relative to perfusion. M. tuberculosis is an obligate aerobe and thrives in this high-oxygen environment, making reactivation lesions classically upper-lobe."
+  },
+  {
+    q: "Which cell type is MOST critical for activating macrophages to kill M. tuberculosis within granulomas?",
+    opts: [
+      "CD8+ cytotoxic T lymphocytes",
+      "CD4+ helper T lymphocytes",
+      "B lymphocytes producing anti-TB antibodies",
+      "Natural killer (NK) cells"
+    ],
+    ans: 1,
+    exp: "CD4+ T cells are critical — they produce IFN-γ and TNF that activate macrophages, enabling them to kill intracellular mycobacteria. This is why HIV (which destroys CD4+ cells) so dramatically increases TB risk. CD8+ cells play a secondary role via cytotoxicity."
+  },
+  {
+    q: "A 35-year-old patient has a positive QuantiFERON test but is asymptomatic with a normal CXR. What is the MOST accurate interpretation?",
+    opts: [
+      "The patient has active pulmonary TB and must be isolated",
+      "The patient has latent TB infection — evidence of prior exposure",
+      "The test confirms current active TB infection",
+      "The patient is immune to TB and no further action needed"
+    ],
+    ans: 1,
+    exp: "A positive QuantiFERON (IGRA) confirms prior exposure to M. tuberculosis — it does NOT diagnose active TB. An asymptomatic patient with a normal CXR has latent TB infection (LTBI). Active TB requires microbiological confirmation (culture, GeneXpert)."
+  },
+  {
+    q: "What is the gold standard microbiological test for confirming active tuberculosis?",
+    opts: [
+      "Ziehl–Neelsen (acid-fast) smear microscopy",
+      "QuantiFERON gold blood test",
+      "Culture of M. tuberculosis",
+      "Mantoux tuberculin skin test"
+    ],
+    ans: 2,
+    exp: "Culture is the gold standard — it confirms the species, allows full drug sensitivity testing, and is definitive. It can take days to 8 weeks. ZN smear is fast but cannot distinguish M. tuberculosis from other mycobacteria and gives no sensitivity data."
+  },
+  {
+    q: "TB GeneXpert is a major advance in TB diagnosis. Which of the following is NOT a benefit of GeneXpert?",
+    opts: [
+      "Provides a result in approximately 2 hours",
+      "Detects Rifampicin resistance simultaneously",
+      "Works on microscopy-negative samples",
+      "Replaces the need for culture to determine full drug sensitivities"
+    ],
+    ans: 3,
+    exp: "GeneXpert does NOT replace culture for determining full drug sensitivities — it only detects Rifampicin resistance. Culture is still required for complete susceptibility testing. The other three options are genuine advantages of GeneXpert over microscopy."
+  },
+  {
+    q: "Why is combination chemotherapy (typically 4 drugs) used for active TB rather than monotherapy?",
+    opts: [
+      "Single antibiotics cannot penetrate the mycolic acid cell wall",
+      "To prevent the development of drug resistance given the large bacterial burden",
+      "Because TB bacteria exist in multiple morphological forms requiring different mechanisms",
+      "Monotherapy would take more than 10 years to clear infection"
+    ],
+    ans: 1,
+    exp: "In active TB, there are millions of bacteria. Spontaneous resistance mutations to any single drug are almost inevitable in such large populations. Combining 4 drugs means a bacterium would need simultaneous resistance mutations to all agents — statistically near-impossible — preventing resistance from emerging."
+  },
+  {
+    q: "A patient with latent TB is about to start methotrexate for rheumatoid arthritis. Which latent TB treatment is most appropriate?",
+    opts: [
+      "2 months RIPE combination therapy",
+      "Rifampicin for 4 months OR Isoniazid for 9 months",
+      "No treatment needed — latent TB is harmless",
+      "BCG vaccination to boost immunity"
+    ],
+    ans: 1,
+    exp: "Latent TB treatment uses a single drug — either Rifampicin for 4 months or Isoniazid for 9 months. This eliminates the risk of reactivation. Single drug is sufficient because the bacterial burden is very low. Treating latent TB before immunosuppression is standard practice."
+  },
+  {
+    q: "Acute miliary tuberculosis results from which pathophysiological process?",
+    opts: [
+      "Direct spread from the Ghon focus through the bronchial tree",
+      "Haematogenous dissemination of large numbers of bacilli",
+      "Reactivation confined to the apical lung segment",
+      "Extension of pleural infection to pericardium"
+    ],
+    ans: 1,
+    exp: "Miliary TB results from invasion of blood vessels by TB material containing large numbers of bacilli, leading to haematogenous dissemination throughout the body. The term 'miliary' refers to the millet-seed appearance (~1–2mm tubercles) seen on gross pathology."
+  },
+  {
+    q: "CSF analysis in TB meningitis typically shows which pattern?",
+    opts: [
+      "Neutrophilia, very high protein, normal glucose",
+      "Lymphocytosis, raised protein, LOW glucose",
+      "Lymphocytosis, normal protein, raised glucose",
+      "Clear fluid, no cells, normal biochemistry"
+    ],
+    ans: 1,
+    exp: "TB meningitis produces a lymphocytic pleocytosis, raised protein, and characteristically LOW glucose (the mycobacteria consume glucose). This distinguishes it from viral meningitis (which also has lymphocytes but usually normal glucose) and bacterial meningitis (neutrophils, very low glucose)."
+  },
+  {
+    q: "Which of the following is the MOST appropriate sample for diagnosing pulmonary TB?",
+    opts: [
+      "Lumbar puncture (CSF)",
+      "Lymph node biopsy",
+      "Sputum for microscopy, culture and GeneXpert",
+      "Bone marrow trephine"
+    ],
+    ans: 2,
+    exp: "In pulmonary TB, sputum is the primary specimen for ZN microscopy, culture, and GeneXpert PCR. Three sputum samples are usually sent (early morning specimens preferred for highest yield). Other biopsies are used in extra-pulmonary TB based on the affected site."
+  },
+  {
+    q: "What is Pott's disease?",
+    opts: [
+      "TB pericarditis causing constrictive pericarditis",
+      "TB spondylitis — vertebral destruction with psoas cold abscess",
+      "TB peritonitis presenting as ascites",
+      "Chronic TB pleural effusion with thickening"
+    ],
+    ans: 1,
+    exp: "Pott's disease is TB of the spine — haematogenous spread destroys vertebral bodies, with caseous material tracking along psoas muscles to form cold abscesses (not warm/fluctuant). Spinal collapse leads to kyphosis (gibbus deformity). It can compress the spinal cord causing paraplegia."
+  },
+  {
+    q: "How does HIV infection increase the risk of developing active TB from latent infection?",
+    opts: [
+      "HIV directly infects M. tuberculosis, causing it to multiply faster",
+      "HIV depletes CD4+ T cells, impairing macrophage activation and granuloma integrity",
+      "HIV causes neutropenia, reducing the acute inflammatory response",
+      "HIV reduces IgG levels, removing antibody-mediated protection"
+    ],
+    ans: 1,
+    exp: "HIV destroys CD4+ T cells, which are essential for producing IFN-γ and TNF to activate macrophages. Without activated macrophages, the granuloma cannot contain the dormant mycobacteria, which then reactivate and disseminate. TB is an AIDS-defining illness and accounts for ~25% of AIDS-related deaths."
+  },
+  {
+    q: "A TB patient with HIV co-infection is started on antiretroviral therapy (ART). Two weeks later their TB symptoms worsen with fever and enlarged lymph nodes. What is the MOST likely explanation?",
+    opts: [
+      "Treatment failure — TB has become drug resistant",
+      "Immune reconstitution inflammatory syndrome (IRIS)",
+      "Paradoxical drug interaction causing TB drug toxicity",
+      "Superimposed bacterial pneumonia"
+    ],
+    ans: 1,
+    exp: "IRIS (immune reconstitution inflammatory syndrome) occurs when ART restores immune function in HIV patients already being treated for TB. The recovering immune system mounts an exaggerated inflammatory response to mycobacterial antigens. Paradoxical IRIS occurs in patients already on TB treatment who then start ART, causing transient clinical worsening."
+  }
+];
+
+let scores = new Array(questions.length).fill(null);
+let answered = new Array(questions.length).fill(false);
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-questions');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">Q${i+1}</span>
+        ${q.q.includes('NOT') || q.q.includes('MOST') || q.q.includes('LEAST') ? '<span style="color:var(--accent);font-size:11px;">⚠ Read carefully</span>' : ''}
+      </div>
+      <div class="q-body">
+        <div class="q-text">${q.q}</div>
+        <div class="options" id="opts-${i}">
+          ${q.opts.map((o, j) => `
+            <button class="opt-btn" onclick="answer(${i},${j})" id="opt-${i}-${j}">${String.fromCharCode(65+j)}. ${o}</button>
+          `).join('')}
+        </div>
+        <div class="explanation" id="exp-${i}">
+          <strong>${q.ans === -1 ? '' : '✓ ' + q.opts[q.ans]}</strong><br><br>${q.exp}
+        </div>
+      </div>
+    `;
+    container.appendChild(block);
+  });
+  updateScore();
+}
+
+function answer(qi, chosen) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const correct = questions[qi].ans;
+  const buttons = document.querySelectorAll(`#opts-${qi} .opt-btn`);
+  buttons.forEach((b, j) => {
+    b.disabled = true;
+    if (j === correct) b.classList.add('correct');
+    else if (j === chosen) b.classList.add('wrong');
+  });
+  if (chosen === correct) scores[qi] = 1; else scores[qi] = 0;
+  document.getElementById(`exp-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const total = scores.filter(s => s === 1).length;
+  document.getElementById('score-display').textContent = `${total} / ${questions.length}`;
+}
+
+function resetMCQ() {
+  scores = new Array(questions.length).fill(null);
+  answered = new Array(questions.length).fill(false);
+  renderMCQ();
+}
+
+renderMCQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Respiratory Viruses — Study Guide</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#ffffff;--bg2:#f7f7f5;--bg3:#f0efe9;
+    --text:#1a1a18;--text2:#5a5a56;--text3:#8a8a84;
+    --border:#e0dfd8;--border2:#c8c7be;
+    --blue-bg:#e6f1fb;--blue-text:#185fa5;--blue-border:#378add;
+    --teal-bg:#e1f5ee;--teal-text:#0f6e56;
+    --coral-bg:#faece7;--coral-text:#993c1d;
+    --amber-bg:#faeeda;--amber-text:#854f0b;--amber-border:#ba7517;
+    --purple-bg:#eeedfe;--purple-text:#3c3489;
+    --red-bg:#fcebeb;--red-text:#a32d2d;--red-border:#e24b4a;
+    --green-bg:#eaf3de;--green-text:#3b6d11;
+    --gray-bg:#f1efe8;--gray-text:#5f5e5a;
+    --radius:8px;--radius-lg:12px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{
+      --bg:#1e1e1c;--bg2:#282824;--bg3:#323230;
+      --text:#f0efe9;--text2:#b0afa8;--text3:#78786f;
+      --border:#38382e;--border2:#50504a;
+      --blue-bg:#042c53;--blue-text:#85b7eb;--blue-border:#378add;
+      --teal-bg:#04342c;--teal-text:#5dcaa5;
+      --coral-bg:#4a1b0c;--coral-text:#f0997b;
+      --amber-bg:#412402;--amber-text:#ef9f27;--amber-border:#ba7517;
+      --purple-bg:#26215c;--purple-text:#afa9ec;
+      --red-bg:#501313;--red-text:#f09595;--red-border:#e24b4a;
+      --green-bg:#173404;--green-text:#97c459;
+      --gray-bg:#2c2c2a;--gray-text:#b4b2a9;
+    }
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;line-height:1.6}
+  header{background:var(--bg);border-bottom:1px solid var(--border);padding:1.5rem 2rem;position:sticky;top:0;z-index:100}
+  header h1{font-size:20px;font-weight:500;color:var(--text)}
+  header p{font-size:13px;color:var(--text2);margin-top:2px}
+  .nav-wrap{background:var(--bg);border-bottom:1px solid var(--border);padding:0 2rem;overflow-x:auto;white-space:nowrap}
+  .nav-wrap nav{display:inline-flex;gap:0}
+  .nav-wrap button{font-size:13px;padding:12px 16px;border:none;background:transparent;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
+  .nav-wrap button:hover{color:var(--text);background:var(--bg2)}
+  .nav-wrap button.active{color:var(--blue-text);border-bottom-color:var(--blue-border);font-weight:500}
+  .main{max-width:900px;margin:0 auto;padding:2rem}
+  .section{display:none}.section.active{display:block}
+  .section-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:1.5rem}
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem}
+  .card h3{font-size:15px;font-weight:500;color:var(--text);margin-bottom:10px}
+  .card p,.card li{font-size:14px;color:var(--text2);line-height:1.7}
+  .card ul{padding-left:1.3rem}.card ul li{margin-bottom:4px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:1rem;margin-bottom:1rem}
+  .highlight{background:var(--blue-bg);border-left:3px solid var(--blue-border);padding:10px 14px;margin:10px 0;font-size:13px;color:var(--blue-text);border-radius:0 var(--radius) var(--radius) 0}
+  .warn{background:var(--amber-bg);border-left:3px solid var(--amber-border);padding:10px 14px;margin:0 0 1rem;font-size:13px;color:var(--amber-text);border-radius:0 var(--radius) var(--radius) 0}
+  .danger{background:var(--red-bg);border-left:3px solid var(--red-border);padding:10px 14px;margin:10px 0;font-size:13px;color:var(--red-text);border-radius:0 var(--radius) var(--radius) 0}
+  .badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:var(--radius);margin-right:4px;margin-bottom:4px}
+  .b-teal{background:var(--teal-bg);color:var(--teal-text)}
+  .b-coral{background:var(--coral-bg);color:var(--coral-text)}
+  .b-blue{background:var(--blue-bg);color:var(--blue-text)}
+  .b-amber{background:var(--amber-bg);color:var(--amber-text)}
+  .b-purple{background:var(--purple-bg);color:var(--purple-text)}
+  .b-red{background:var(--red-bg);color:var(--red-text)}
+  .b-green{background:var(--green-bg);color:var(--green-text)}
+  .b-gray{background:var(--gray-bg);color:var(--gray-text)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th{text-align:left;padding:8px 12px;background:var(--bg2);font-weight:500;color:var(--text);border-bottom:1px solid var(--border2)}
+  td{padding:7px 12px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .qcard{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:10px}
+  .qcard .q{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px}
+  .qcard .ans{display:none;margin-top:10px;padding:12px;background:var(--bg2);border-radius:var(--radius);font-size:13px;color:var(--text2);line-height:1.7}
+  .qcard button{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s}
+  .qcard button:hover{background:var(--bg2);color:var(--text)}
+  .progress{font-size:12px;color:var(--text3);margin-bottom:1.5rem}
+  em{color:var(--text);font-style:italic}
+  strong{color:var(--text);font-weight:500}
+</style>
+</head>
+<body>
+<header>
+  <h1>Respiratory Viruses — Study Guide</h1>
+  <p>RCSI Year 1 Semester 2 · Dr. Ellen Browne · 11 May 2026</p>
+</header>
+<div class="nav-wrap">
+  <nav>
+    <button class="active" onclick="show('overview',this)">Overview</button>
+    <button onclick="show('transmission',this)">Transmission</button>
+    <button onclick="show('influenza',this)">Influenza</button>
+    <button onclick="show('rsv',this)">RSV</button>
+    <button onclick="show('others',this)">Other viruses</button>
+    <button onclick="show('diagnosis',this)">Diagnosis</button>
+    <button onclick="show('emerging',this)">Emerging viruses</button>
+    <button onclick="show('covid',this)">SARS-CoV-2</button>
+    <button onclick="show('mcq',this)">Practice MCQs</button>
+  </nav>
+</div>
+<main class="main">
+
+<!-- OVERVIEW -->
+<div id="overview" class="section active">
+  <p class="section-title">What are respiratory tract viruses?</p>
+  <div class="warn">⚠ Case scenario: surgical intern, January, fever 39.3°C + myalgia + lassitude = <strong>INFLUENZA</strong>, not the common cold. Common cold has no significant fever and is systemically mild.</div>
+  <div class="grid2">
+    <div class="card"><h3>3 categories of infection</h3><ul>
+      <li><strong>Upper RTI (URTI)</strong> — common cold, sinusitis, pharyngitis</li>
+      <li><strong>Lower RTI (LRTI)</strong> — pneumonia, bronchitis, bronchiolitis</li>
+      <li><strong>Respiratory complications of systemic infections</strong> — varicella pneumonitis, measles pneumonitis</li>
+    </ul><div class="highlight">Can start as URTI then progress to LRTI</div></div>
+    <div class="card"><h3>Common syndromes and their causes</h3>
+      <table><tr><th>Syndrome</th><th>Main cause</th></tr>
+      <tr><td>Bronchiolitis</td><td>RSV</td></tr>
+      <tr><td>Common cold</td><td>Rhinovirus, Coronavirus, RSV</td></tr>
+      <tr><td>Croup</td><td>Parainfluenza</td></tr>
+      <tr><td>Influenza-like illness</td><td>Influenza A/B, SARS-CoV-2</td></tr>
+      <tr><td>Pneumonia</td><td>SARS-CoV-2, RSV, Influenza</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card"><h3>Common cold vs influenza — key exam distinction</h3>
+    <table><tr><th>Feature</th><th>Common cold</th><th>Influenza</th></tr>
+    <tr><td>Fever</td><td>Usually absent</td><td>Abrupt, high (≥38.5°C)</td></tr>
+    <tr><td>Onset</td><td>Gradual</td><td>Abrupt</td></tr>
+    <tr><td>Myalgia</td><td>Mild or none</td><td>Prominent</td></tr>
+    <tr><td>Systemic illness</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Causes</td><td>Rhinovirus, coronavirus, adenovirus</td><td>Influenza A, B, C virus</td></tr>
+    <tr><td>Vaccine</td><td>None available</td><td>Annual inactivated vaccine</td></tr>
+    <tr><td>Antiviral treatment</td><td>None</td><td>Oseltamivir, zanamivir</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TRANSMISSION -->
+<div id="transmission" class="section">
+  <p class="section-title">Transmission of respiratory viruses</p>
+  <div class="grid2">
+    <div class="card"><h3>Direct spread (principal route)</h3>
+      <p>Person-to-person via respiratory droplets from coughing or sneezing.</p>
+      <p style="margin-top:8px">Large droplets (>100µm) travel ballistically and settle quickly. Small droplets/aerosols (<1µm) can remain airborne for <strong>several hours</strong>.</p>
+    </div>
+    <div class="card"><h3>Indirect spread — fomite</h3>
+      <p>Person touches a contaminated surface, then touches their mouth, nose, or eye. The contaminated object = a <strong>fomite</strong>.</p>
+    </div>
+  </div>
+  <div class="card"><h3>WHO revised airborne transmission terminology</h3>
+    <table><tr><th>Mode</th><th>Distance</th><th>Transfer mechanism</th><th>Entry portal</th></tr>
+    <tr><td>Airborne / inhalation</td><td>Any distance</td><td>Suspended in air or moving via air flows</td><td>Anywhere along the respiratory tract</td></tr>
+    <tr><td>Direct deposition</td><td>Short range</td><td>Semi-ballistic trajectory through air</td><td>Mouth, nose, or eyes</td></tr>
+    </table>
+  </div>
+  <div class="card"><h3>Infection control — how to prevent spread</h3>
+    <ul>
+      <li>Immunisation where possible (e.g. annual influenza vaccine)</li>
+      <li>Standard precautions for ALL patients</li>
+      <li>PLUS droplet (+/- airborne) precautions</li>
+      <li>PLUS Point of Care Risk Assessment (PCRA)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- INFLUENZA -->
+<div id="influenza" class="section">
+  <p class="section-title">Influenza viruses</p>
+  <div class="warn">⚠ Influenza = a virus. NOT the common cold. NOT <em>Haemophilus influenzae</em> (that is a bacterium).</div>
+  <div class="grid2">
+    <div class="card"><h3>Classification — 3 types</h3><ul>
+      <li><span class="badge b-coral">Type A</span> Infects mammals and birds. Causes seasonal epidemics AND pandemics. Main reservoir = birds (replicates in avian GIT → high faecal shedding → humans → human-to-human).</li>
+      <li><span class="badge b-blue">Type B</span> Humans only. Outbreaks every 2–4 years. No pandemics.</li>
+      <li><span class="badge b-gray">Type C</span> Humans only. Uncommon, causes milder disease.</li>
+    </ul></div>
+    <div class="card"><h3>Virus structure</h3><ul>
+      <li>Enveloped RNA virus</li>
+      <li>Genome = <strong>8 segments</strong></li>
+      <li>2 surface glycoproteins determine subtype:</li>
+      <li><span class="badge b-teal">HA — Haemagglutinin</span> Binds to receptors on host cells (H1, H2, H3…)</li>
+      <li><span class="badge b-purple">NA — Neuraminidase</span> Cleaves sialic acid to release virus from cell; prevents clumping. <strong>Drug target for oseltamivir and zanamivir.</strong></li>
+    </ul></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Antigenic drift → seasonal epidemics</h3>
+      <span class="badge b-blue">Minor change</span>
+      <ul style="margin-top:8px">
+        <li>Gradual accumulation of point mutations in HA and NA genes</li>
+        <li>Caused by errors in viral RNA polymerase during replication</li>
+        <li>Results in slightly new virus each year → yearly epidemics</li>
+        <li>Partial immunity in population; most severe in elderly and infants</li>
+        <li>H3 subtype produces the most severe outbreaks</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Antigenic shift → pandemics</h3>
+      <span class="badge b-red">Major change</span>
+      <ul style="margin-top:8px">
+        <li>Genetic reassortment: 2 different influenza strains co-infect one cell → exchange gene segments → novel virus</li>
+        <li>Novel surface proteins = little or no population immunity</li>
+        <li>High attack rates with excess morbidity and mortality across ALL age groups</li>
+        <li>Leads to pandemic</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card"><h3>Key influenza pandemics</h3>
+    <table><tr><th>Year</th><th>Name</th><th>Subtype</th><th>Key fact</th></tr>
+    <tr><td>1918</td><td>Spanish flu</td><td>H1N1</td><td>Spread worldwide in 9 months; ~40 million deaths — more than WWI</td></tr>
+    <tr><td>1957</td><td>Asian flu</td><td>H2N2</td><td></td></tr>
+    <tr><td>1968</td><td>Hong Kong flu</td><td>H3N2</td><td></td></tr>
+    <tr><td>2009</td><td>Pandemic flu</td><td>H1N1</td><td>Most recent pandemic before COVID-19</td></tr>
+    </table>
+  </div>
+  <div class="card"><h3>Pathogenesis — the infection cycle</h3>
+    <ul>
+      <li><strong>Entry:</strong> Droplets land on mucous membranes → enters via respiratory epithelial cells → attaches to columnar epithelium</li>
+      <li><strong>Attachment:</strong> HA binds host cell receptors; NA cleaves sialic acid to release new virus particles from cell</li>
+      <li><strong>Immune evasion:</strong> Antigenic shift/drift changes surface antigens; virus-induced lymphocyte dysfunction; interferon response contributes to clinical features (fever, myalgia)</li>
+      <li><strong>Cellular damage:</strong> Diffuse inflammation of trachea and bronchi → may progress to ulcerative necrotizing tracheobronchitis; loss of cilia → impaired mucociliary clearance → increased risk of bacterial superinfection</li>
+      <li><strong>Spread:</strong> Primarily droplet (+/- aerosol)</li>
+    </ul>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Clinical features</h3><ul>
+      <li>Abrupt onset fever, cough, and myalgia lasting a few days</li>
+      <li>More persistent weakness and depression after acute phase</li>
+      <li>Incubation period: <strong>1–2 days</strong></li>
+      <li>95% of exposed individuals become symptomatic within 3 days</li>
+      <li>Infectious for up to <strong>5–7 days</strong> after symptom onset</li>
+    </ul></div>
+    <div class="card"><h3>Complications</h3><ul>
+      <li>Primary influenza pneumonia</li>
+      <li>Secondary bacterial pneumonia — <em>S. pneumoniae</em>, <em>H. influenzae</em>, <em>S. aureus</em></li>
+      <li>Myositis / myocarditis</li>
+      <li>CNS: seizures, encephalopathy, encephalitis</li>
+      <li>Reye's syndrome — encephalopathy + liver failure (now very rare)</li>
+      <li>Death</li>
+    </ul></div>
+  </div>
+  <div class="card"><h3>Treatment</h3><ul>
+    <li>Mainly supportive — antipyretics, analgesia</li>
+    <li>If hospitalised: oxygen + critical care review if indicated</li>
+    <li>Antivirals = <strong>neuraminidase inhibitors:</strong></li>
+    <li><span class="badge b-teal">Oseltamivir (oral)</span> — can also be used as post-exposure prophylaxis in at-risk patients</li>
+    <li><span class="badge b-blue">Zanamivir (inhaled)</span></li>
+    <li>Advise annual influenza vaccination going forward</li>
+  </ul></div>
+  <div class="card"><h3>Vaccination — who should receive it?</h3>
+    <p style="margin-bottom:8px">Inactivated virus, administered annually in advance of influenza season (September/October).</p>
+    <ul>
+      <li>People aged <strong>60 and older</strong></li>
+      <li>Any individual >6 months at increased risk: chronic illness needing regular medical follow-up, immunosuppression, <strong>all pregnant women</strong> (any gestation) and up to 6 weeks postpartum, morbid obesity, long-term aspirin therapy, nursing home residents, pig/poultry/waterfowl workers</li>
+      <li>All children 2–17 years (<strong>live intranasal vaccine</strong>)</li>
+      <li><strong>Healthcare workers</strong> — ~30% of influenza infections are asymptomatic but still infectious; HCWs can transmit to vulnerable patients and influenza can kill them</li>
+      <li>Family/carers/household contacts of high-risk patients (may be considered)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RSV -->
+<div id="rsv" class="section">
+  <p class="section-title">Respiratory Syncytial Virus (RSV)</p>
+  <div class="card"><h3>Epidemiology</h3><ul>
+    <li><strong>Most common severe LRTI in infants and children under 2 years</strong></li>
+    <li>Commonest cause of hospital admissions in young children</li>
+    <li>Source of infection for infant = typically adults and older children (who have mild or no symptoms)</li>
+    <li>Worldwide distribution with seasonal peaks in temperate climates (winter)</li>
+    <li>Re-infection is common</li>
+    <li>Highly infectious — spread facilitated by crowding, crèche/preschool attendance, siblings attending school</li>
+  </ul></div>
+  <div class="grid2">
+    <div class="card"><h3>Clinical presentation by age</h3><ul>
+      <li><span class="badge b-coral">Infants / children &lt;2yr</span> Severe LRTI — bronchiolitis</li>
+      <li><span class="badge b-blue">Older children / adults</span> Usually upper respiratory symptoms only</li>
+      <li><span class="badge b-red">Immunocompromised</span> Severe disease at any age</li>
+    </ul></div>
+    <div class="card"><h3>RSV bronchiolitis — clinical signs</h3><ul>
+      <li>Acute inflammation of the small airways (bronchioles)</li>
+      <li>Respiratory distress: tachypnoea, nasal flaring, wheeze</li>
+      <li>Apnoea</li>
+      <li>Irritability, cyanosis</li>
+      <li>Prominent intercostal retraction (lower airway obstruction)</li>
+      <li>CXR: flat diaphragms + hyperlucent lower lung fields = <strong>hyperinflation</strong></li>
+    </ul></div>
+  </div>
+  <div class="card"><h3>Management</h3><ul>
+    <li>Mainly supportive: antipyretics, oxygen</li>
+    <li>Antiviral ribavirin — consider for high-risk infants with severe disease; clear benefit not conclusively demonstrated</li>
+    <li>Isolate with droplet precautions</li>
+  </ul></div>
+  <div class="card"><h3>Prevention — new EU-authorised developments</h3>
+    <div class="highlight">2 forms of passive immunisation for infants:</div>
+    <ul>
+      <li><strong>Nirsevimab</strong> — long-acting monoclonal antibody, single IM injection administered directly to infant. National pilot programme underway in Ireland.</li>
+      <li><strong>RSVpreF (Abrysvo, Pfizer)</strong> — maternal vaccine; provides infant protection through transplacental antibody transfer. Not yet part of free national programme in Ireland.</li>
+    </ul>
+    <div class="highlight" style="margin-top:12px">2 forms of RSV vaccine for older people (not yet free in Ireland):</div>
+    <ul>
+      <li>RSVPreF3 (Arexvy, produced by GSK)</li>
+      <li>RSVpreF (Abrysvo, produced by Pfizer)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- OTHER VIRUSES -->
+<div id="others" class="section">
+  <p class="section-title">Other respiratory viruses</p>
+  <div class="card"><h3>Parainfluenza virus</h3><ul>
+    <li>4 serotypes (Types 1–4, including 4a and 4b)</li>
+    <li>Accounts for 6–9% of respiratory viral infections</li>
+    <li>Incubation period: 3–6 days</li>
+    <li>Classic syndrome: <span class="badge b-amber">Croup (laryngotracheobronchitis)</span> — harsh brassy cough, worse at night</li>
+    <li>2nd most common cause of childhood respiratory hospitalisation (after RSV)</li>
+    <li>Can also cause bronchiolitis</li>
+    <li>Moderate-to-severe infection in immunocompromised patients</li>
+    <li>Treatment: supportive only</li>
+  </ul></div>
+  <div class="card"><h3>Adenovirus</h3><ul>
+    <li>~50 different serotypes</li>
+    <li>Causes RTI, diarrhoea, AND conjunctivitis</li>
+    <li>RTIs include: common cold, pharyngitis, bronchitis, bronchiolitis, pneumonia (winter and spring)</li>
+    <li>Pneumonia more common in boys than girls, and in immunocompromised patients</li>
+    <li>Treatment: generally supportive</li>
+  </ul></div>
+  <div class="card"><h3>Quick reference: virus → syndrome</h3>
+    <table><tr><th>Virus</th><th>Classic syndrome</th><th>Key fact</th></tr>
+    <tr><td>RSV</td><td>Bronchiolitis</td><td>Most common severe LRTI in under-2s</td></tr>
+    <tr><td>Parainfluenza</td><td>Croup</td><td>Harsh brassy cough, worse at night</td></tr>
+    <tr><td>Influenza A/B</td><td>Influenza-like illness</td><td>Abrupt onset, myalgia, high fever</td></tr>
+    <tr><td>Rhinovirus / coronavirus</td><td>Common cold</td><td>Mild, no fever, no systemic illness</td></tr>
+    <tr><td>SARS-CoV-2</td><td>COVID-19 / pneumonia</td><td>Pandemic; binds ACE2 receptor</td></tr>
+    <tr><td>Adenovirus</td><td>Cold, pneumonia, conjunctivitis</td><td>~50 serotypes</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- DIAGNOSIS -->
+<div id="diagnosis" class="section">
+  <p class="section-title">Diagnosis of respiratory viral infections</p>
+  <div class="grid2">
+    <div class="card"><h3>Clinical assessment</h3><ul>
+      <li>History including vaccination history</li>
+      <li>Physical examination</li>
+    </ul></div>
+    <div class="card"><h3>Respiratory samples used</h3><ul>
+      <li>Nasopharyngeal aspirate or swab</li>
+      <li>Throat swab</li>
+      <li>Bronchoalveolar lavage (BAL)</li>
+      <li>Sputum</li>
+    </ul></div>
+  </div>
+  <div class="card"><h3>Diagnostic tests compared</h3>
+    <table><tr><th>Test</th><th>What it detects</th><th>Notes</th></tr>
+    <tr><td><span class="badge b-teal">NAAT / PCR</span></td><td>Viral nucleic acid (RNA/DNA)</td><td>Preferred method. Rapid and sensitive. Often done as a multiplex panel (e.g. influenza + RSV on one swab). Multiple gene targets for SARS-CoV-2: E, N, S, ORF1ab, RdRp.</td></tr>
+    <tr><td><span class="badge b-blue">Antigen test (lateral flow)</span></td><td>Viral protein</td><td>Rapid, home use. Less sensitive and specific than PCR. Used widely for COVID-19.</td></tr>
+    <tr><td><span class="badge b-amber">Serology</span></td><td>Host antibodies to virus</td><td>Not routine. Delayed antibody response limits utility in acute illness.</td></tr>
+    <tr><td><span class="badge b-gray">Cell culture</span></td><td>Live virus growth</td><td>SLOW — not routinely used for clinical diagnosis.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EMERGING VIRUSES -->
+<div id="emerging" class="section">
+  <p class="section-title">Emerging respiratory viral diseases</p>
+  <div class="card"><h3>1. Avian influenza (bird flu)</h3><ul>
+    <li>Influenza A infection of birds — affects a wide range of avian species</li>
+    <li>At least 15 avian influenza subtypes known</li>
+    <li>Generally replicates inefficiently in humans; does not transmit well human-to-human</li>
+    <li>Large avian reservoir enables ongoing circulation (key concern: H5N1)</li>
+    <li>Rapid genetic mutation and reassortment can occur → pandemic risk</li>
+    <li><strong>How humans get infected:</strong> direct contact with infected birds, contaminated surfaces (fomites), or airborne droplets/dust from birds</li>
+  </ul>
+  <div class="highlight">Ireland 2025: 5 turkey farm outbreaks of HPAI H5N1 (Nov–Dec 2025). Restrictions lifted 4 Jan 2026 following successful control. 68 wild birds tested positive. Europe 2025: ~700 poultry outbreaks.</div>
+  </div>
+  <div class="card"><h3>2. MERS-CoV (Middle East Respiratory Syndrome)</h3><ul>
+    <li>Coronavirus, first identified 2012 (UAE)</li>
+    <li>2628 laboratory-confirmed cases globally; majority from Saudi Arabia (2218 cases, 866 deaths)</li>
+    <li><strong>Case fatality rate: 39%</strong></li>
+    <li>Males affected more than females</li>
+    <li>Does not spread easily person-to-person unless close contact (e.g. unprotected care of infected patient)</li>
+    <li>Dromedary camels = main animal reservoir and likely source of human infection (exact route unknown)</li>
+    <li>¾ of cases have underlying disease</li>
+    <li>Median incubation period: 5 days (range 2–15 days)</li>
+    <li>Transmission settings: sporadic community cases, family clusters, nosocomial acquisition, imported cases</li>
+  </ul>
+  <div class="danger">39% case fatality rate — one of the most lethal known respiratory viruses</div>
+  </div>
+  <div class="card"><h3>3. SARS-CoV-2 — see dedicated tab</h3>
+    <p>The most recent and most impactful emerging respiratory virus, causing the COVID-19 pandemic from 2020.</p>
+  </div>
+</div>
+
+<!-- COVID -->
+<div id="covid" class="section">
+  <p class="section-title">SARS-CoV-2 / COVID-19</p>
+  <div class="card"><h3>Scale and timeline</h3><ul>
+    <li>Novel coronavirus identified: <strong>7 January 2020</strong></li>
+    <li>Background: increase in pneumonia of unknown cause in Wuhan, China, December 2019</li>
+    <li>WHO declared global pandemic: <strong>11 March 2020</strong></li>
+    <li>Worldwide: >779 million cases, >7 million deaths</li>
+    <li>Ireland: first confirmed case 29 March 2020; >1.8 million cases; >9800 deaths</li>
+  </ul></div>
+  <div class="grid2">
+    <div class="card"><h3>Virus structure</h3><ul>
+      <li>Positive-sense single-stranded RNA virus, enveloped</li>
+      <li>4 main structural proteins:</li>
+      <li><span class="badge b-coral">S — spike</span> Binds ACE2 receptor; main vaccine target</li>
+      <li><span class="badge b-blue">E — envelope</span></li>
+      <li><span class="badge b-purple">N — nucleocapsid</span></li>
+      <li><span class="badge b-teal">M — membrane</span></li>
+      <li>Also 16 non-structural proteins + 5–8 accessory proteins</li>
+    </ul></div>
+    <div class="card"><h3>Transmission</h3><ul>
+      <li>Primarily respiratory droplets</li>
+      <li>Also aerosols and contaminated surfaces → mucous membranes</li>
+      <li>Incubation: 1–14 days, median <strong>5–6 days</strong></li>
+      <li>Can transmit <strong>1–3 days before symptom onset</strong></li>
+      <li>Mild/moderate disease: shed virus up to 10 days</li>
+      <li>Severe disease: shed virus up to 20 days</li>
+      <li>Asymptomatic persons can transmit but for shorter periods</li>
+    </ul></div>
+  </div>
+  <div class="card"><h3>Clinical features</h3>
+    <table><tr><th>Common symptoms</th><th>Other symptoms</th></tr>
+    <tr><td>Fever, cough, shortness of breath, ageusia (loss of taste), anosmia (loss of smell)</td><td>Myalgia, headache, sore throat, nasal congestion, vomiting, diarrhoea, fatigue, brain fog</td></tr>
+    </table>
+    <div class="highlight" style="margin-top:10px">80% asymptomatic or mild · 15% moderate · 5% severe</div>
+    <p style="margin-top:10px;font-size:13px;color:var(--text2)">Confirmed cases: self-isolate 5 full days from symptom onset (last 2 days fever-free); take precautions for the following 5 days.</p>
+  </div>
+  <div class="card"><h3>Variants</h3><ul>
+    <li>SARS-CoV-2 evolves over time like all viruses</li>
+    <li>Most mutations have no impact on viral function</li>
+    <li>Variants of concern = those with evidence for enhanced transmission or clinical implications (e.g. Omicron BA subvariants)</li>
+  </ul></div>
+  <div class="grid2">
+    <div class="card"><h3>Diagnosis</h3><ul>
+      <li><span class="badge b-teal">RT-PCR</span> Detects viral RNA; rapid, sensitive; targets: E gene, N gene, S gene, ORF1ab, RdRp</li>
+      <li><span class="badge b-blue">Antigen test</span> Detects viral protein; rapid, home use; less sensitive/specific</li>
+      <li>Sample: nasopharyngeal or throat swab</li>
+    </ul></div>
+    <div class="card"><h3>Treatments</h3><ul>
+      <li><span class="badge b-teal">Remdesivir</span> — antiviral</li>
+      <li><span class="badge b-teal">Nirmatrelvir/ritonavir (Paxlovid)</span> — antiviral</li>
+      <li><span class="badge b-purple">Dexamethasone</span> — immune modulator; use if patient requires oxygen</li>
+      <li><span class="badge b-purple">Tocilizumab</span> — immune modulator</li>
+    </ul></div>
+  </div>
+  <div class="card"><h3>Management by setting</h3>
+    <table><tr><th>Setting</th><th>Key interventions</th></tr>
+    <tr><td>Home</td><td>Restricted movements, self-isolation, GP/hospital monitoring as required</td></tr>
+    <tr><td>Hospital</td><td>Droplet/airborne isolation, stratify severity, supplementary O2, VTE prophylaxis (LMWH), dexamethasone if needs O2</td></tr>
+    <tr><td>ICU</td><td>Positioning (high supported sitting, prone position), airway clearance management, critical care</td></tr>
+    </table>
+  </div>
+  <div class="card"><h3>Coronavirus family context</h3>
+    <p style="margin-bottom:8px">4 endemic coronaviruses circulate in humans causing cold-like illness: <strong>OC43, 229E, NL63, HKU1</strong>.</p>
+    <p>Successive emergences: SARS-CoV (2003) → MERS-CoV (2012) → <strong>SARS-CoV-2 (2019)</strong>. All likely originate from bat reservoirs, sometimes via intermediate animal hosts (civets for SARS-CoV, camels for MERS-CoV).</p>
+    <div class="highlight">Huanan Seafood Wholesale Market in Wuhan identified as early epicentre of COVID-19 pandemic.</div>
+  </div>
+  <div class="card"><h3>Prevention</h3><ul>
+    <li>Hand hygiene</li>
+    <li>Respiratory / cough etiquette</li>
+    <li>General hygiene measures (avoid touching face)</li>
+    <li>Vaccination</li>
+  </ul></div>
+</div>
+
+<!-- MCQ -->
+<div id="mcq" class="section">
+  <p class="section-title">Practice MCQs</p>
+  <p class="progress" id="prog">0 / 15 answered</p>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">1. A surgical intern presents in January with fever 39.3°C, myalgia, and lassitude. What does she most likely have?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Influenza. The abrupt onset, high fever, and prominent myalgia in the influenza season is classic influenza-like illness — NOT the common cold (which has no significant fever and symptoms mild and confined to the upper respiratory tract).</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">2. What is the difference between antigenic drift and antigenic shift? Which one causes pandemics?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Antigenic drift = minor changes from gradual accumulation of point mutations in HA/NA genes → yearly seasonal epidemics. Antigenic shift = major change from genetic reassortment when 2 different strains co-infect one cell → novel virus with new surface proteins → little or no population immunity → PANDEMIC. Shift causes pandemics.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">3. What are the two key surface glycoproteins of influenza virus, and what does each do?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Haemagglutinin (HA) — binds to receptors on host cells (attachment step). Neuraminidase (NA) — cleaves sialic acid to release new virus particles from the cell and prevents clumping. NA is the drug target for oseltamivir and zanamivir (neuraminidase inhibitors).</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">4. What is the most common cause of severe lower respiratory tract infection in children under 2?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Respiratory Syncytial Virus (RSV). It is also the commonest cause of hospital admissions in young children. The classic presentation is bronchiolitis — acute inflammation of the bronchioles.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">5. What are the clinical signs of RSV bronchiolitis? What do you expect on chest X-ray?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Clinical: respiratory distress with tachypnoea, nasal flaring, wheeze; apnoea; irritability; cyanosis; prominent intercostal retraction (lower airway obstruction). CXR: flat diaphragms and hyperlucent lower lung fields — indicating hyperinflation.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">6. Which virus classically causes croup, and what does croup sound like clinically?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Parainfluenza virus is the most common cause. Croup (laryngotracheobronchitis) presents as a harsh brassy cough, worse at night. It is the 2nd most common cause of childhood respiratory hospitalisation after RSV.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">7. A patient returns from Saudi Arabia with severe pneumonia (incubation ~5 days). Which emerging virus should you suspect?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">MERS-CoV (Middle East Respiratory Syndrome coronavirus). First identified 2012, index case in UAE. Dromedary camels = main animal reservoir. Median incubation 5 days (range 2–15). Case fatality ratio ~39%. Majority of cases from Saudi Arabia.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">8. What are the 4 main structural proteins of SARS-CoV-2 and which one is the drug/vaccine target?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">S (spike), E (envelope), N (nucleocapsid), M (membrane). The spike protein (S) binds the ACE2 receptor and is the main target of COVID-19 vaccines.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">9. Why should healthcare workers get the influenza vaccine every year?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">~30% of influenza infections are asymptomatic but still infectious. HCWs can unknowingly transmit influenza to vulnerable hospitalised patients, and influenza can kill a vulnerable patient. HCWs are usually healthy adults who mount excellent vaccine responses, protecting patients who cannot adequately protect themselves.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">10. Compare RT-PCR and lateral flow antigen testing for SARS-CoV-2.</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">RT-PCR: detects viral RNA, relatively rapid and sensitive, multiple gene targets (E, N, S, ORF1ab, RdRp), laboratory-based. Antigen test (lateral flow): detects viral protein, rapid, can be done at home by anyone, less sensitive and less specific than PCR. Both use nasopharyngeal or throat swab.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">11. What antivirals are used for influenza? What class are they, and how do they work?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Neuraminidase inhibitors: Oseltamivir (oral — also used as post-exposure prophylaxis in at-risk patients) and Zanamivir (inhaled). They work by inhibiting neuraminidase, the enzyme that cleaves sialic acid to release new viral particles from infected cells.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">12. Name the two approved passive immunisation options for RSV in infants in the EU. How do they differ?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">1) Nirsevimab — long-acting monoclonal antibody given as a single IM injection directly to the infant (national pilot programme underway in Ireland). 2) RSVpreF (Abrysvo, Pfizer) — maternal vaccine; provides infant protection via transplacental antibody transfer. Not yet part of the free national programme in Ireland.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">13. What is the preferred diagnostic test for respiratory viruses in clinical practice, and why are serology and cell culture not used routinely?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">NAAT/PCR is preferred — detects viral nucleic acid, rapid and sensitive. Often performed as a multiplex panel (e.g. influenza + RSV on one swab). Serology is not routine because the delayed antibody response limits utility in acute illness. Cell culture is too slow for clinical diagnosis.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">14. What percentage of COVID-19 infections are asymptomatic or mild? What are the classic symptoms?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">80% are asymptomatic or mild. 15% moderate. 5% severe. Classic symptoms: fever, cough, shortness of breath, ageusia (loss of taste), anosmia (loss of smell). Other: myalgia, headache, sore throat, fatigue, GI symptoms.</div>
+  </div>
+
+  <div class="qcard" data-answered="false">
+    <p class="q">15. Why do influenza patients get secondary bacterial pneumonia? Which bacteria are responsible?</p>
+    <button onclick="toggle(this)">Show answer</button>
+    <div class="ans">Influenza causes loss of cilia in the respiratory epithelium → impaired mucociliary clearance → bacteria more easily colonise the lower respiratory tract. Main pathogens: Streptococcus pneumoniae, Haemophilus influenzae (the bacterium — not the virus!), and Staphylococcus aureus.</div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-wrap button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function toggle(btn) {
+  const ans = btn.nextElementSibling;
+  const card = btn.closest('.qcard');
+  if (ans.style.display === 'block') {
+    ans.style.display = 'none';
+    btn.textContent = 'Show answer';
+  } else {
+    ans.style.display = 'block';
+    btn.textContent = 'Hide answer';
+    if (card.dataset.answered === 'false') {
+      card.dataset.answered = 'true';
+      updateProgress();
+    }
+  }
+}
+function updateProgress() {
+  const total = document.querySelectorAll('.qcard').length;
+  const answered = document.querySelectorAll('.qcard[data-answered="true"]').length;
+  document.getElementById('prog').textContent = answered + ' / ' + total + ' answered';
+}
+</script>
+</body>
+</html>

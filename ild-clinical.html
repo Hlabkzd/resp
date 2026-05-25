@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interstitial Lung Disease | Resp Medicine</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --surface2: #f1f3f5;
+    --border: #dee2e6;
+    --text: #212529;
+    --text2: #495057;
+    --text3: #868e96;
+    --primary: #2e7d6e;
+    --primary-light: #e8f5f2;
+    --primary-dark: #1d5248;
+    --accent: #c0392b;
+    --accent-light: #fdecea;
+    --tab-active-bg: #2e7d6e;
+    --tab-active-text: #fff;
+    --tab-bg: #f1f3f5;
+    --tab-text: #495057;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --tag-bg: #e8f5f2;
+    --tag-text: #1d5248;
+    --correct: #2e7d32;
+    --correct-bg: #e8f5e9;
+    --wrong: #c62828;
+    --wrong-bg: #ffebee;
+    --highlight: #fff9c4;
+  }
+  [data-theme="dark"] {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --text: #e8eaf6;
+    --text2: #9fa8da;
+    --text3: #5c6bc0;
+    --primary: #4db6ac;
+    --primary-light: #1a2e2d;
+    --primary-dark: #80cbc4;
+    --accent: #ef5350;
+    --accent-light: #2a1a1a;
+    --tab-active-bg: #4db6ac;
+    --tab-active-text: #0f1117;
+    --tab-bg: #22263a;
+    --tab-text: #9fa8da;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --tag-bg: #1a2e2d;
+    --tag-text: #80cbc4;
+    --correct: #66bb6a;
+    --correct-bg: #1b2e1c;
+    --wrong: #ef5350;
+    --wrong-bg: #2e1a1a;
+    --highlight: #2e2a10;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; transition: background 0.2s, color 0.2s; }
+
+  /* Header */
+  header { background: var(--primary); color: #fff; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .header-left { display: flex; align-items: center; gap: 0.75rem; }
+  .header-left a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.85rem; }
+  .header-left a:hover { color: #fff; }
+  .header-left span { color: rgba(255,255,255,0.4); }
+  header h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .theme-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .theme-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* Tabs */
+  .tabs-wrap { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 56px; z-index: 90; }
+  .tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; padding: 0 1rem; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 0.85rem 1.1rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--tab-text); border-bottom: 3px solid transparent; white-space: nowrap; transition: color 0.15s, border-color 0.15s; }
+  .tab:hover { color: var(--primary); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* Content */
+  .content { max-width: 860px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Typography */
+  h2 { font-size: 1.35rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+  h3 { font-size: 1.05rem; font-weight: 600; color: var(--primary-dark); margin: 1.25rem 0 0.5rem; }
+  [data-theme="dark"] h3 { color: var(--primary-dark); }
+  p { color: var(--text2); margin-bottom: 0.6rem; }
+  ul, ol { color: var(--text2); padding-left: 1.4rem; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.3rem; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow); }
+  .card-accent { border-left: 4px solid var(--primary); }
+  .card-warn { border-left: 4px solid var(--accent); }
+
+  /* Tags */
+  .tag { display: inline-block; background: var(--tag-bg); color: var(--tag-text); font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .tag-red { background: var(--accent-light); color: var(--accent); }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Banner */
+  .banner { background: var(--primary-light); border: 1px solid var(--primary); border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 1.25rem; }
+  .banner-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); margin-bottom: 0.25rem; }
+
+  /* Three Cs */
+  .three-c { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
+  .c-card { flex: 1; min-width: 150px; background: var(--primary); color: #fff; border-radius: 8px; padding: 1rem; text-align: center; }
+  .c-letter { font-size: 2.5rem; font-weight: 800; opacity: 0.9; line-height: 1; }
+  .c-word { font-size: 0.9rem; font-weight: 600; margin-top: 0.25rem; }
+  .c-note { font-size: 0.75rem; opacity: 0.85; margin-top: 0.2rem; }
+
+  /* DDx table */
+  .ddx-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .ddx-table th { background: var(--primary); color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ddx-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .ddx-table tr:last-child td { border-bottom: none; }
+  .ddx-table tr:nth-child(even) td { background: var(--surface2); }
+  .ddx-table .mnemonic { font-weight: 700; color: var(--primary); font-size: 1rem; }
+
+  /* MCQ */
+  .mcq-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: gap; gap: 0.5rem; }
+  .mcq-score { font-size: 0.88rem; color: var(--text3); }
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow); }
+  .q-num { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 0.4rem; }
+  .q-text { font-weight: 500; color: var(--text); margin-bottom: 0.85rem; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 0.4rem; }
+  .opt { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 0.88rem; color: var(--text2); background: var(--surface2); }
+  .opt:hover { border-color: var(--primary); background: var(--primary-light); color: var(--text); }
+  .opt.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); font-weight: 500; }
+  .opt.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); }
+  .opt.disabled { cursor: default; }
+  .opt-letter { font-weight: 700; min-width: 18px; }
+  .explanation { margin-top: 0.75rem; padding: 0.65rem 0.85rem; background: var(--highlight); border-radius: 6px; font-size: 0.84rem; color: var(--text2); display: none; border-left: 3px solid var(--primary); }
+  .explanation.show { display: block; }
+  .mcq-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .btn { padding: 0.55rem 1.1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: opacity 0.15s; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+  /* LO checklist */
+  .lo-list { list-style: none; padding: 0; }
+  .lo-list li { display: flex; gap: 0.75rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border); color: var(--text2); font-size: 0.9rem; }
+  .lo-list li:last-child { border-bottom: none; }
+  .lo-list li::before { content: "✦"; color: var(--primary); font-size: 0.75rem; margin-top: 0.2rem; flex-shrink: 0; }
+
+  /* Drug table */
+  .drug-row { display: flex; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .drug-row:last-child { border-bottom: none; }
+  .drug-name { font-weight: 600; color: var(--text); min-width: 130px; font-size: 0.88rem; }
+  .drug-class { color: var(--text3); font-size: 0.82rem; }
+
+  /* Scrolltop */
+  #scrollTop { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--primary); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.25); z-index: 999; }
+  #scrollTop.visible { display: flex; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="index.html">Resp Medicine</a>
+    <span>/</span>
+    <span>Interstitial Lung Disease</span>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview')">Overview</button>
+    <button class="tab" onclick="showTab('causes')">Causes</button>
+    <button class="tab" onclick="showTab('pathophys')">Pathophysiology</button>
+    <button class="tab" onclick="showTab('symptoms')">Symptoms</button>
+    <button class="tab" onclick="showTab('signs')">Signs</button>
+    <button class="tab" onclick="showTab('explained')">Features Explained</button>
+    <button class="tab" onclick="showTab('ddx')">Differential Dx</button>
+    <button class="tab" onclick="showTab('mcq')">MCQs</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="tab-panel active">
+    <h2>Interstitial Lung Disease (ILD)</h2>
+    <div class="banner">
+      <div class="banner-title">Also known as</div>
+      <p style="margin:0;color:var(--text);">Diffuse Parenchymal Lung Disease (DPLD)</p>
+    </div>
+
+    <div class="card card-accent">
+      <div class="tag">Definition</div>
+      <p>ILD consists of a <strong>diverse group of disorders</strong> that involve the pulmonary parenchyma and interfere with gas exchange. The term "interstitial" reflects the pathologic appearance — the abnormality <strong>begins in the interstitium</strong>, though in advanced disease the alveoli are also involved.</p>
+    </div>
+
+    <h3>Learning Outcomes</h3>
+    <ul class="lo-list">
+      <li>Define ILD</li>
+      <li>Explain the pathophysiology of ILD</li>
+      <li>List the cardinal symptoms of ILD</li>
+      <li>Explain how each symptom and sign is caused in ILD</li>
+      <li>List the cardinal signs of ILD</li>
+      <li>Develop a differential diagnosis for ILD</li>
+    </ul>
+
+    <hr class="divider">
+    <h3>Key Takeaway — The 3 C's</h3>
+    <div class="three-c">
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Cough</div>
+        <div class="c-note">Dry, non-productive</div>
+      </div>
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Clubbing</div>
+        <div class="c-note">Late sign → advanced fibrosis</div>
+      </div>
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Crackles</div>
+        <div class="c-note">Fine, velcro, end-inspiratory</div>
+      </div>
+    </div>
+
+    <div class="card card-warn">
+      <div class="tag tag-red">Clinical Pearl</div>
+      <p style="margin:0;">Two of the most important forms of ILD in clinical practice are <strong>IPF</strong> (Idiopathic Pulmonary Fibrosis) and <strong>Sarcoidosis</strong>. Both can be familial but this is rare.</p>
+    </div>
+  </div>
+
+  <!-- CAUSES -->
+  <div id="causes" class="tab-panel">
+    <h2>Causes & Classification of ILD</h2>
+    <p style="color:var(--text3); margin-bottom:1.25rem; font-size:0.85rem;">ILD has many causes; classified as unknown, known, granulomatous, or miscellaneous.</p>
+
+    <h3>1. Unknown Causes (Idiopathic)</h3>
+    <div class="card card-accent">
+      <div class="tag">Most Common Idiopathic</div>
+      <strong>Idiopathic Pulmonary Fibrosis (IPF)</strong>
+      <p style="margin-top:0.4rem;">Defined as a spontaneously occurring, specific form of <strong>chronic fibrosing interstitial pneumonia limited to the lung</strong>. IPF is associated with the characteristic <strong>Usual Interstitial Pneumonia (UIP)</strong> pattern on radiology and histology: fibroblastic foci and architectural distortion (honeycombing).</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">Other Idiopathic Types</div>
+      <ul>
+        <li><strong>NSIP</strong> — Non-Specific Interstitial Pneumonia</li>
+        <li><strong>COP</strong> — Cryptogenic Organising Pneumonia</li>
+        <li>Acute Interstitial Pneumonia</li>
+      </ul>
+    </div>
+
+    <h3>2. Known Causes</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="tag">Occupational / Environmental</div>
+        <p>Exposure to inorganic or organic dusts:</p>
+        <ul>
+          <li>Silica (stone cutting)</li>
+          <li>Coal dust (coal mining)</li>
+          <li>Asbestos</li>
+          <li>Bird racing / farming (organic dusts)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Drug-Induced</div>
+        <div class="drug-row"><span class="drug-name">Nitrofurantoin</span><span class="drug-class">Antibiotic (UTIs)</span></div>
+        <div class="drug-row"><span class="drug-name">Methotrexate</span><span class="drug-class">Anti-inflammatory (RA)</span></div>
+        <div class="drug-row"><span class="drug-name">Amiodarone</span><span class="drug-class">Anti-arrhythmic</span></div>
+        <div class="drug-row"><span class="drug-name">Bleomycin</span><span class="drug-class">Chemotherapy</span></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="tag">Radiation-Induced</div>
+        <p>Radiation-induced lung injury is directly related to the <strong>volume of irradiated lung</strong> and the <strong>cumulative dose</strong> of radiation. May occur weeks to years after treatment.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Connective Tissue Diseases</div>
+        <ul>
+          <li>Rheumatoid Arthritis</li>
+          <li>Systemic Lupus Erythematosus</li>
+          <li>Scleroderma</li>
+          <li>Mixed Connective Tissue Disease</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>3. Granulomatous ILD</h3>
+    <div class="card card-accent">
+      <strong>Sarcoidosis</strong>
+      <p style="margin-top:0.35rem;">A multi-system disease characterised by <strong>non-caseating granulomatous inflammation</strong>. It can mimic many other conditions due to its systemic nature — consider it as a differential in many settings.</p>
+    </div>
+
+    <h3>4. Miscellaneous Causes</h3>
+    <div class="card">
+      <ul>
+        <li>Infective causes — e.g. Tuberculosis (TB)</li>
+        <li>Malignancy — Lymphangitic carcinomatosis</li>
+        <li>Histiocytosis X (Langerhans cell histiocytosis)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PATHOPHYSIOLOGY -->
+  <div id="pathophys" class="tab-panel">
+    <h2>Pathophysiology of ILD</h2>
+
+    <div class="banner">
+      <div class="banner-title">Key Principle</div>
+      <p style="margin:0; color:var(--text);">Pathogenesis <strong>varies by underlying cause</strong>. IPF is dominated by fibrosis with little or no inflammation; most other ILDs begin with inflammation and develop fibrosis later.</p>
+    </div>
+
+    <h3>IPF / UIP Pattern</h3>
+    <div class="card card-accent">
+      <p><strong>Usual Interstitial Pneumonia (UIP)</strong> — the histological pattern in IPF — is characterised by:</p>
+      <ul>
+        <li><strong>Fibroblastic foci</strong></li>
+        <li><strong>Architectural distortion</strong> — "honeycombing" on HRCT and histology</li>
+        <li>Fibrosis with <em>little or no inflammation</em></li>
+      </ul>
+    </div>
+
+    <h3>Other ILDs</h3>
+    <div class="card">
+      <p>Most other causes of ILD are <strong>predominated by inflammation</strong> and only develop fibrosis in later stages. This distinction is important — inflammatory ILDs may respond to immunosuppression, while established fibrosis in IPF does not.</p>
+    </div>
+
+    <h3>Consequences of Interstitial Damage</h3>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="tag">Gas Exchange Failure</div>
+        <p>Interstitial thickening → <strong>reduced diffusing capacity</strong> for oxygen across the alveolar-capillary membrane → hypoxia.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="tag">Restrictive Defect</div>
+        <p>Progressive fibrosis → <strong>stiffening of the lung</strong> → reduced compliance → restricted movement → reduced lung volumes (FVC, TLC ↓).</p>
+      </div>
+    </div>
+
+    <div class="card card-warn">
+      <div class="tag tag-red">Complication</div>
+      <strong>Cor Pulmonale</strong>
+      <p style="margin-top:0.35rem;">Advanced ILD → chronic hypoxia → pulmonary vasoconstriction → pulmonary hypertension → <strong>right ventricular dysfunction</strong> (cor pulmonale). Also occurs in COPD.</p>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <div class="tag">Note</div>
+      <p style="margin:0;">For detailed histology, refer to the <em>Pathology lecture by Dr Clive Kilgallen</em>. For physiology of gas exchange, refer to <em>Carriage of O₂ and CO₂</em> and <em>Mechanisms of Ventilation</em> lectures.</p>
+    </div>
+  </div>
+
+  <!-- SYMPTOMS -->
+  <div id="symptoms" class="tab-panel">
+    <h2>Symptoms of ILD</h2>
+
+    <h3>Respiratory Symptoms</h3>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="tag">Cardinal</div>
+        <ul>
+          <li><strong>Progressive dyspnoea</strong> — the hallmark symptom</li>
+          <li><strong>Dry cough</strong> — non-productive</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Systemic</div>
+        <ul>
+          <li>Fever, weight loss (CTD / sarcoidosis)</li>
+          <li>Eye symptoms — iritis, dry eyes</li>
+          <li>Joint pain (arthritis)</li>
+          <li>Skin rash</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-accent">
+      <div class="tag">Sarcoidosis — Löfgren's Syndrome</div>
+      <p>Most common symptomatic presentation of sarcoidosis:</p>
+      <ul>
+        <li>Fever</li>
+        <li>Lymphadenopathy</li>
+        <li>Arthralgia</li>
+        <li><strong>Erythema nodosum</strong> — tender nodules on the shins</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+    <h3>History-Taking in ILD</h3>
+    <p style="color:var(--text3); font-size:0.85rem;">A careful history often reveals the cause. Cover all four domains:</p>
+
+    <div class="card">
+      <div class="tag">1. Drug History</div>
+      <p>Detailed drug history is essential — drug-induced pulmonary fibrosis can occur <strong>weeks to years after the drug has been discontinued</strong>.</p>
+      <p>Key culprits: Nitrofurantoin · Methotrexate · Amiodarone · Bleomycin</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">2. Radiation History</div>
+      <p>Ask about <strong>previous malignancy</strong> treated with radiotherapy or chemotherapy. Injury is related to volume of irradiated lung and cumulative dose.</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">3. Occupational History</div>
+      <p>A <strong>lifelong employment history</strong> is essential. Review both home and work environments.</p>
+      <p>Examples: coal mining, stone cutting, farming, bird racing.</p>
+    </div>
+
+    <div class="card">
+      <div class="tag">4. Smoking & Family History</div>
+      <ul>
+        <li>Smoking is an independent risk factor for <strong>IPF</strong></li>
+        <li>RBILD, DIP, and Langerhans' Cell Histiocytosis (LCH) occur <em>almost exclusively in smokers</em></li>
+        <li>Both sarcoidosis and IPF can be <strong>familial</strong> (but rare)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SIGNS -->
+  <div id="signs" class="tab-panel">
+    <h2>Signs of ILD</h2>
+
+    <div class="three-c">
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Cough</div>
+        <div class="c-note">Dry</div>
+      </div>
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Clubbing</div>
+        <div class="c-note">Late finding</div>
+      </div>
+      <div class="c-card">
+        <div class="c-letter">C</div>
+        <div class="c-word">Crackles</div>
+        <div class="c-note">Fine, velcro</div>
+      </div>
+    </div>
+
+    <h3>General Inspection</h3>
+    <div class="card">
+      <ul>
+        <li>Tachypnoea</li>
+        <li>Oxygen supplementation</li>
+        <li>Central cyanosis</li>
+      </ul>
+    </div>
+
+    <h3>Hands & Chest</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="tag">Hands</div>
+        <ul>
+          <li><strong>Clubbing</strong> — late sign, suggests advanced fibrosis</li>
+          <li>Tar staining (smoking history)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Chest</div>
+        <ul>
+          <li>Reduced chest expansion</li>
+          <li><strong>Fine (velcro) end-inspiratory crepitations</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Signs of Complications</h3>
+    <div class="card card-warn">
+      <div class="tag tag-red">Cor Pulmonale (RV Failure)</div>
+      <ul>
+        <li>Elevated JVP</li>
+        <li>Loud P₂ (pulmonary component of S2)</li>
+        <li>Parasternal heave</li>
+        <li>Tricuspid regurgitation</li>
+        <li>Pulsatile hepatomegaly</li>
+        <li>Lower limb pitting oedema</li>
+      </ul>
+    </div>
+
+    <h3>Signs of Systemic Disease</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="tag">Connective Tissue Disease</div>
+        <ul>
+          <li>Iritis / conjunctivitis, dry eyes</li>
+          <li>Arthritis</li>
+          <li>Skin rash</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Sarcoidosis</div>
+        <ul>
+          <li>Erythema nodosum (shin nodules)</li>
+          <li>Lymphadenopathy</li>
+          <li>Multiple organ involvement possible (eye, liver, heart, CNS)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0.5rem;">
+      <div class="tag">Examination Tip</div>
+      <p style="margin:0;">An important part of examining a patient with undiagnosed ILD is looking for <strong>extrapulmonary evidence of systemic disease</strong> — sarcoidosis and CTDs are common culprits.</p>
+    </div>
+  </div>
+
+  <!-- FEATURES EXPLAINED -->
+  <div id="explained" class="tab-panel">
+    <h2>Clinical Features — Explained</h2>
+
+    <div class="card card-accent">
+      <div class="tag">Fine Velcro Crackles</div>
+      <p>Crackles are interrupted, non-musical sounds resulting from <strong>collapse of peripheral airways on expiration</strong>. On inspiration, air rapidly enters these distal airways and the alveoli and small bronchi <strong>open abruptly</strong>, producing the crackling noise.</p>
+      <p style="margin-top:0.4rem;">Think: the sound of gently separating the joined strip of velcro on a blood pressure cuff.</p>
+      <p style="margin-top:0.4rem;"><strong>Fine late inspiratory crackles are characteristic of pulmonary fibrosis.</strong></p>
+    </div>
+
+    <div class="card card-accent">
+      <div class="tag">Hypoxia → Dyspnoea, Tachypnoea, Cyanosis</div>
+      <p>Interstitial thickening impairs oxygen diffusion → <strong>hypoxia</strong>, which drives:</p>
+      <ul>
+        <li>Dyspnoea (shortness of breath)</li>
+        <li>Tachypnoea (rapid breathing — compensatory)</li>
+        <li>Cyanosis — central + peripheral</li>
+      </ul>
+    </div>
+
+    <div class="card card-accent">
+      <div class="tag">Clubbing</div>
+      <p>The exact mechanism is not fully understood. A proposed theory: <strong>growth factors from megakaryocytes and platelets</strong> lodge in nail bed capillaries and stimulate vascular connective tissue growth.</p>
+      <p style="margin-top:0.4rem;">In ILD, clubbing is typically a <strong>late manifestation</strong> and suggests <strong>advanced fibrosis</strong>.</p>
+    </div>
+
+    <div class="card card-warn">
+      <div class="tag tag-red">Cor Pulmonale — Mechanism</div>
+      <p>Advanced ILD → <strong>chronic hypoxia</strong> → hypoxic pulmonary vasoconstriction → <strong>pulmonary hypertension</strong> → increased RV afterload → <strong>right ventricular dysfunction</strong> (cor pulmonale).</p>
+      <p style="margin-top:0.4rem;">This is the same mechanism as in COPD — any cause of chronic hypoxia can lead to cor pulmonale.</p>
+    </div>
+  </div>
+
+  <!-- DIFFERENTIAL DIAGNOSIS -->
+  <div id="ddx" class="tab-panel">
+    <h2>Differential Diagnosis for ILD</h2>
+    <p style="color:var(--text3); margin-bottom:1.25rem; font-size:0.85rem;">ILD DDx can be categorised by aetiology or by <strong>lung zone distribution</strong> on imaging.</p>
+
+    <h3>Zone-Based Classification</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="tag">Upper Zone DDx — "CHARTS"</div>
+        <p style="font-size:0.8rem; color:var(--text3); margin-bottom:0.5rem;">Inhaled insults (3 exceptions: Sarcoid, Radiation, Ankylosing Spondylitis)</p>
+        <table class="ddx-table" style="font-size:0.85rem;">
+          <tbody>
+            <tr><td class="mnemonic">C</td><td>Coal (pneumoconiosis)</td></tr>
+            <tr><td class="mnemonic">H</td><td>Histiocytosis X (LCH)</td></tr>
+            <tr><td class="mnemonic">A</td><td>Ankylosing spondylitis*</td></tr>
+            <tr><td class="mnemonic">R</td><td>Radiation*</td></tr>
+            <tr><td class="mnemonic">T</td><td>TB</td></tr>
+            <tr><td class="mnemonic">S</td><td>Sarcoidosis*</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.75rem; color:var(--text3); margin-top:0.4rem;">* = exceptions (not inhaled)</p>
+      </div>
+      <div class="card">
+        <div class="tag">Lower Zone DDx — "RASIO"</div>
+        <p style="font-size:0.8rem; color:var(--text3); margin-bottom:0.5rem;">Blood-borne insults (1 exception: Asbestos)</p>
+        <table class="ddx-table" style="font-size:0.85rem;">
+          <tbody>
+            <tr><td class="mnemonic">R</td><td>Rheumatoid arthritis</td></tr>
+            <tr><td class="mnemonic">A</td><td>Asbestos* (inhaled)</td></tr>
+            <tr><td class="mnemonic">S</td><td>Scleroderma</td></tr>
+            <tr><td class="mnemonic">I</td><td>IPF (idiopathic)</td></tr>
+            <tr><td class="mnemonic">O</td><td>Other (drugs)</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.75rem; color:var(--text3); margin-top:0.4rem;">Drugs: Amiodarone, Methotrexate, Nitrofurantoin, Bleomycin</p>
+      </div>
+    </div>
+
+    <h3>Crackles — Distinguishing ILD from Other Conditions</h3>
+    <div class="card">
+      <table class="ddx-table">
+        <thead><tr><th>Condition</th><th>Crackles Character</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Pulmonary Fibrosis (ILD)</strong></td><td>Fine, late inspiratory — "velcro"</td></tr>
+          <tr><td>Bronchiectasis</td><td>Coarse, both inspiratory & expiratory; change with coughing</td></tr>
+          <tr><td>Chronic Left Heart Failure</td><td>Coarse, mid-late inspiratory</td></tr>
+          <tr><td>Pulmonary Oedema</td><td>Coarse, mid-late inspiratory</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-warn" style="margin-top:0.75rem;">
+      <div class="tag tag-red">Exam Tip</div>
+      <p style="margin:0;">Fine <strong>late</strong> inspiratory crackles are characteristic of pulmonary fibrosis. Coarse crackles heard in mid-inspiration suggest fluid (pulmonary oedema / heart failure) or secretions (bronchiectasis).</p>
+    </div>
+  </div>
+
+  <!-- MCQ -->
+  <div id="mcq" class="tab-panel">
+    <div class="mcq-header">
+      <h2>Practice MCQs</h2>
+      <span class="mcq-score" id="scoreDisplay">Score: 0 / 15</span>
+    </div>
+
+    <div id="mcq-container"></div>
+
+    <div class="mcq-actions">
+      <button class="btn btn-primary" onclick="resetQuiz()">Reset All</button>
+      <button class="btn btn-secondary" onclick="showResults()">Show Score</button>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Theme
+function toggleTheme() {
+  const d = document.documentElement;
+  const isDark = d.getAttribute('data-theme') === 'dark';
+  d.setAttribute('data-theme', isDark ? '' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('ild-theme', isDark ? '' : 'dark');
+}
+(function() {
+  const t = localStorage.getItem('ild-theme');
+  if (t === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.querySelector('.theme-btn').textContent='☀️'; }
+})();
+
+// Tabs
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Scroll top
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300);
+});
+
+// MCQ Data
+const questions = [
+  {
+    q: "ILD is also known as which of the following?",
+    opts: ["Obstructive airway disease","Diffuse parenchymal lung disease","Reactive airways disease","Pulmonary vascular disease"],
+    ans: 1,
+    exp: "ILD is also known as Diffuse Parenchymal Lung Disease (DPLD), reflecting that the pathological abnormality involves the lung parenchyma broadly."
+  },
+  {
+    q: "Which is the most common idiopathic cause of ILD?",
+    opts: ["NSIP","Sarcoidosis","Idiopathic Pulmonary Fibrosis (IPF)","Cryptogenic organising pneumonia (COP)"],
+    ans: 2,
+    exp: "IPF is the most common of the spontaneously occurring (idiopathic) diffuse parenchymal lung diseases."
+  },
+  {
+    q: "The UIP (Usual Interstitial Pneumonia) pattern on histology is characterised by which of the following?",
+    opts: ["Non-caseating granulomas","Fibroblastic foci and honeycombing","Eosinophilic infiltration","Lymphocytic alveolitis"],
+    ans: 1,
+    exp: "UIP (the histological pattern in IPF) is characterised by fibroblastic foci and architectural distortion called honeycombing. This represents advanced, established fibrosis."
+  },
+  {
+    q: "Which antibiotic used for UTIs is a recognised cause of drug-induced pulmonary fibrosis?",
+    opts: ["Amoxicillin","Trimethoprim","Nitrofurantoin","Ciprofloxacin"],
+    ans: 2,
+    exp: "Nitrofurantoin (used for urinary tract infections) is a well-recognised cause of drug-induced pulmonary toxicity and interstitial lung disease."
+  },
+  {
+    q: "What is the physiological consequence of interstitial thickening in ILD?",
+    opts: ["Increased diffusing capacity","Reduced diffusing capacity for oxygen","Obstructive pattern on spirometry","Increased compliance"],
+    ans: 1,
+    exp: "Interstitial damage and thickening results in decreased ability of oxygen to diffuse from the alveolus to the capillary, causing a reduction in diffusing capacity (DLCO) and hypoxia."
+  },
+  {
+    q: "Which of the following best describes the crackles heard in pulmonary fibrosis?",
+    opts: ["Coarse, inspiratory and expiratory, change with coughing","Fine, mid-inspiratory","Fine, late inspiratory (velcro-like)","Coarse, mid-late inspiratory"],
+    ans: 2,
+    exp: "Fine late inspiratory crackles, often described as 'velcro-like', are characteristic of pulmonary fibrosis. They result from distal airway collapse on expiration and abrupt opening on inspiration."
+  },
+  {
+    q: "Cor pulmonale in ILD refers to which of the following?",
+    opts: ["Left ventricular failure secondary to hypoxia","Right ventricular dysfunction caused by advanced lung disease","Biventricular heart failure","Aortic regurgitation secondary to fibrosis"],
+    ans: 1,
+    exp: "Cor pulmonale is right ventricular (RV) dysfunction caused by advanced lung disease. Chronic hypoxia leads to pulmonary vasoconstriction, pulmonary hypertension, and eventually RV failure."
+  },
+  {
+    q: "Which of the following is the most common symptomatic presentation of sarcoidosis (Löfgren's Syndrome)?",
+    opts: ["Haemoptysis, night sweats, weight loss","Fever, lymphadenopathy, arthralgia, and erythema nodosum","Progressive dyspnoea with fine crackles","Cough, clubbing and honeycombing on CT"],
+    ans: 1,
+    exp: "Löfgren's Syndrome is the most common symptomatic presentation of sarcoidosis: fever, lymphadenopathy, arthralgia, and erythema nodosum (tender nodules on the shins)."
+  },
+  {
+    q: "Clubbing in ILD is best described as which of the following?",
+    opts: ["An early sign that aids in diagnosis","A late manifestation suggesting advanced fibrosis","Exclusively seen in sarcoidosis","Always due to a cardiac cause"],
+    ans: 1,
+    exp: "When clubbing occurs in ILD, it is typically a late manifestation and suggests advanced fibrosis of the lung."
+  },
+  {
+    q: "Using the upper zone DDx mnemonic 'CHARTS', which cause is an exception (not an inhaled insult)?",
+    opts: ["Coal","Tuberculosis","Ankylosing spondylitis","Histiocytosis X"],
+    ans: 2,
+    exp: "The three exceptions in the upper zone CHARTS mnemonic (not inhaled insults) are: Sarcoidosis, Radiation, and Ankylosing spondylitis."
+  },
+  {
+    q: "A patient treated with bleomycin for cancer presents with dyspnoea and dry cough. What is the most likely diagnosis?",
+    opts: ["IPF","Drug-induced pulmonary fibrosis","Sarcoidosis","Hypersensitivity pneumonitis"],
+    ans: 1,
+    exp: "Bleomycin (chemotherapy for cancer) is a recognised cause of drug-induced pulmonary toxicity and fibrosis. Drug history is essential in any patient presenting with ILD."
+  },
+  {
+    q: "Which type of ILD occurs almost exclusively in smokers?",
+    opts: ["IPF and sarcoidosis","NSIP and COP","RBILD, DIP, and Langerhans' Cell Histiocytosis","Hypersensitivity pneumonitis"],
+    ans: 2,
+    exp: "Respiratory Bronchiolitis ILD (RBILD), Desquamative Interstitial Pneumonia (DIP), and Langerhans' Cell Histiocytosis (LCH) occur almost exclusively in smokers."
+  },
+  {
+    q: "Bronchiectasis crackles differ from pulmonary fibrosis crackles in which way?",
+    opts: ["Bronchiectasis produces fine end-inspiratory crackles only","Bronchiectasis produces coarse crackles on both inspiration and expiration that change with coughing","Both conditions produce identical crackles","Pulmonary fibrosis produces coarse mid-inspiratory crackles"],
+    ans: 1,
+    exp: "Bronchiectasis produces coarse crackles heard on both inspiration and expiration that characteristically change with coughing. This contrasts with the fine, late inspiratory velcro crackles of pulmonary fibrosis."
+  },
+  {
+    q: "What is the pathological hallmark of sarcoidosis?",
+    opts: ["Caseating granulomas","Non-caseating granulomatous inflammation","Fibroblastic foci with honeycombing","Eosinophilic infiltrates"],
+    ans: 1,
+    exp: "Sarcoidosis is a multi-system disease characterised by non-caseating granulomatous inflammation. The absence of caseation distinguishes it from TB, which produces caseating granulomas."
+  },
+  {
+    q: "In the lower zone ILD mnemonic 'RASIO', which cause is an exception (not a blood-borne insult)?",
+    opts: ["Rheumatoid arthritis","Scleroderma","Asbestos","IPF"],
+    ans: 2,
+    exp: "Asbestos is the exception in the lower zone RASIO mnemonic — it is an inhaled (not blood-borne) insult that causes lower zone disease (asbestosis)."
+  }
+];
+
+let answered = new Array(questions.length).fill(false);
+let correct = 0;
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const letters = ['A','B','C','D'];
+    const optsHTML = q.opts.map((o, j) => `
+      <div class="opt" id="opt-${i}-${j}" onclick="answer(${i},${j})">
+        <span class="opt-letter">${letters[j]}</span>
+        <span>${o}</span>
+      </div>`).join('');
+    container.innerHTML += `
+      <div class="q-card" id="qcard-${i}">
+        <div class="q-num">Question ${i+1} of ${questions.length}</div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">${optsHTML}</div>
+        <div class="explanation" id="exp-${i}">${q.exp}</div>
+      </div>`;
+  });
+  updateScore();
+}
+
+function answer(qi, selected) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const letters = ['A','B','C','D'];
+  for (let j = 0; j < q.opts.length; j++) {
+    const el = document.getElementById(`opt-${qi}-${j}`);
+    el.classList.add('disabled');
+    if (j === q.ans) el.classList.add('correct');
+    else if (j === selected && selected !== q.ans) el.classList.add('wrong');
+  }
+  if (selected === q.ans) correct++;
+  document.getElementById(`exp-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const done = answered.filter(Boolean).length;
+  document.getElementById('scoreDisplay').textContent = `Score: ${correct} / ${questions.length} (${done} answered)`;
+}
+
+function showResults() {
+  const done = answered.filter(Boolean).length;
+  alert(`Score: ${correct} / ${done} answered\n(${questions.length - done} remaining)`);
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  correct = 0;
+  renderMCQ();
+}
+
+renderMCQ();
+</script>
+</body>
+</html>

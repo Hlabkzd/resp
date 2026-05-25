@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COPD — Respiratory Medicine RCSI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#f0efe9;
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9a9a94;
+  --border:#e0dfd8;--border2:#c8c7be;
+  --blue-bg:#e6f1fb;--blue-text:#185fa5;--blue-border:#378add;
+  --teal-bg:#e1f5ee;--teal-text:#0f6e56;--teal-border:#1d9e75;
+  --amber-bg:#faeeda;--amber-text:#854f0b;--amber-border:#ba7517;
+  --red-bg:#fdecea;--red-text:#a01a1a;--red-border:#d94040;
+  --purple-bg:#f0ecfb;--purple-text:#5b2d9e;--purple-border:#8b5cf6;
+  --gray-bg:#f1efe8;--gray-text:#5f5e5a;--gray-border:#888780;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1e1e1c;--bg2:#282824;--bg3:#323230;
+    --text:#f0efe9;--text2:#b0afa8;--text3:#686860;
+    --border:#38382e;--border2:#50504a;
+    --blue-bg:#042c53;--blue-text:#85b7eb;--blue-border:#378add;
+    --teal-bg:#04342c;--teal-text:#5dcaa5;--teal-border:#1d9e75;
+    --amber-bg:#412402;--amber-text:#ef9f27;--amber-border:#ba7517;
+    --red-bg:#3d0a0a;--red-text:#f08080;--red-border:#d94040;
+    --purple-bg:#1e1040;--purple-text:#c4a8f8;--purple-border:#8b5cf6;
+    --gray-bg:#2c2c2a;--gray-text:#b4b2a9;--gray-border:#5f5e5a;
+  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{background:var(--bg);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem}
+.header-inner{max-width:900px;margin:0 auto}
+.back{font-size:13px;color:var(--text3);text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-bottom:14px}
+.back:hover{color:var(--blue-text)}
+.header-tag{font-size:12px;font-weight:500;color:var(--amber-text);background:var(--amber-bg);display:inline-block;padding:3px 10px;border-radius:var(--radius);margin-bottom:12px}
+header h1{font-size:26px;font-weight:500;color:var(--text);margin-bottom:6px}
+header p{font-size:14px;color:var(--text2);line-height:1.6}
+.meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.meta span{font-size:12px;color:var(--text3)}
+
+/* TABS */
+.tab-bar{background:var(--bg);border-bottom:1px solid var(--border);sticky;top:0;z-index:10}
+.tab-bar-inner{max-width:900px;margin:0 auto;display:flex;gap:0;overflow-x:auto;padding:0 2rem}
+.tab{font-size:13px;font-weight:500;padding:12px 16px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s,border-color 0.15s;background:none;border-top:none;border-left:none;border-right:none}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--blue-text);border-bottom-color:var(--blue-border)}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:2rem}
+.panel{display:none}.panel.active{display:block}
+
+/* CONTENT BLOCKS */
+.section{margin-bottom:2rem}
+.section-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.subsection{margin-bottom:1.25rem}
+.subsection-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+
+/* CARDS */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+.card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.card p{font-size:14px;color:var(--text2);line-height:1.65}
+.card ul,.card ol{padding-left:1.2rem;font-size:14px;color:var(--text2);line-height:1.75}
+
+/* CALLOUT */
+.callout{border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1rem;font-size:14px;line-height:1.65}
+.callout-blue{background:var(--blue-bg);border-left:3px solid var(--blue-border);color:var(--blue-text)}
+.callout-teal{background:var(--teal-bg);border-left:3px solid var(--teal-border);color:var(--teal-text)}
+.callout-amber{background:var(--amber-bg);border-left:3px solid var(--amber-border);color:var(--amber-text)}
+.callout-red{background:var(--red-bg);border-left:3px solid var(--red-border);color:var(--red-text)}
+.callout-purple{background:var(--purple-bg);border-left:3px solid var(--purple-border);color:var(--purple-text)}
+.callout strong{font-weight:600}
+
+/* COMPARISON TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:1rem}
+.compare-table th{background:var(--bg2);font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;border:1px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:0.04em}
+.compare-table td{padding:9px 12px;border:1px solid var(--border);color:var(--text2);vertical-align:top;background:var(--bg)}
+.compare-table tr:nth-child(even) td{background:var(--bg2)}
+
+/* GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* PILL TAGS */
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;margin:2px}
+.tag-blue{background:var(--blue-bg);color:var(--blue-text)}
+.tag-teal{background:var(--teal-bg);color:var(--teal-text)}
+.tag-amber{background:var(--amber-bg);color:var(--amber-text)}
+.tag-red{background:var(--red-bg);color:var(--red-text)}
+
+/* MCQ */
+.mcq-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+.mcq-q{font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.5}
+.mcq-opts{display:flex;flex-direction:column;gap:7px}
+.mcq-opt{font-size:13.5px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;cursor:pointer;transition:background 0.12s,border-color 0.12s;text-align:left;width:100%}
+.mcq-opt:hover{border-color:var(--blue-border);background:var(--blue-bg)}
+.mcq-opt.correct{background:var(--teal-bg);border-color:var(--teal-border);color:var(--teal-text);font-weight:500}
+.mcq-opt.wrong{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)}
+.mcq-opt.reveal{background:var(--teal-bg);border-color:var(--teal-border);color:var(--teal-text);opacity:0.7}
+.mcq-exp{font-size:13px;color:var(--text2);background:var(--bg2);border-radius:var(--radius);padding:10px 12px;margin-top:10px;display:none;line-height:1.6}
+.mcq-exp.show{display:block}
+.mcq-num{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em}
+.score-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.score-num{font-size:28px;font-weight:500;color:var(--text)}
+.score-label{font-size:13px;color:var(--text3);margin-top:2px}
+.reset-btn{font-size:13px;font-weight:500;color:var(--blue-text);background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:7px 14px;cursor:pointer}
+.reset-btn:hover{opacity:0.85}
+
+/* INLINE */
+p{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:0.6rem}
+ul,ol{font-size:14px;color:var(--text2);line-height:1.75;padding-left:1.3rem;margin-bottom:0.6rem}
+strong{color:var(--text);font-weight:600}
+
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);background:var(--bg);margin-top:2rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="back" href="index.html">← Respiratory Medicine</a>
+    <div class="header-tag">Medicine &amp; Pathology · Lecture 7</div>
+    <h1>Chronic Obstructive Pulmonary Disease</h1>
+    <p>Pathophysiology, microscopic features, symptoms, signs, and differential diagnosis of COPD.</p>
+    <div class="meta">
+      <span>RCSI · Year 1 Semester 2</span>
+      <span>·</span>
+      <span>Departments of Medicine &amp; Pathology</span>
+    </div>
+  </div>
+</header>
+
+<div class="tab-bar" style="position:sticky;top:0">
+  <div class="tab-bar-inner">
+    <button class="tab active" onclick="showTab('definition')">Definition</button>
+    <button class="tab" onclick="showTab('pathology')">Pathology</button>
+    <button class="tab" onclick="showTab('clinical')">Clinical</button>
+    <button class="tab" onclick="showTab('ddx')">DDx</button>
+    <button class="tab" onclick="showTab('mcq')">MCQs</button>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ===== DEFINITION ===== -->
+<div class="panel active" id="panel-definition">
+
+  <div class="section">
+    <div class="section-title">What is COPD?</div>
+
+    <div class="callout callout-blue">
+      <strong>GOLD Definition:</strong> COPD is a heterogeneous lung condition characterised by chronic respiratory symptoms (dyspnoea, cough, sputum production, exacerbations) due to abnormalities of the airways (bronchitis, bronchiolitis) and/or alveoli (emphysema) that cause <strong>persistent, often progressive, airflow obstruction</strong>.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Spirometric Criterion</div>
+      <p>Airflow limitation defined as a <strong>post-bronchodilator FEV₁/FVC ratio &lt; 0.70 (70%)</strong> that is not fully reversible.</p>
+      <ul style="margin-top:8px">
+        <li><strong>FEV₁</strong> — volume of air forcefully exhaled in the first second</li>
+        <li><strong>FVC</strong> — total volume exhaled during a maximal expiratory effort</li>
+      </ul>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem">The Two Components</div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🫁 Chronic Bronchitis</div>
+        <div class="callout callout-amber" style="margin-bottom:10px"><strong>Clinical definition:</strong> Productive cough for ≥ 3 months in each of 2 successive years, with other causes excluded.</div>
+        <ul>
+          <li>Disease of <strong>mucus blocking airways</strong></li>
+          <li>Common in cigarette smokers and urban dwellers</li>
+          <li>Airflow obstruction from peripheral bronchiole inflammation, fibrosis and co-existent emphysema</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">💨 Emphysema</div>
+        <div class="callout callout-amber" style="margin-bottom:10px"><strong>Morphological definition:</strong> Permanent enlargement of airspaces distal to the terminal bronchioles with destruction of their walls, without obvious fibrosis.</div>
+        <ul>
+          <li>Disease of <strong>loss of elastic tissue</strong> around acini and terminal bronchioles</li>
+          <li>Males &gt; females; heavy smokers</li>
+          <li>Develops over many years; clinically significant in later life</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Epidemiology</div>
+    <div class="card">
+      <ul>
+        <li>Affects <strong>&gt;10% of the US population</strong>; ~200 million worldwide</li>
+        <li>14% of male smokers vs 3% of non-smokers — <em>smoking is not the only cause</em></li>
+        <li><strong>4th leading cause of death</strong> in the western world</li>
+        <li>The only common cause of death <em>increasing</em> in incidence</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Aetiology</div>
+    <div class="card">
+      <ul>
+        <li>90% of cases occur in <strong>chronic smokers</strong>; 25% of heavy smokers develop chronic bronchitis</li>
+        <li>Age (high risk), urban &gt; rural environment</li>
+        <li>Air pollutants: sulphur dioxide, nitrogen dioxide</li>
+        <li>Dusty occupations: coal, quartz, silica, welding</li>
+        <li>Passive smoking</li>
+        <li>Low birth weight; chest infections in the first year of life (e.g. adenovirus)</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /panel-definition -->
+
+
+<!-- ===== PATHOLOGY ===== -->
+<div class="panel" id="panel-pathology">
+
+  <div class="section">
+    <div class="section-title">Chronic Bronchitis — Pathogenesis</div>
+
+    <div class="callout callout-blue">
+      <strong>Core mechanism:</strong> Irritants → hypersecretion by bronchial mucus glands → gland hypertrophy + goblet cell metaplasia + inflammation → mucus plugging + airflow obstruction.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Sequence of Events</div>
+      <ol>
+        <li>Inhaled irritants trigger <strong>hypersecretion</strong> of mucus from large airways</li>
+        <li>Irritants induce <strong>hypertrophy of bronchial mucus glands</strong></li>
+        <li>Metaplastic formation of <strong>mucin-secreting goblet cells</strong> in surface epithelium</li>
+        <li>Inflammatory infiltrate: <strong>CD8+ T lymphocytes, macrophages, neutrophils</strong></li>
+        <li>Airways become swollen, erythematous, covered by mucopurulent secretions</li>
+      </ol>
+    </div>
+
+    <div class="callout callout-amber">
+      <strong>Hallmarks (histology):</strong>
+      <ul style="margin-top:6px">
+        <li>Mucus gland hypertrophy</li>
+        <li>Increased goblet cells</li>
+        <li>Loss of ciliated epithelial cells</li>
+        <li>Squamous metaplasia → dysplasia → squamous cell carcinoma (long-term risk)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Clinical Course</div>
+      <ul>
+        <li>Cough with sputum may persist without significant ventilatory dysfunction early on</li>
+        <li>May progress to significant COPD with airflow obstruction → <strong>hypercapnia, hypoxaemia, cyanosis</strong></li>
+        <li>Severe forms: pulmonary hypertension and cardiac failure (<em>cor pulmonale</em>)</li>
+        <li>Recurrent infections → respiratory failure</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Emphysema — Anatomy</div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Respiratory Acinus</div>
+        <p>Portion of lung formed by branching of a <strong>single terminal bronchiole</strong>. Includes bronchiole, alveolar ducts, alveoli. The fundamental unit of gas exchange lost in emphysema.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Lung Lobule</div>
+        <p>Hexagonal area of parenchyma 1–2 cm across, outlined by fibrous septa. Contains 3–5 terminal bronchioles (= 3–5 acini). <strong>Grossly visible.</strong></p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:1rem">Types of Emphysema</div>
+    <div class="card">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Type</th><th>Distribution in Lobule</th><th>Location</th><th>Clinical Note</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Centriacinar</strong> (Centriacinar)</td>
+            <td>Central/proximal part of acinus; distal alveoli spared</td>
+            <td>Upper lobes — more common &amp; severe</td>
+            <td>Most common type; associated with smoking</td>
+          </tr>
+          <tr>
+            <td><strong>Panacinar</strong></td>
+            <td>Uniform enlargement from terminal bronchiole to blind alveoli</td>
+            <td>Lower zones</td>
+            <td>Associated with <strong>Alpha-1 antitrypsin deficiency</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Distal Acinar</strong></td>
+            <td>Distal part of acinus</td>
+            <td>Adjacent to pleura</td>
+            <td>Most often linked to <strong>spontaneous pneumothorax</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Bullous</strong></td>
+            <td>Large subpleural spaces &gt;1 cm (bullae)</td>
+            <td>Near apex</td>
+            <td>Rupture → pneumothorax</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Emphysema — Pathogenesis</div>
+
+    <div class="callout callout-blue">
+      <strong>Protease–Antiprotease Imbalance:</strong> The key mechanism. Smoke/particulates activate macrophages &amp; neutrophils → release of <strong>elastases &amp; proteases</strong> → destruction of alveolar walls. Normally opposed by <strong>Alpha-1 Antitrypsin (A1AT)</strong>.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Step-by-Step</div>
+      <ol>
+        <li>Airflow drops at terminal bronchioles → particulates deposit into adjacent alveoli</li>
+        <li>Macrophages and neutrophils recruited; <strong>elastases turned on</strong> by particulates and smoke compounds</li>
+        <li>Elastases and proteases degrade <strong>elastin in alveolar septa</strong></li>
+        <li>Imperfect repair → permanent enlargement of airspaces</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Alpha-1 Antitrypsin (A1AT) Deficiency</div>
+      <ul>
+        <li><strong>Most common genetic cause</strong> of emphysema</li>
+        <li>Autosomal co-dominant disorder</li>
+        <li>Normal "M" allele → A1AT protein inhibits neutrophil elastase</li>
+        <li>"Z" mutation → severe protein deficiency → unopposed elastase → premature emphysema/COPD</li>
+        <li>Common in Ireland: <strong>1 in 25 carry the "Z" mutation</strong></li>
+        <li>Typically causes <em>panacinar</em> emphysema affecting lower lobes</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Airflow Restriction — Mechanism</div>
+
+    <div class="callout callout-purple">
+      <strong>Key concept:</strong> Loss of elastic tissue in emphysema removes the structural support that holds small bronchioles open during expiration, leading to air trapping.
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Bernoulli's Principle</div>
+        <p>In a constriction, fluid speed ↑ → pressure ↓. Applied to bronchioles: increased airflow speed through narrowed bronchioles → pressure drop → <strong>further constriction</strong>. Elastic tissue normally opposes this.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Poiseuille's Law</div>
+        <p>Resistance to flow is <strong>inversely proportional to radius⁴</strong>. Tiny reductions in bronchiolar radius cause enormous increases in resistance → even small narrowing → profound airflow limitation.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">In COPD</div>
+      <p>During expiration, chest contracts → pressure gradient pushes air through small bronchioles (constriction point) → pressure drops → bronchioles tend to narrow further. <strong>Without elastic tissue to hold them open</strong>, they collapse → <strong>air trapping</strong> → increased residual volume → hyperinflation.</p>
+    </div>
+  </div>
+
+</div><!-- /panel-pathology -->
+
+
+<!-- ===== CLINICAL ===== -->
+<div class="panel" id="panel-clinical">
+
+  <div class="section">
+    <div class="section-title">Cardinal Symptoms</div>
+
+    <div class="card">
+      <table class="compare-table">
+        <thead><tr><th>Symptom</th><th>Description</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Cough</strong></td>
+            <td>Initially intermittent → progressive</td>
+            <td>Goblet cell hypertrophy, airway irritation, mucus stagnation, impaired mucociliary clearance</td>
+          </tr>
+          <tr>
+            <td><strong>Sputum</strong></td>
+            <td>Mucoid/mucopurulent; ↑ volume &amp; thickness during exacerbations</td>
+            <td>Mucus hypersecretion; infections increase volume/purulence</td>
+          </tr>
+          <tr>
+            <td><strong>Dyspnoea</strong></td>
+            <td>Exertional initially → rest in advanced disease</td>
+            <td>Airway obstruction (oedema, mucus) + hyperinflation increase work of breathing</td>
+          </tr>
+          <tr>
+            <td><strong>Wheeze / Chest tightness</strong></td>
+            <td>Intermittent → chronic &amp; persistent</td>
+            <td>Turbulent airflow through narrowed airways (expiratory sound); loss of elastic recoil</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-blue"><strong>Wheeze vs Stridor:</strong> Wheeze is an <em>expiratory</em> sound (intrathoracic obstruction). Stridor is an <em>inspiratory</em> sound (extrathoracic/upper airway obstruction). Do not confuse them.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cardinal Signs &amp; Their Mechanisms</div>
+
+    <div class="subsection">
+      <div class="subsection-title">General Inspection</div>
+      <div class="card">
+        <ul>
+          <li><strong>Pursed-lip breathing</strong> — creates back-pressure to stent open collapsed small airways</li>
+          <li><strong>Prolonged expiratory phase</strong> — obstructed airflow takes longer to empty</li>
+          <li><strong>Barrel chest (↑ AP diameter)</strong> — air trapping → hyperinflation expands chest anteroposteriorly</li>
+          <li><strong>Tachypnoea</strong> — increased respiratory drive due to hypoxaemia/hypercapnia</li>
+          <li><strong>Accessory muscle use</strong> — high work of breathing recruits scalenes, sternocleidomastoid</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Face, Neck &amp; Hands</div>
+      <div class="card">
+        <ul>
+          <li><strong>Central cyanosis</strong> — hypoxaemia (SaO₂ &lt; 85%)</li>
+          <li><strong>Peripheral cyanosis</strong> — poor peripheral perfusion ± hypoxaemia</li>
+          <li><strong>Tracheal tug</strong> — accessory muscle action pulling trachea down</li>
+          <li><strong>Tar staining</strong> — marker of smoking history</li>
+          <li><strong>Asterixis (flapping tremor)</strong> — CO₂ retention (hypercapnic encephalopathy)</li>
+          <li><strong>Pulsus paradoxus</strong> — exaggerated ↓ in systolic BP during inspiration due to large intrathoracic pressure swings</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Chest Examination</div>
+      <div class="card">
+        <ul>
+          <li><strong>↓ Chest expansion</strong> — already hyperexpanded; reduced inspiratory reserve volume</li>
+          <li><strong>Hyper-resonant percussion</strong> — increased air in hyperinflated lungs</li>
+          <li><strong>↓ Breath sounds</strong> — reduced airflow through emphysematous lung</li>
+          <li><strong>Wheeze</strong> — turbulent expiratory airflow in obstructed bronchioles</li>
+          <li><strong>Prolonged expiratory time</strong> — airflow obstruction prolongs emptying</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Cardiovascular — Cor Pulmonale</div>
+      <div class="callout callout-red">
+        <strong>Cor Pulmonale:</strong> Right-sided heart failure caused by lung disease.<br><br>
+        Chronic hypoxia → pulmonary arteriole vasoconstriction → pulmonary hypertension → ↑ right ventricular afterload → RV failure.<br><br>
+        Signs: <strong>Elevated JVP, peripheral oedema, hepatomegaly, ascites</strong>.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Blue Bloater vs Pink Puffer</div>
+    <div class="card">
+      <table class="compare-table">
+        <thead><tr><th>Feature</th><th>🔵 Blue Bloater (Chronic Bronchitis dominant)</th><th>🌸 Pink Puffer (Emphysema dominant)</th></tr></thead>
+        <tbody>
+          <tr><td>Age of onset</td><td>40–45</td><td>50–75</td></tr>
+          <tr><td>Dyspnoea</td><td>Mild, late onset</td><td>Severe, early onset</td></tr>
+          <tr><td>Sputum</td><td>Abundant</td><td>Scant</td></tr>
+          <tr><td>Infections</td><td>Common</td><td>Uncommon</td></tr>
+          <tr><td>Cor pulmonale</td><td>Common</td><td>Rare</td></tr>
+          <tr><td>Elastic recoil</td><td>Normal</td><td>Low</td></tr>
+          <tr><td>CXR</td><td>Cardiomegaly</td><td>Hyperinflation, small heart</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-amber">Most real COPD patients lie on a spectrum between these two extremes rather than fitting neatly into one category.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">COPD Exacerbation</div>
+    <div class="callout callout-red">
+      <strong>Definition:</strong> In a patient with known COPD, an acute, sustained deterioration of ≥2 of: <strong>(1) ↑ sputum volume, (2) ↑ sputum purulence, (3) breathlessness</strong>.<br><br>
+      Associated with increased morbidity and mortality. Very common cause of GP/hospital presentations. Management follows <strong>GOLD guidelines</strong>.
+    </div>
+  </div>
+
+</div><!-- /panel-clinical -->
+
+
+<!-- ===== DDX ===== -->
+<div class="panel" id="panel-ddx">
+
+  <div class="section">
+    <div class="section-title">Differential Diagnosis of COPD</div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🫁 Respiratory</div>
+        <ul>
+          <li>Asthma <span class="tag tag-blue">reversible</span></li>
+          <li>Bronchiectasis</li>
+          <li>Alpha-1 antitrypsin deficiency</li>
+          <li>Cystic fibrosis</li>
+          <li>Interstitial lung diseases</li>
+          <li>Tuberculosis</li>
+          <li>Pulmonary hypertension</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🫀 Cardiac</div>
+        <ul>
+          <li>Heart failure with reduced ejection fraction (HFrEF)</li>
+          <li>Heart failure with preserved ejection fraction (HFpEF)</li>
+        </ul>
+        <p style="margin-top:10px;font-size:13px;color:var(--text3)">Both can cause exertional dyspnoea, wheeze ("cardiac asthma"), and bilateral basal crackles mimicking COPD.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:0.5rem">
+      <strong>COPD vs Asthma — Key Difference:</strong> Airflow obstruction in asthma is <em>reversible</em> (≥12% and 200mL improvement in FEV₁ post-bronchodilator). COPD obstruction is <em>not fully reversible</em> (FEV₁/FVC &lt;0.70 persists).
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Differential Diagnosis of Acute COPD Exacerbation</div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🫀 Cardiac</div>
+        <ul>
+          <li>Acute decompensated heart failure</li>
+          <li>Acute myocardial infarction</li>
+          <li>Tachyarrhythmia</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🫁 Pulmonary</div>
+        <ul>
+          <li>Acute pulmonary embolus</li>
+          <li>Pneumonia</li>
+          <li>Asthma exacerbation</li>
+          <li>Pneumothorax</li>
+          <li>Mucus plugging</li>
+          <li>Inhaled foreign body</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Resources</div>
+    <div class="card">
+      <ul>
+        <li><strong>GOLD Guidelines</strong> — Global Initiative for Chronic Obstructive Lung Disease (goldcopd.org)</li>
+        <li><strong>UpToDate</strong> — COPD overview and management</li>
+        <li><strong>Alpha-1 Foundation Ireland</strong> — A1AT deficiency resources</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /panel-ddx -->
+
+
+<!-- ===== MCQ ===== -->
+<div class="panel" id="panel-mcq">
+
+  <div class="score-bar">
+    <div>
+      <div class="score-num" id="score-display">0 / 15</div>
+      <div class="score-label">Questions answered correctly</div>
+    </div>
+    <button class="reset-btn" onclick="resetMCQ()">Reset all</button>
+  </div>
+
+  <!-- Q1 -->
+  <div class="mcq-block" id="q1">
+    <div class="mcq-num">Question 1</div>
+    <div class="mcq-q">According to GOLD, COPD is defined spirometrically as a post-bronchodilator FEV₁/FVC ratio of less than:</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q1',false)">A. 60%</button>
+      <button class="mcq-opt" onclick="answer(this,'q1',true)">B. 70%</button>
+      <button class="mcq-opt" onclick="answer(this,'q1',false)">C. 80%</button>
+      <button class="mcq-opt" onclick="answer(this,'q1',false)">D. 50%</button>
+    </div>
+    <div class="mcq-exp" id="exp-q1">A post-bronchodilator FEV₁/FVC &lt; 0.70 (70%) confirms airflow obstruction in COPD. This ratio is the diagnostic spirometric criterion used globally.</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="mcq-block" id="q2">
+    <div class="mcq-num">Question 2</div>
+    <div class="mcq-q">Chronic bronchitis is clinically defined as a productive cough for at least 3 months in each of how many successive years?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q2',false)">A. 1 year</button>
+      <button class="mcq-opt" onclick="answer(this,'q2',true)">B. 2 years</button>
+      <button class="mcq-opt" onclick="answer(this,'q2',false)">C. 3 years</button>
+      <button class="mcq-opt" onclick="answer(this,'q2',false)">D. 5 years</button>
+    </div>
+    <div class="mcq-exp" id="exp-q2">By clinical definition, chronic bronchitis requires a productive cough for ≥3 months in each of 2 successive years, with other causes of chronic sputum excluded.</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="mcq-block" id="q3">
+    <div class="mcq-num">Question 3</div>
+    <div class="mcq-q">Which histological feature is NOT a hallmark of chronic bronchitis?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q3',false)">A. Mucus gland hypertrophy</button>
+      <button class="mcq-opt" onclick="answer(this,'q3',false)">B. Increased goblet cells</button>
+      <button class="mcq-opt" onclick="answer(this,'q3',false)">C. Loss of ciliated cells</button>
+      <button class="mcq-opt" onclick="answer(this,'q3',true)">D. Alveolar wall destruction</button>
+    </div>
+    <div class="mcq-exp" id="exp-q3">Alveolar wall destruction is the hallmark of emphysema, not chronic bronchitis. The hallmarks of chronic bronchitis are mucus gland hypertrophy, increased goblet cells, loss of ciliated cells, and possible squamous metaplasia.</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="mcq-block" id="q4">
+    <div class="mcq-num">Question 4</div>
+    <div class="mcq-q">What type of emphysema is most strongly associated with spontaneous pneumothorax?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q4',false)">A. Centriacinar</button>
+      <button class="mcq-opt" onclick="answer(this,'q4',false)">B. Panacinar</button>
+      <button class="mcq-opt" onclick="answer(this,'q4',true)">C. Distal acinar</button>
+      <button class="mcq-opt" onclick="answer(this,'q4',false)">D. Bullous</button>
+    </div>
+    <div class="mcq-exp" id="exp-q4">Distal acinar emphysema predominantly affects the distal part of the acinus, is most striking adjacent to the pleura, and is most often associated with spontaneous pneumothorax. Bullous emphysema can also rupture to cause pneumothorax but is a separate entity.</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="mcq-block" id="q5">
+    <div class="mcq-num">Question 5</div>
+    <div class="mcq-q">Alpha-1 antitrypsin deficiency most characteristically causes which type of emphysema?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q5',false)">A. Centriacinar emphysema, upper lobe predominant</button>
+      <button class="mcq-opt" onclick="answer(this,'q5',true)">B. Panacinar emphysema, lower lobe predominant</button>
+      <button class="mcq-opt" onclick="answer(this,'q5',false)">C. Distal acinar emphysema, pleural predominant</button>
+      <button class="mcq-opt" onclick="answer(this,'q5',false)">D. Bullous emphysema, apical predominant</button>
+    </div>
+    <div class="mcq-exp" id="exp-q5">A1AT deficiency causes panacinar emphysema with lower lobe predominance. By contrast, smoking-related emphysema causes centriacinar emphysema that is worse in the upper lobes.</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="mcq-block" id="q6">
+    <div class="mcq-num">Question 6</div>
+    <div class="mcq-q">In the pathogenesis of emphysema, which enzyme's activity is normally counteracted by Alpha-1 antitrypsin?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q6',false)">A. Collagenase</button>
+      <button class="mcq-opt" onclick="answer(this,'q6',true)">B. Neutrophil elastase</button>
+      <button class="mcq-opt" onclick="answer(this,'q6',false)">C. Matrix metalloproteinase-9</button>
+      <button class="mcq-opt" onclick="answer(this,'q6',false)">D. Cathepsin G</button>
+    </div>
+    <div class="mcq-exp" id="exp-q6">A1AT (Alpha-1 antitrypsin) is a potent inhibitor of neutrophil elastase. When A1AT is deficient, neutrophil elastase goes unopposed, degrading elastin in alveolar septa and causing premature emphysema.</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="mcq-block" id="q7">
+    <div class="mcq-num">Question 7</div>
+    <div class="mcq-q">Bernoulli's principle contributes to air trapping in COPD because:</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q7',false)">A. Increased airflow velocity raises pressure in bronchioles, causing dilation</button>
+      <button class="mcq-opt" onclick="answer(this,'q7',true)">B. Increased airflow velocity at bronchiole constrictions drops pressure, causing further collapse when elastic tissue is absent</button>
+      <button class="mcq-opt" onclick="answer(this,'q7',false)">C. Decreased radius of bronchioles reduces flow by a factor of 2</button>
+      <button class="mcq-opt" onclick="answer(this,'q7',false)">D. Elastic tissue loss increases FVC</button>
+    </div>
+    <div class="mcq-exp" id="exp-q7">Bernoulli's principle states that where fluid speed increases (at a constriction), pressure decreases. In bronchioles during expiration, this pressure drop tends to further narrow the airway. Normally, elastic tissue holds the bronchioles open. In COPD, lost elastic tissue means the bronchioles collapse, trapping air.</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="mcq-block" id="q8">
+    <div class="mcq-num">Question 8</div>
+    <div class="mcq-q">A 52-year-old man with COPD has a barrel-shaped chest. What is the primary mechanism?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q8',false)">A. Pleural effusion compressing the lung</button>
+      <button class="mcq-opt" onclick="answer(this,'q8',false)">B. Kyphosis of the thoracic spine</button>
+      <button class="mcq-opt" onclick="answer(this,'q8',true)">C. Air trapping causing hyperinflation that expands the chest in an anteroposterior direction</button>
+      <button class="mcq-opt" onclick="answer(this,'q8',false)">D. Pectoral muscle hypertrophy from accessory muscle use</button>
+    </div>
+    <div class="mcq-exp" id="exp-q8">In COPD, air is trapped in the lungs (increased residual volume) because obstructed, non-elastic airways cannot be emptied. This hyperinflation expands the chest in an anteroposterior direction, producing the characteristic barrel chest appearance.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="mcq-block" id="q9">
+    <div class="mcq-num">Question 9</div>
+    <div class="mcq-q">Which percussion finding is expected over a hyperinflated COPD chest?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q9',false)">A. Stony dull</button>
+      <button class="mcq-opt" onclick="answer(this,'q9',false)">B. Dull</button>
+      <button class="mcq-opt" onclick="answer(this,'q9',true)">C. Hyper-resonant</button>
+      <button class="mcq-opt" onclick="answer(this,'q9',false)">D. Tympanic</button>
+    </div>
+    <div class="mcq-exp" id="exp-q9">Hyperinflated lungs contain increased air, producing a hyper-resonant percussion note. Dull or stony-dull notes suggest consolidation or effusion. Tympanic notes are heard over gas-filled hollow viscera (e.g. stomach).</div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="mcq-block" id="q10">
+    <div class="mcq-num">Question 10</div>
+    <div class="mcq-q">Cor pulmonale in COPD refers to:</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q10',false)">A. Left ventricular failure secondary to systemic hypertension</button>
+      <button class="mcq-opt" onclick="answer(this,'q10',true)">B. Right-sided heart failure caused by pulmonary disease</button>
+      <button class="mcq-opt" onclick="answer(this,'q10',false)">C. Biventricular failure from dilated cardiomyopathy</button>
+      <button class="mcq-opt" onclick="answer(this,'q10',false)">D. Atrial fibrillation secondary to hypoxaemia</button>
+    </div>
+    <div class="mcq-exp" id="exp-q10">Cor pulmonale (Latin: "pulmonary heart") is right-sided heart failure caused by lung disease. In COPD, chronic hypoxia triggers pulmonary arteriole vasoconstriction → pulmonary hypertension → increased right ventricular afterload → right ventricular failure. Signs include elevated JVP, peripheral oedema, hepatomegaly, and ascites.</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="mcq-block" id="q11">
+    <div class="mcq-num">Question 11</div>
+    <div class="mcq-q">A patient with COPD has asterixis (flapping tremor of the hands). What does this indicate?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q11',false)">A. Severe hypoxaemia (PaO₂ &lt; 60 mmHg)</button>
+      <button class="mcq-opt" onclick="answer(this,'q11',false)">B. Hepatic encephalopathy from cor pulmonale</button>
+      <button class="mcq-opt" onclick="answer(this,'q11',true)">C. CO₂ retention (hypercapnia)</button>
+      <button class="mcq-opt" onclick="answer(this,'q11',false)">D. Polycythaemia from chronic hypoxia</button>
+    </div>
+    <div class="mcq-exp" id="exp-q11">Asterixis in COPD is a sign of CO₂ retention (hypercapnia). Elevated CO₂ causes a metabolic encephalopathy that produces the characteristic flapping tremor. It is a marker of severe respiratory failure requiring urgent management.</div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="mcq-block" id="q12">
+    <div class="mcq-num">Question 12</div>
+    <div class="mcq-q">Comparing the "blue bloater" and "pink puffer" phenotypes, which feature best describes the blue bloater (chronic bronchitis dominant)?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q12',false)">A. Onset at age 50–75 with severe early dyspnoea</button>
+      <button class="mcq-opt" onclick="answer(this,'q12',false)">B. Scant sputum with rare infections</button>
+      <button class="mcq-opt" onclick="answer(this,'q12',true)">C. Abundant sputum, frequent infections, and cor pulmonale</button>
+      <button class="mcq-opt" onclick="answer(this,'q12',false)">D. Hyperinflated chest with small cardiac silhouette on CXR</button>
+    </div>
+    <div class="mcq-exp" id="exp-q12">The blue bloater phenotype (chronic bronchitis dominant) is characterised by earlier onset (40–45), abundant sputum, frequent infections, and cor pulmonale. The pink puffer (emphysema dominant) has severe early dyspnoea, scant sputum, rare infections, and hyperinflation with a small heart on CXR.</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="mcq-block" id="q13">
+    <div class="mcq-num">Question 13</div>
+    <div class="mcq-q">An acute exacerbation of COPD is defined as a sustained deterioration of at least how many of the cardinal symptoms (↑ sputum volume, ↑ sputum purulence, breathlessness)?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q13',false)">A. 1</button>
+      <button class="mcq-opt" onclick="answer(this,'q13',true)">B. 2</button>
+      <button class="mcq-opt" onclick="answer(this,'q13',false)">C. 3</button>
+      <button class="mcq-opt" onclick="answer(this,'q13',false)">D. None — any deterioration qualifies</button>
+    </div>
+    <div class="mcq-exp" id="exp-q13">A COPD exacerbation requires an acute, sustained deterioration of at least 2 of: increased sputum volume, increased sputum purulence, and breathlessness. It is a common cause of GP visits and hospital admissions, with significant morbidity and mortality.</div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="mcq-block" id="q14">
+    <div class="mcq-num">Question 14</div>
+    <div class="mcq-q">The Z mutation in the Alpha-1 antitrypsin gene has what approximate carrier frequency in Ireland?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q14',false)">A. 1 in 5</button>
+      <button class="mcq-opt" onclick="answer(this,'q14',false)">B. 1 in 10</button>
+      <button class="mcq-opt" onclick="answer(this,'q14',true)">C. 1 in 25</button>
+      <button class="mcq-opt" onclick="answer(this,'q14',false)">D. 1 in 100</button>
+    </div>
+    <div class="mcq-exp" id="exp-q14">Approximately 1 in 25 people in Ireland carry the "Z" mutation on one of their alleles. This mutation causes severe deficiency of the A1AT protein. Ireland has one of the highest prevalences of the Z allele in the world.</div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="mcq-block" id="q15">
+    <div class="mcq-num">Question 15</div>
+    <div class="mcq-q">Which of the following is NOT typically in the differential diagnosis of an acute COPD exacerbation?</div>
+    <div class="mcq-opts">
+      <button class="mcq-opt" onclick="answer(this,'q15',false)">A. Acute pulmonary embolism</button>
+      <button class="mcq-opt" onclick="answer(this,'q15',false)">B. Pneumothorax</button>
+      <button class="mcq-opt" onclick="answer(this,'q15',false)">C. Acute decompensated heart failure</button>
+      <button class="mcq-opt" onclick="answer(this,'q15',true)">D. Asthma in a patient with no prior respiratory history</button>
+    </div>
+    <div class="mcq-exp" id="exp-q15">An acute exacerbation differential always considers acute PE, pneumothorax, heart failure, pneumonia, mucus plugging, tachyarrhythmia, and MI. Asthma exacerbation (in known asthmatics) is also on the list — but "asthma in a patient with no prior respiratory history" would be a new diagnosis, not typically framed as a COPD exacerbation differential. The other three are core differential diagnoses taught in this lecture.</div>
+  </div>
+
+</div><!-- /panel-mcq -->
+
+</main>
+
+<footer>
+  RCSI Respiratory Medicine · Year 1 Semester 2 · Departments of Medicine &amp; Pathology · Built with Claude
+</footer>
+
+<script>
+// Tabs
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// MCQ
+let scores = {};
+let correct = 0;
+
+function answer(btn, qid, isCorrect) {
+  if (scores[qid] !== undefined) return; // already answered
+  scores[qid] = isCorrect;
+  if (isCorrect) correct++;
+
+  const block = document.getElementById(qid);
+  const opts = block.querySelectorAll('.mcq-opt');
+  opts.forEach(o => {
+    o.disabled = true;
+    const oCorrect = o.getAttribute('onclick').includes('true');
+    if (oCorrect) o.classList.add('reveal');
+  });
+
+  if (isCorrect) {
+    btn.classList.remove('reveal');
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    // find and highlight correct
+    opts.forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) {
+        o.classList.add('reveal');
+      }
+    });
+  }
+
+  document.getElementById('exp-' + qid).classList.add('show');
+  document.getElementById('score-display').textContent = correct + ' / 15';
+}
+
+function resetMCQ() {
+  scores = {};
+  correct = 0;
+  document.querySelectorAll('.mcq-opt').forEach(o => {
+    o.classList.remove('correct', 'wrong', 'reveal');
+    o.disabled = false;
+  });
+  document.querySelectorAll('.mcq-exp').forEach(e => e.classList.remove('show'));
+  document.getElementById('score-display').textContent = '0 / 15';
+}
+</script>
+
+</body>
+</html>

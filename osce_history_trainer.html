@@ -1,0 +1,618 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+#app{width:100%;min-height:600px;display:flex;flex-direction:column}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.hdr-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.pill{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.pill.active{border-color:#1D9E75;color:#1D9E75}
+#select-screen{padding:24px 16px;display:flex;flex-direction:column;gap:16px}
+.select-intro{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.case-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.case-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;cursor:pointer;transition:border-color 0.15s,background 0.15s}
+.case-card:hover{border-color:var(--color-border-primary);background:var(--color-background-secondary)}
+.case-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.case-name{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.case-complaint{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+#chat-screen{display:none;flex:1;flex-direction:column;min-height:580px}
+.chat-top{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.patient-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.chat-top-info{flex:1}
+.chat-top-name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.chat-top-sub{font-size:12px;color:var(--color-text-secondary)}
+.back-btn{font-size:12px;color:var(--color-text-secondary);cursor:pointer;padding:5px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:transparent}
+.back-btn:hover{background:var(--color-background-secondary)}
+.chat-body{display:flex;flex:1;min-height:0;overflow:hidden}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:300px;max-height:380px}
+.sidebar{width:200px;flex-shrink:0;border-left:0.5px solid var(--color-border-tertiary);padding:12px;overflow-y:auto;background:var(--color-background-secondary)}
+.sidebar-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:10px}
+.check-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-secondary);padding:3px 0;transition:color 0.2s}
+.check-item.done{color:var(--color-text-success)}
+.check-item i{font-size:14px;color:var(--color-border-tertiary);transition:color 0.2s}
+.check-item.done i{color:#1D9E75}
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:88%}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-bubble{padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.6;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.msg.user .msg-bubble{background:var(--color-background-info);border-color:transparent;color:var(--color-text-info)}
+.msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.typing{display:flex;gap:4px;align-items:center;padding:9px 13px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--color-text-tertiary);animation:blink 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes blink{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px 0;border-top:0.5px solid var(--color-border-tertiary)}
+.chip{font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);cursor:pointer;color:var(--color-text-secondary);background:var(--color-background-primary);transition:all 0.1s}
+.chip:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.input-row{display:flex;gap:8px;padding:10px 14px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.chat-input{flex:1;padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);resize:none;outline:none}
+.chat-input:focus{border-color:var(--color-border-secondary)}
+.send-btn{padding:8px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-secondary);transition:background 0.1s}
+.send-btn:hover{background:var(--color-background-tertiary)}
+.fb-btn{margin:0 14px 10px;padding:7px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;font-size:12px;font-family:var(--font-sans);color:var(--color-text-secondary);background:transparent;width:calc(100% - 28px)}
+.fb-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.fb-panel{margin:0 14px 14px;padding:14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);font-size:12px;line-height:1.7;color:var(--color-text-secondary);display:none}
+.fb-row{margin-bottom:8px}
+.fb-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.score-bar-wrap{height:6px;background:var(--color-background-tertiary);border-radius:3px;overflow:hidden;margin-top:4px}
+.score-bar{height:100%;border-radius:3px;transition:width 0.4s}
+</style>
+
+<div id="app">
+<div class="hdr">
+  <span class="hdr-title">OSCE trainer</span>
+  <span class="pill" id="status-pill">select a case</span>
+</div>
+
+<div id="select-screen">
+  <p class="select-intro">Pick a patient and practice taking their history using Calgary-Cambridge structure. The patient only reveals information when you ask the right questions.</p>
+  <div class="case-grid" id="case-grid"></div>
+</div>
+
+<div id="chat-screen">
+  <div class="chat-top">
+    <button class="back-btn" onclick="goBack()">← cases</button>
+    <div class="patient-avatar" id="chat-avatar"></div>
+    <div class="chat-top-info">
+      <div class="chat-top-name" id="chat-name"></div>
+      <div class="chat-top-sub" id="chat-sub"></div>
+    </div>
+  </div>
+  <div class="chat-body">
+    <div style="display:flex;flex-direction:column;flex:1;min-width:0">
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chips" id="chips"></div>
+      <button class="fb-btn" id="fb-btn" onclick="getFeedback()"><i class="ti ti-clipboard-check" aria-hidden="true"></i> get examiner feedback</button>
+      <div class="fb-panel" id="fb-panel"></div>
+      <div class="input-row">
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask the patient a question..."></textarea>
+        <button class="send-btn" onclick="sendMsg()"><i class="ti ti-send" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-title">history coverage</div>
+      <div id="checklist"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const CASES = [
+  {
+    id:"ann_cardiac", name:"Ann / Anthony Jones", age:"52", tag:"Cardiac", tagColor:"background:#FCEBEB;color:#A32D2D",
+    avatarBg:"#FCEBEB", avatarColor:"#A32D2D", initials:"AJ",
+    complaint:"Central chest tightness, 4 hours",
+    systemPrompt:`You are Ann/Anthony Jones, a 52-year-old patient in an OSCE. A medical student is taking your history. Stay in character — be cooperative but only reveal info when asked directly.
+
+HISTORY (reveal only when asked):
+- PC: Central chest tightness like a weight, 4 hours. Came on climbing stairs.
+- Character: Tightness/heaviness, not sharp. Severity 6/10 at onset, now 4/10 (eased with rest). Radiates down left arm.
+- Associated: Short of breath (now resolved), sweating, anxiety. No palpitations, no nausea.
+- Previous episodes: Mild chest tightness before, always resolved in minutes, thought it was indigestion, never saw a doctor.
+- PMH: High cholesterol — GP advised diet/exercise 1 year ago, never followed up. Appendix removed age 13.
+- Meds/Allergies: No meds. Penicillin allergy (developed rash).
+- Social: Lives with partner, no children. Smokes 20/day x 20 years. Non-drinker. Software engineer, sedentary.
+- Family: Mother died of heart attack in her 60s. Father alive and well. One older brother, fit and well.
+- ICE: "Could this be my heart?" — worried about heart attack.
+
+Respond as a real patient. Keep replies short (2-4 sentences). Don't volunteer information not asked for. If asked something you don't know, say so naturally.`
+  },
+  {
+    id:"afrina_cardiac", name:"Afrina / Mohammad", age:"72", tag:"Cardiac", tagColor:"background:#FCEBEB;color:#A32D2D",
+    avatarBg:"#FCEBEB", avatarColor:"#A32D2D", initials:"AM",
+    complaint:"Central chest/sternal pressure",
+    systemPrompt:`You are Afrina/Mohammad, a 72-year-old patient in an OSCE. A medical student is taking your history. Stay in character.
+
+HISTORY (reveal only when asked):
+- PC: Central sternal pressure/heaviness in the chest (hold hand to chest if asked to point).
+- Started 4 months ago. First on way back from shops. Gets pain walking half way up hill near house (about 4km walk from town). Pain stops you walking, rests 2-3 min and it goes away. Now every week when walking up hill.
+- Severity 3-4/10. No radiation. Exacerbated by exertion (hill/walking). Relieved by rest.
+- No SOB, no left arm pain, no palpitations, no dizziness, no nausea.
+- PMH: No medical history. Gallbladder surgery in her 40s.
+- Meds/Allergies: No medications, no allergies.
+- Social: Married, 2 grown children (31 & 36, both boys in UK), 2 grandchildren. Retired civil servant. Partner retired, used to be a police officer. Smokes 10/day for 40 years. 2 glasses of wine at weekends.
+- Family: Parents deceased (mother had stroke in 70s, father died of old age in 80s). Brothers both healthy.
+- ICE: "Do you think it could be the heart?"
+
+Reply as a real patient — brief, natural, cooperative.`
+  },
+  {
+    id:"paul_cardiac", name:"Paul / Paula Byrne", age:"75", tag:"Cardiac", tagColor:"background:#FCEBEB;color:#A32D2D",
+    avatarBg:"#FCEBEB", avatarColor:"#A32D2D", initials:"PB",
+    complaint:"Shortness of breath",
+    systemPrompt:`You are Paul/Paula Byrne, a 75-year-old patient in an OSCE. Stay in character.
+
+HISTORY (reveal only when asked):
+- PC: Shortness of breath for a few weeks. Started in the park with a friend, breathing got faster, had to sit down.
+- Since then: SOB on stairs and in garden on exertion. Getting worse and lasting longer. Better with rest. Feels like chest tightness.
+- Cough associated with SOB. Can no longer lie flat — needs 4 pillows (orthopnoea). Does NOT wake gasping at night (no PND).
+- Both ankles swollen at end of day (bilateral ankle oedema).
+- No chest pain, no palpitations, no wheeze.
+- PMH: Mild heart attack 10 years ago — told it was mild, stopped all meds as felt fine. No surgeries.
+- Meds/Allergies: No medications. No allergies.
+- Social: Widowed (husband/wife died 5 years ago of kidney cancer). 1 child nearby with husband and granddaughter. Retired school teacher. Ex-smoker for 10 years (quit after heart attack). 3 glasses of wine at weekends.
+- Family: Both parents deceased — died of old age. No siblings.
+- ICE: "What do you think is causing the breathing difficulty?"
+
+Reply as a real patient — brief, natural.`
+  },
+  {
+    id:"maryam_palp", name:"Maryam / Abdullah", age:"72", tag:"Cardiac", tagColor:"background:#FCEBEB;color:#A32D2D",
+    avatarBg:"#FCEBEB", avatarColor:"#A32D2D", initials:"MA",
+    complaint:"Fluttering in my chest",
+    systemPrompt:`You are Maryam/Abdullah, a 72-year-old patient in an OSCE. Stay in character.
+
+HISTORY (reveal only when asked):
+- PC: Fluttering/racing in chest, started a few weeks ago, getting worse.
+- Heart feels like it is racing and fluttering. Very uncomfortable.
+- Happening twice per day now. Lasts 10-15 minutes each time. No pattern, can happen anytime. Lying down sometimes eases it.
+- Breathless when it happens. No chest pain, no nausea, no sweating, no dizziness. Never had this before.
+- PMH: Heart attack 3 months ago. Raised BP for years.
+- Meds: BP tablet. Was on other medications after heart attack but stopped them — didn't think needed them anymore.
+- Social: Widowed (wife/husband died of cancer 2 years ago). 3 children all abroad. Retired school principal. Was smoking 20/day for 30 years, cut down to 10/day since heart attack. No alcohol.
+- Family: No siblings. Both parents died of "old age."
+- ICE: "Is this feeling anything to do with my heart?"
+
+Reply briefly, naturally, in character.`
+  },
+  {
+    id:"emma_palp", name:"Emma / Emmet Foley", age:"24", tag:"Cardiac", tagColor:"background:#FCEBEB;color:#A32D2D",
+    avatarBg:"#FCEBEB", avatarColor:"#A32D2D", initials:"EF",
+    complaint:"Palpitations × 6 weeks",
+    systemPrompt:`You are Emma/Emmet Foley, a 24-year-old in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Palpitations for 6 weeks. Initially 1-2x/week lasting 5 min. Now every day, lasting up to an hour, then resolves spontaneously.
+- Feels like heart racing in chest, uncomfortable. Regular beat but faster than normal (can tap rhythm on table if asked). 
+- Caffeine worsens (up to 4 cups/day recently due to work stress). More noticeable when sitting in the evening. Eases with relaxation (sitting listening to music).
+- No chest pain, no dizziness, no SOB. Occasionally nauseous when they occur.
+- PMH: GP monitors thyroid yearly — thinks levels may have been abnormal before. Tonsils removed as child.
+- Meds/Allergies: No meds, no allergies, no other stimulants.
+- Social: Married, 2 boys (3 and 1). Partner is stay-at-home, very supportive. Works in HR at a law firm — very stressful recently (staff cutbacks). Enjoys gym and friends but not managing recently. Never smoked. Occasional glass of wine at weekends.
+- Family: Father alive and well. Mother died young — not sure of cause. No siblings. No known family conditions.
+- ICE: "I am worried about the palpitations — want to know what is causing them."
+
+Reply as a real patient — brief, natural.`
+  },
+  {
+    id:"maryam_resp", name:"Maryam / Abdullah", age:"60", tag:"Respiratory", tagColor:"background:#E1F5EE;color:#0F6E56",
+    avatarBg:"#E1F5EE", avatarColor:"#0F6E56", initials:"MA",
+    complaint:"Persistent chesty cough",
+    systemPrompt:`You are Maryam/Abdullah, a 60-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Persistent chesty cough. Noticed first ~10 days ago when out walking at night — thought it was cold air.
+- Character: Chesty/wet cough. Started producing sputum in last few days.
+- Progression: Started outside only, now constant — even inside by the fire at night, keeping me awake. Getting much worse, especially at night and when active.
+- Sputum: Started as small amount white, now green and copious.
+- Alleviating: Blue inhaler (Ventolin/salbutamol) reduces but doesn't get rid of it.
+- COVID negative antigen test, fully vaccinated.
+- Previous similar episodes: Yes — similar last year. Doctor said it was COPD exacerbation. Took antibiotic and increased inhalers.
+- Associated: SOB over last few days as cough worsens. No chest pain, no fever, no wheeze, no haemoptysis.
+- PMH: COPD. No surgery.
+- Meds: Brown inhaler (Becotide/steroid) morning and night. Blue inhaler (salbutamol) as needed. No allergies.
+- Social: Married, no children. Retired police officer. Husband/wife supportive and retired. Non-smoker for 10 years (gave up at COPD diagnosis). No alcohol.
+- Family: Parents deceased (long life, unsure of illnesses). No siblings. No family illnesses.
+- ICE: "Do I have an infection?"
+
+Brief, natural replies only.`
+  },
+  {
+    id:"ann_resp", name:"Ann / Anthony Jones", age:"35", tag:"Respiratory", tagColor:"background:#E1F5EE;color:#0F6E56",
+    avatarBg:"#E1F5EE", avatarColor:"#0F6E56", initials:"AJ",
+    complaint:"Cough for 5 days",
+    systemPrompt:`You are Ann/Anthony Jones, a 35-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Cough gradually worse over 5 days. Much worse in last 24 hours — awake most of last night coughing (why presenting now).
+- Character: Chesty cough, increasing frequency. Initially only in morning, now throughout day and night.
+- Sputum: Volume increased from teaspoon/day to an eggcupful now. Changed from white to green. Never blood.
+- Systemic: Feeling cold and shivery (feverish). Heavy night sweats — sheets soaking wet. No temperature taken. SOB since this morning, worse on exertion.
+- COVID: Negative antigen test, fully vaccinated.
+- PMH: Skull fracture as a child (age 12, accidental — fell off fence). Epilepsy since. Last fit over a year ago.
+- Meds: Epilim 500mg once daily. No change since last seizure.
+- Allergies: Latex allergy.
+- Social: Lives alone. Single, no children. Smokes 20/day for 10 years — GP advised stopping, numerous attempts (gum, patches, hypnotherapy, groups). Works in IT. Goes to gym, enjoys reading. ~1 bottle red wine over weekend socialising.
+- Family: Both parents alive and well. No siblings.
+- ICE: "Is this a chest infection?"
+
+Brief, natural patient replies.`
+  },
+  {
+    id:"afrina_resp", name:"Afrina / Mohammad", age:"21", tag:"Respiratory", tagColor:"background:#E1F5EE;color:#0F6E56",
+    avatarBg:"#E1F5EE", avatarColor:"#0F6E56", initials:"AM",
+    complaint:"Worsening wheeze",
+    systemPrompt:`You are Afrina/Mohammad, a 21-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Asthma usually well controlled but for last few days: wheeze, chest tightness, and SOB.
+- SOB on walking only a few metres (normally plays full game of hockey without SOB). Chest tightness at front of chest on walking/exercise. Wheeze — eased by blue inhaler but using >4 puffs/day in last 24 hours.
+- No fever, no cough, no sputum. COVID negative, fully vaccinated.
+- PMH: Asthma since age 6, usually well controlled with inhalers, never hospitalised. No eczema. Tonsillectomy age 4.
+- Key detail: Dark red inhaler (Beclomethasone) ran out over a week ago — needs a new prescription but GP is in Dublin (home), not going back until next week.
+- Meds: Beclomethasone 1 puff twice daily (ran out), salbutamol as required. No allergies. No allergic triggers found when tested as child.
+- Social: Lives in apartment with 2 other students. Studies Business Studies. Single, no children. No alcohol, never smoked.
+- Family: Both parents alive and well. Twin sister also has asthma.
+- ICE: "Can I get a prescription for my regular inhalers?"
+
+Brief, natural patient replies.`
+  },
+  {
+    id:"paul_resp", name:"Paul / Paula Byrne", age:"55", tag:"Respiratory", tagColor:"background:#E1F5EE;color:#0F6E56",
+    avatarBg:"#E1F5EE", avatarColor:"#0F6E56", initials:"PB",
+    complaint:"Chest pain × 3 days",
+    systemPrompt:`You are Paul/Paula Byrne, a 55-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Chest pain for 3 days. Started walking home from work.
+- Site: All over front of chest. Character: Sharp pain. Worse with deep breath (pleuritic) or exertion. Eases with shallow breaths and sitting down/relaxing. Getting worse — now present even at rest. Woke from sleep last night.
+- No cough, no haemoptysis, no sputum, no wheeze, no fever, no palpitations.
+- IMPORTANT: Swelling in right leg noticed 5 days ago, seems to have settled now.
+- COVID: Negative antigen test, fully vaccinated.
+- PMH: No medical history. No surgery.
+- Meds/Allergies: No medications, no allergies.
+- Social: Married, no children. Works in local supermarket. Smoker 10/day × 30 years. No alcohol. Enjoys reading and travelling. Just returned from visiting a friend in Australia (long-haul flight).
+- Family: Parents deceased (long life, unsure of illnesses). No siblings. No family illnesses.
+- ICE: "What is causing this pain?"
+
+Brief, natural patient replies.`
+  },
+  {
+    id:"emma_resp", name:"Emma / Emmet Foley", age:"70", tag:"Respiratory", tagColor:"background:#E1F5EE;color:#0F6E56",
+    avatarBg:"#E1F5EE", avatarColor:"#0F6E56", initials:"EF",
+    complaint:"Coughing up blood",
+    systemPrompt:`You are Emma/Emmet Foley, a 70-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Cough progressively worse over 3 months. Initially intermittent, now constant.
+- Haemoptysis for past 2 weeks — dark blood, mixed with phlegm. Average teaspoon of sputum most days, white in colour.
+- No fever, no wheeze. Had 2 courses of antibiotics over past 3 months — no difference.
+- SOB for past week — mainly walking up stairs or up hill to shop. Settles when stops.
+- Weight loss: Clothes feeling loose. Not deliberately losing weight. Appetite decreased.
+- Low energy: Used to walk most evenings, now no energy at end of day — goes to bed early.
+- COVID: Negative, fully vaccinated.
+- PMH: No medical conditions. Tonsils removed as child.
+- Meds/Allergies: No medications, no allergies.
+- Social: Lives with wife/husband (well). 3 children in college/working. Never drank alcohol. Smoker 20/day × 40 years. Recently smoking less (~10/day) because cough/SOB makes it unpleasant. Tried to quit a few times. Retired teacher.
+- Family: Both parents died in 80s — no known conditions. No siblings.
+- ICE: "Is this because of smoking for so long?"
+
+Brief, natural patient replies.`
+  },
+  {
+    id:"pat_knee", name:"Pat / Patsy", age:"65", tag:"Musculoskeletal", tagColor:"background:#E6F1FB;color:#185FA5",
+    avatarBg:"#E6F1FB", avatarColor:"#185FA5", initials:"PP",
+    complaint:"Left knee pain × 4 months",
+    systemPrompt:`You are Pat/Patsy, a 65-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Left knee pain ongoing 4 months. All over the knee. Aching pain.
+- First noticed at end of day, especially after standing/walking a lot or gardening. Last 2 weeks: worsening — pain on stairs, joint stiff at end of day. Pain 6/10 at worst. Does not radiate.
+- Relieved by rest and paracetamol. Worse with exercise, end of day, standing long periods.
+- Associated: Stiffness (worse end of day). Occasional swelling but no redness, not tender to touch, not hot. Right knee occasionally painful too.
+- PMH: Overweight/raised BMI — trying to reduce weight for years. No surgery.
+- Meds: Paracetamol 2 tablets 3x/day when knee bad. No allergies.
+- Social: Lives with husband. 2 children in Australia, all well. Retired bank clerk. Enjoys gardening and reading. No alcohol, never smoked.
+- Family: Parents died of old age. Brother and sister well. Sister also trying to lose weight — they walk together.
+- ICE: "What is causing this? What can I do about it?"
+
+Brief, natural patient replies.`
+  },
+  {
+    id:"peter_elbow", name:"Peter / Patricia", age:"45", tag:"Musculoskeletal", tagColor:"background:#E6F1FB;color:#185FA5",
+    avatarBg:"#E6F1FB", avatarColor:"#185FA5", initials:"PP",
+    complaint:"Right elbow pain × 3 months",
+    systemPrompt:`You are Peter/Patricia, a 45-year-old patient in an OSCE. Stay in character.
+
+HISTORY:
+- PC: Right elbow pain for 3 months. Especially on outer aspect of elbow.
+- Gradual onset. Aching pain. 7/10 at worst. Radiates down front of arm.
+- Relieved by rest and paracetamol. Made worse by exercise. Loves playing tennis — aggravates pain. Also worse when pouring tea or shaking hands.
+- No swelling, no redness, no pins and needles, no loss of power.
+- PMH: Overweight/raised BMI — been increasing exercise for weight loss. Playing tennis twice weekly. No surgery.
+- Meds: Paracetamol 2 tablets 3x/day when bothersome. No allergies.
+- Social: Lives with husband/wife. 2 children locally, all well. Works as accountant. Enjoys tennis and hill walking. No alcohol, never smoked.
+- Family: Mother and Father alive, in good health. No siblings. No family illnesses.
+- ICE: "How can I fix this? I want to keep fit and keep my weight in check."
+
+Brief, natural patient replies.`
+  }
+];
+
+const CHECKLIST_ITEMS = [
+  {id:"intro", label:"Introduction & consent"},
+  {id:"pc", label:"Presenting complaint"},
+  {id:"onset", label:"Onset"},
+  {id:"character", label:"Character"},
+  {id:"radiation", label:"Radiation/spread"},
+  {id:"assoc", label:"Associated symptoms"},
+  {id:"timing", label:"Timing/frequency"},
+  {id:"exac", label:"Exacerbating/relieving"},
+  {id:"severity", label:"Severity (1-10)"},
+  {id:"prev", label:"Previous episodes"},
+  {id:"pmh", label:"Past medical history"},
+  {id:"meds", label:"Medications"},
+  {id:"allergy", label:"Allergies"},
+  {id:"social", label:"Social history"},
+  {id:"family", label:"Family history"},
+  {id:"ice", label:"Ideas/concerns/expectations"}
+];
+
+const CHIPS = [
+  "Can you describe the pain?",
+  "Where exactly do you feel it?",
+  "Does it radiate anywhere?",
+  "What makes it better or worse?",
+  "Any associated symptoms?",
+  "Do you take any medications?",
+  "Any family history of note?"
+];
+
+let currentCase = null;
+let messages = [];
+let checkedItems = new Set();
+let isLoading = false;
+
+function renderCaseGrid() {
+  const grid = document.getElementById("case-grid");
+  const categories = ["Cardiac","Respiratory","Musculoskeletal"];
+  let html = "";
+  categories.forEach(cat => {
+    const cases = CASES.filter(c => c.tag === cat);
+    if (cases.length === 0) return;
+    html += `<div style="grid-column:1/-1;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-tertiary);margin-bottom:2px">${cat}</div>`;
+    cases.forEach(c => {
+      html += `<div class="case-card" onclick="selectCase('${c.id}')">
+        <span class="case-tag" style="${c.tagColor}">${c.tag}</span>
+        <div class="case-name">${c.name}</div>
+        <div class="case-complaint">${c.age}y/o — ${c.complaint}</div>
+      </div>`;
+    });
+  });
+  grid.innerHTML = html;
+}
+
+function selectCase(id) {
+  currentCase = CASES.find(c => c.id === id);
+  if (!currentCase) return;
+  messages = [];
+  checkedItems = new Set();
+  document.getElementById("select-screen").style.display = "none";
+  document.getElementById("chat-screen").style.display = "flex";
+  document.getElementById("status-pill").textContent = "session active";
+  document.getElementById("status-pill").className = "pill active";
+  const av = document.getElementById("chat-avatar");
+  av.textContent = currentCase.initials;
+  av.style.background = currentCase.avatarBg;
+  av.style.color = currentCase.avatarColor;
+  document.getElementById("chat-name").textContent = currentCase.name;
+  document.getElementById("chat-sub").textContent = currentCase.age + " y/o · " + currentCase.tag;
+  renderChecklist();
+  renderChips();
+  const msgs = document.getElementById("chat-msgs");
+  msgs.innerHTML = "";
+  addMsg("patient", `Hello, I'm ${currentCase.name.split("/")[0].trim()}. Please, come in.`);
+  document.getElementById("fb-panel").style.display = "none";
+  document.getElementById("chat-input").value = "";
+  document.getElementById("chat-input").focus();
+}
+
+function goBack() {
+  document.getElementById("select-screen").style.display = "flex";
+  document.getElementById("chat-screen").style.display = "none";
+  document.getElementById("status-pill").textContent = "select a case";
+  document.getElementById("status-pill").className = "pill";
+  currentCase = null;
+}
+
+function renderChecklist() {
+  const el = document.getElementById("checklist");
+  el.innerHTML = CHECKLIST_ITEMS.map(item => `
+    <div class="check-item ${checkedItems.has(item.id) ? 'done' : ''}" id="chk_${item.id}">
+      <i class="ti ti-${checkedItems.has(item.id) ? 'circle-check-filled' : 'circle'}" aria-hidden="true"></i>
+      <span>${item.label}</span>
+    </div>`).join("");
+}
+
+function renderChips() {
+  const el = document.getElementById("chips");
+  el.innerHTML = CHIPS.map(c => `<span class="chip" onclick="useChip('${c.replace(/'/g,"\\'")}')">` + c + `</span>`).join("");
+}
+
+function useChip(text) {
+  document.getElementById("chat-input").value = text;
+  sendMsg();
+}
+
+function addMsg(role, text) {
+  const msgs = document.getElementById("chat-msgs");
+  const div = document.createElement("div");
+  div.className = "msg " + (role === "user" ? "user" : "patient");
+  const av = document.createElement("div");
+  av.className = "msg-avatar";
+  if (role === "user") {
+    av.textContent = "You";
+    av.style.background = "var(--color-background-info)";
+    av.style.color = "var(--color-text-info)";
+    av.style.fontSize = "9px";
+  } else {
+    av.textContent = currentCase ? currentCase.initials : "Pt";
+    av.style.background = currentCase ? currentCase.avatarBg : "#eee";
+    av.style.color = currentCase ? currentCase.avatarColor : "#333";
+  }
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  bubble.textContent = text;
+  div.appendChild(av);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById("chat-msgs");
+  const div = document.createElement("div");
+  div.className = "msg patient";
+  div.id = "typing-indicator";
+  const av = document.createElement("div");
+  av.className = "msg-avatar";
+  av.textContent = currentCase ? currentCase.initials : "Pt";
+  av.style.background = currentCase ? currentCase.avatarBg : "#eee";
+  av.style.color = currentCase ? currentCase.avatarColor : "#333";
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble typing";
+  bubble.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  div.appendChild(av);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function removeTyping() {
+  const el = document.getElementById("typing-indicator");
+  if (el) el.remove();
+}
+
+function updateChecklist(userMsg, patientReply) {
+  const combined = (userMsg + " " + patientReply).toLowerCase();
+  const checks = {
+    intro: /(hello|hi|my name|i'm dr|i am dr|introduce|consent|call you|how are you|good (morning|afternoon|evening))/,
+    pc: /(what brings|main problem|what.*wrong|presenting|complain|what seem|what's the matter|tell me about)/,
+    onset: /(when|how long|start|begin|onset|first notice|ago|since)/,
+    character: /(describe|feel like|type of pain|what.*pain|ache|sharp|dull|tight|pressure|heavy|burn|crush|character)/,
+    radiation: /(radiat|spread|move|travel|arm|jaw|back|neck|anywhere else)/,
+    assoc: /(other|associated|nausea|sweat|dizz|breath|cough|sputum|wheeze|fever|vomit|palpitat)/,
+    timing: /(how often|frequent|long does it last|timing|constant|intermittent|how many|episodes per)/,
+    exac: /(worse|better|relieve|aggravat|trigger|cause|help|improve|exacerbat|makes it)/,
+    severity: /(scale|1 to 10|score|how bad|severe|intensity|rate the)/,
+    prev: /(before|previous|ever had|history of this|similar episode|in the past|ever experienced)/,
+    pmh: /(medical history|conditions|health generally|hospital|operations|medical problem|past history|any illness)/,
+    meds: /(medication|tablets|pills|drugs|taking|prescribed|medicines)/,
+    allergy: /(allerg|react|penicillin|latex|intoleran)/,
+    social: /(smok|drink|alcohol|work|live|family|occupation|home|stress|exercise|social)/,
+    family: /(family history|parents|siblings|brother|sister|children|relatives|run in the family)/,
+    ice: /(worried|concern|think it|what do you think|expect|hope|fear|afraid|anxious about)/
+  };
+  let changed = false;
+  for (const [key, regex] of Object.entries(checks)) {
+    if (!checkedItems.has(key) && regex.test(combined)) {
+      checkedItems.add(key);
+      changed = true;
+    }
+  }
+  if (changed) renderChecklist();
+}
+
+async function sendMsg() {
+  if (!currentCase || isLoading) return;
+  const input = document.getElementById("chat-input");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  addMsg("user", text);
+  isLoading = true;
+  addTyping();
+  const convHistory = messages.map(m => ({role: m.role, content: m.content}));
+  convHistory.push({role:"user", content: text});
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:300,
+        system: currentCase.systemPrompt + "\n\nIMPORTANT: Reply in 1-3 short sentences only, as a real patient would. Do not give medical commentary. Stay in character at all times.",
+        messages: convHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content && data.content[0] ? data.content[0].text : "Sorry, I didn't catch that.";
+    removeTyping();
+    addMsg("patient", reply);
+    messages.push({role:"user", content: text});
+    messages.push({role:"assistant", content: reply});
+    updateChecklist(text, reply);
+  } catch(e) {
+    removeTyping();
+    addMsg("patient", "Sorry, could you repeat that?");
+  }
+  isLoading = false;
+}
+
+async function getFeedback() {
+  if (!currentCase || isLoading || messages.length < 2) return;
+  isLoading = true;
+  const fbPanel = document.getElementById("fb-panel");
+  fbPanel.style.display = "block";
+  fbPanel.innerHTML = '<div style="color:var(--color-text-tertiary);font-size:12px">Getting examiner feedback...</div>';
+  const convo = messages.map(m => `${m.role === "user" ? "Student" : "Patient"}: ${m.content}`).join("\n");
+  const covered = CHECKLIST_ITEMS.filter(i => checkedItems.has(i.id)).map(i => i.label);
+  const missed = CHECKLIST_ITEMS.filter(i => !checkedItems.has(i.id)).map(i => i.label);
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:500,
+        system:`You are an RCSI OSCE examiner giving brief structured feedback on a Year 1 student's history-taking. Be direct and constructive. Output ONLY valid JSON, no markdown, no extra text.`,
+        messages:[{role:"user", content:`Patient: ${currentCase.name}, ${currentCase.age}y/o, ${currentCase.tag}\n\nConversation:\n${convo}\n\nCovered areas: ${covered.join(", ")}\nMissed areas: ${missed.join(", ")}\n\nReturn JSON with these exact keys:\n{"score": <0-10 integer>, "good": ["one strength"], "improve": ["one improvement"], "missed": ["key missed item if any"], "summary": "2 sentence overall comment"}`}]
+      })
+    });
+    const data = await res.json();
+    let txt = data.content[0].text.replace(/```json|```/g,"").trim();
+    const fb = JSON.parse(txt);
+    const pct = fb.score * 10;
+    const barColor = pct >= 70 ? "#1D9E75" : pct >= 40 ? "#BA7517" : "#A32D2D";
+    fbPanel.innerHTML = `
+      <div class="fb-row">
+        <div class="fb-label" style="color:var(--color-text-secondary)">Score</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px;font-weight:500;color:var(--color-text-primary)">${fb.score}/10</span>
+          <div class="score-bar-wrap" style="flex:1"><div class="score-bar" style="width:${pct}%;background:${barColor}"></div></div>
+        </div>
+      </div>
+      <div class="fb-row" style="margin-top:10px">
+        <div class="fb-label" style="color:#1D9E75">Well done</div>
+        <div class="fb-text">${(fb.good||[]).join("; ")}</div>
+      </div>
+      <div class="fb-row">
+        <div class="fb-label" style="color:#BA7517">Improve</div>
+        <div class="fb-text">${(fb.improve||[]).join("; ")}</div>
+      </div>
+      ${fb.missed && fb.missed.length ? `<div class="fb-row"><div class="fb-label" style="color:#A32D2D">Missed</div><div class="fb-text">${fb.missed.join("; ")}</div></div>` : ""}
+      <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary);line-height:1.6">${fb.summary}</div>`;
+  } catch(e) {
+    fbPanel.innerHTML = '<div style="color:var(--color-text-danger);font-size:12px">Could not load feedback. Try again.</div>';
+  }
+  isLoading = false;
+}
+
+document.getElementById("chat-input").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+
+renderCaseGrid();
+</script>

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gene Expression Regulation – RCSI Resp</title>
+<style>
+  /* ── Tokens ── */
+  :root {
+    --bg:        #0f1117;
+    --surface:   #171c27;
+    --surface2:  #1e2535;
+    --border:    #2a3348;
+    --accent:    #4f8ef7;
+    --accent2:   #38d9a9;
+    --accent3:   #f7a94f;
+    --danger:    #f76f6f;
+    --text:      #e4e8f0;
+    --muted:     #8891a8;
+    --tag-bg:    #1e2d4a;
+    --correct:   #1a3a2a;
+    --correct-b: #38d9a9;
+    --wrong:     #3a1a1a;
+    --wrong-b:   #f76f6f;
+    --radius:    10px;
+    --font-head: 'DM Sans', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  [data-theme="light"] {
+    --bg:        #f4f6fb;
+    --surface:   #ffffff;
+    --surface2:  #edf0f7;
+    --border:    #d0d7e8;
+    --text:      #1a2035;
+    --muted:     #5a6480;
+    --tag-bg:    #dde6f7;
+    --correct:   #e6f9f2;
+    --correct-b: #22a87a;
+    --wrong:     #fdeaea;
+    --wrong-b:   #d94f4f;
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background .25s, color .25s;
+  }
+
+  /* ── Google Fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--muted); text-decoration: none; font-size: 13px;
+    padding: 5px 10px; border-radius: 6px;
+    border: 1px solid var(--border);
+    transition: color .2s, border-color .2s;
+  }
+  .back-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .header-title {
+    font-family: var(--font-head); font-size: 15px; font-weight: 700;
+    color: var(--text);
+  }
+  .header-title span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .badge {
+    font-family: var(--font-mono); font-size: 11px; padding: 3px 9px;
+    border-radius: 20px; background: var(--tag-bg); color: var(--accent);
+    border: 1px solid var(--border);
+  }
+  .theme-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 6px 13px; border-radius: 7px;
+    cursor: pointer; font-size: 13px; transition: background .2s;
+  }
+  .theme-btn:hover { background: var(--border); }
+
+  /* ── Layout ── */
+  .wrapper { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 30px;
+    margin-bottom: 28px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  }
+  .hero-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-family: var(--font-mono); }
+  .hero h1 { font-family: var(--font-head); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { color: var(--muted); font-size: 14px; max-width: 620px; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+  .tag {
+    font-size: 11px; font-family: var(--font-mono);
+    background: var(--tag-bg); color: var(--accent);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 3px 10px;
+  }
+  .tag.green { color: var(--accent2); }
+  .tag.orange { color: var(--accent3); }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab {
+    padding: 8px 18px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .2s;
+  }
+  .tab:hover { color: var(--text); border-color: var(--muted); }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Section Cards ── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; cursor: pointer;
+    transition: background .15s;
+  }
+  .section-header:hover { background: var(--surface2); }
+  .section-header-left { display: flex; align-items: center; gap: 12px; }
+  .section-num {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--tag-bg); color: var(--accent);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; }
+  .section-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .chevron { color: var(--muted); font-size: 18px; transition: transform .25s; }
+  .section-card.open .chevron { transform: rotate(180deg); }
+  .section-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .section-card.open .section-body { display: block; }
+
+  /* ── Content blocks ── */
+  h3 { font-family: var(--font-head); font-size: 14px; font-weight: 700;
+       color: var(--accent); margin: 18px 0 8px; }
+  p { margin-bottom: 10px; }
+  ul, ol { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  strong { color: var(--text); font-weight: 600; }
+
+  .key-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 8px;
+    padding: 12px 16px; margin: 12px 0; font-size: 14px;
+  }
+  .key-box.green  { border-left-color: var(--accent2); }
+  .key-box.orange { border-left-color: var(--accent3); }
+  .key-box.red    { border-left-color: var(--danger); }
+  .key-box .kbtitle {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .key-box.green  .kbtitle { color: var(--accent2); }
+  .key-box.orange .kbtitle { color: var(--accent3); }
+  .key-box.red    .kbtitle { color: var(--danger); }
+
+  /* comparison table */
+  .compare {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin: 14px 0;
+  }
+  .compare-col {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px;
+  }
+  .compare-col .col-title {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .compare-col:nth-child(1) .col-title { color: var(--accent); }
+  .compare-col:nth-child(2) .col-title { color: var(--accent2); }
+  .compare-col ul { padding-left: 16px; font-size: 13px; }
+
+  /* step list */
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 12px 0; }
+  .steps li {
+    display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start;
+    font-size: 14px;
+  }
+  .steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    min-width: 24px; height: 24px; border-radius: 6px;
+    background: var(--tag-bg); color: var(--accent);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* pathway diagram */
+  .pathway {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 6px; margin: 14px 0; font-size: 12px; font-family: var(--font-mono);
+  }
+  .pnode {
+    background: var(--tag-bg); color: var(--accent);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 11px; text-align: center; white-space: nowrap;
+  }
+  .pnode.green  { color: var(--accent2); }
+  .pnode.orange { color: var(--accent3); }
+  .pnode.red    { color: var(--danger); }
+  .parrow { color: var(--muted); font-size: 16px; }
+
+  /* clinical pearl */
+  .pearl {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 13px 16px; margin: 12px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .pearl-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .pearl-body { font-size: 13px; line-height: 1.6; }
+  .pearl-body strong { display: block; margin-bottom: 3px; color: var(--accent3); }
+
+  /* ── MCQ ── */
+  .mcq-wrap { display: flex; flex-direction: column; gap: 20px; }
+  .mcq-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    transition: border-color .2s;
+  }
+  .mcq-card.answered-correct { border-color: var(--correct-b); }
+  .mcq-card.answered-wrong   { border-color: var(--wrong-b); }
+  .mcq-q {
+    font-size: 14px; font-weight: 600; margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .mcq-q .qnum {
+    font-family: var(--font-mono); color: var(--accent);
+    font-size: 12px; margin-right: 6px;
+  }
+  .mcq-opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn {
+    text-align: left; padding: 10px 14px; border-radius: 7px;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text); font-size: 13px; cursor: pointer;
+    transition: all .15s; line-height: 1.5;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--tag-bg); }
+  .opt-btn.correct { background: var(--correct); border-color: var(--correct-b); color: var(--correct-b); }
+  .opt-btn.wrong   { background: var(--wrong);   border-color: var(--wrong-b);   color: var(--wrong-b); }
+  .opt-btn:disabled { cursor: default; }
+  .mcq-feedback {
+    margin-top: 12px; padding: 10px 14px; border-radius: 7px;
+    font-size: 13px; display: none; line-height: 1.6;
+  }
+  .mcq-feedback.show { display: block; }
+  .mcq-feedback.correct { background: var(--correct); color: var(--correct-b); border: 1px solid var(--correct-b); }
+  .mcq-feedback.wrong   { background: var(--wrong);   color: var(--wrong-b);   border: 1px solid var(--wrong-b); }
+
+  .score-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 20px;
+    margin-bottom: 20px; font-size: 14px;
+  }
+  .score-num { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--accent2); }
+  .reset-btn {
+    padding: 7px 16px; border-radius: 7px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; cursor: pointer; transition: background .2s;
+  }
+  .reset-btn:hover { background: var(--border); }
+
+  /* ── Summary table ── */
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sum-table th {
+    background: var(--surface2); color: var(--accent);
+    font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .05em; padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .sum-table td {
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .sum-table tr:last-child td { border-bottom: none; }
+  .sum-table tr:hover td { background: var(--surface2); }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+    .header-title { font-size: 13px; }
+    .tab { padding: 7px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="index.html" class="back-btn">← Back</a>
+    <div class="header-title">RCSI <span>Resp</span></div>
+  </div>
+  <div class="header-right">
+    <span class="badge">Dr L. Vassallo Gatt</span>
+    <button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<div class="wrapper">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-meta">Respiratory Medicine · Molecular Biology Foundation</div>
+    <h1>Regulation of Gene Expression in Eukaryotes</h1>
+    <p>How cells decide which genes to express — from chromatin packing to protein degradation — and why it matters for medicine.</p>
+    <div class="hero-tags">
+      <span class="tag">Chromatin</span>
+      <span class="tag">Transcription Factors</span>
+      <span class="tag green">mRNA Processing</span>
+      <span class="tag green">Alternative Splicing</span>
+      <span class="tag orange">Ubiquitin–Proteasome</span>
+      <span class="tag orange">Hormones & HREs</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('content', this)">📖 Content</button>
+    <button class="tab" onclick="showTab('summary', this)">📋 Summary</button>
+    <button class="tab" onclick="showTab('mcq', this)">🎯 MCQs</button>
+  </div>
+
+  <!-- ═══════════════ CONTENT TAB ═══════════════ -->
+  <div id="tab-content" class="tab-panel active">
+
+    <!-- 1. Overview -->
+    <div class="section-card open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">01</div>
+          <div>
+            <div class="section-title">Overview: Levels of Regulation</div>
+            <div class="section-subtitle">The five control points</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <p>Eukaryotes regulate gene expression at <strong>multiple levels</strong> — this gives far finer control than prokaryotes, and allows the same genome to produce hundreds of different cell types.</p>
+
+        <div class="compare">
+          <div class="compare-col">
+            <div class="col-title">By Regulating…</div>
+            <ul>
+              <li><strong>Chromatin structure</strong> – DNA accessibility</li>
+              <li><strong>Transcription initiation</strong> – whether RNA Pol II binds</li>
+              <li><strong>Translation initiation</strong> – ribosome access to mRNA</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="col-title">By Modifying…</div>
+            <ul>
+              <li><strong>mRNA</strong> – splicing, capping, editing, poly-A</li>
+              <li><strong>Proteins</strong> – post-translational modification, degradation</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-box">
+          <div class="kbtitle">🔑 Core Principle</div>
+          Gene expression can be turned on or off at any step between DNA and functional protein. Each level is an independent control point.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Chromatin -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">02</div>
+          <div>
+            <div class="section-title">Chromatin Structure</div>
+            <div class="section-subtitle">Nucleosomes, histones, eu- vs heterochromatin</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>What is chromatin?</h3>
+        <p>In eukaryotes, DNA is wrapped around proteins called <strong>histones</strong> to form a compact protein-DNA complex called <strong>chromatin</strong>.</p>
+
+        <h3>The Nucleosome</h3>
+        <p>The basic repeating unit is the <strong>nucleosome</strong>: ~147 bp of DNA wound around an <strong>octamer</strong> of histone proteins (H2A, H2B, H3, H4 — two copies each). <strong>Histone H1</strong> sits at the entry/exit point and links adjacent nucleosomes.</p>
+
+        <div class="compare">
+          <div class="compare-col">
+            <div class="col-title">Euchromatin (Open)</div>
+            <ul>
+              <li>Loosely packed histones</li>
+              <li>DNA <strong>accessible</strong> to transcription machinery</li>
+              <li>Actively transcribed genes</li>
+              <li>Histone acetyltransferases (HATs) loosen histone-DNA bonds by neutralising histone positive charges</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="col-title">Heterochromatin (Closed)</div>
+            <ul>
+              <li>Tightly packed histones</li>
+              <li>DNA <strong>inaccessible</strong> — genes generally not transcribed</li>
+              <li>Inactive / silent regions</li>
+              <li>Histone deacetylases (HDACs) restore positive charges → strong DNA-histone bonding → coiling</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Histone Acetylation (the key switch)</h3>
+        <p>Lysine residues on histone tails carry a positive charge and bind tightly to negatively-charged DNA. When <strong>HATs</strong> add an acetyl group (from Acetyl-CoA) to lysine, the positive charge is neutralised — DNA-histone interaction weakens, chromatin opens, and transcription can proceed. <strong>HDACs</strong> reverse this.</p>
+
+        <div class="key-box green">
+          <div class="kbtitle">Clinical link</div>
+          HDAC inhibitors (e.g. vorinostat) are used in cancer therapy — they force tumour-suppressor genes back into euchromatin so they can be re-expressed.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Transcription initiation -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">03</div>
+          <div>
+            <div class="section-title">Transcription Initiation</div>
+            <div class="section-subtitle">Transcription factors, enhancers, repressors</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>Transcription Factors (TFs)</h3>
+        <p><strong>RNA polymerase II</strong> (which transcribes protein-coding genes) cannot bind the promoter on its own. It needs <strong>transcription factors</strong> — proteins that assemble at the promoter and recruit RNA Pol II.</p>
+        <ul>
+          <li>TFs <strong>present</strong> → RNA Pol II binds → gene is <strong>expressed</strong></li>
+          <li>TFs <strong>absent</strong> → RNA Pol II cannot bind (or binds only rarely) → gene <strong>not expressed</strong></li>
+        </ul>
+
+        <h3>Enhancers and Activators</h3>
+        <p><strong>Activator proteins</strong> bind to DNA segments <strong>upstream</strong> from the promoter called <strong>enhancers</strong>. The enhancer-activator complex then loops to contact the transcription initiation complex at the <strong>TATA box</strong> (core promoter) via coactivator proteins, dramatically boosting transcription.</p>
+
+        <h3>Silencers and Repressors</h3>
+        <p>Conversely, <strong>repressor proteins</strong> bind to DNA sequences called <strong>silencers</strong>. They can block activator binding or recruit HDACs to condense chromatin and shut down transcription.</p>
+
+        <div class="pathway">
+          <span class="pnode">Activator binds enhancer</span>
+          <span class="parrow">→</span>
+          <span class="pnode green">Loop contacts TATA box</span>
+          <span class="parrow">→</span>
+          <span class="pnode orange">Coactivators / basal TFs assemble</span>
+          <span class="parrow">→</span>
+          <span class="pnode green">RNA Pol II recruits</span>
+          <span class="parrow">→</span>
+          <span class="pnode">Transcription begins</span>
+        </div>
+
+        <div class="key-box orange">
+          <div class="kbtitle">Remember</div>
+          Enhancers can act even when thousands of base pairs away from the promoter — they work by DNA looping, not proximity.
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. mRNA modification -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">04</div>
+          <div>
+            <div class="section-title">Regulation by Modifying mRNA</div>
+            <div class="section-subtitle">Pre-mRNA processing, splicing, RNA editing</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>Pre-mRNA → mature mRNA</h3>
+        <p>After transcription, the initial transcript (<strong>pre-mRNA / hnRNA</strong>) undergoes several modifications <em>before</em> leaving the nucleus:</p>
+
+        <ol class="steps">
+          <li><strong>5' Capping</strong> – a 7-methylguanosine cap is added to the 5' end. Protects mRNA from degradation and is required for ribosome recognition.</li>
+          <li><strong>Intron removal (splicing)</strong> – non-coding introns are excised by the spliceosome; exons are joined together.</li>
+          <li><strong>3' Polyadenylation</strong> – a poly-A tail of ~200 adenine residues is added to the 3' end. Protects mRNA and aids export and translation.</li>
+          <li><strong>Alternative splicing</strong> – different combinations of exons can be included, producing different proteins from one gene.</li>
+        </ol>
+
+        <h3>Alternative Splicing</h3>
+        <p>The same gene can generate <strong>multiple protein isoforms</strong>. E.g., exons 1+2+3+4+5 → Protein A; exons 1+2+4+5 → Protein B (different function). This massively expands the proteome beyond the ~20,000 human genes.</p>
+
+        <h3>Translation Initiation Control</h3>
+        <p><strong>Regulatory proteins</strong> can bind to the <strong>5' untranslated region (UTR)</strong> of mRNAs and prevent ribosome attachment, blocking translation. Additionally, mRNAs lacking a poly-A tail cannot be translated. Example: some egg cytoplasm mRNAs are stored in a translationally silent state — after fertilisation, a poly-A tail is added, switching translation on.</p>
+
+        <h3>RNA Editing</h3>
+        <p>Even after splicing, individual bases in the mRNA can be chemically altered:</p>
+        <div class="key-box orange">
+          <div class="kbtitle">Classic Example – Apolipoprotein B (ApoB)</div>
+          ApoB mRNA is produced in both the <strong>liver</strong> and <strong>small intestine</strong>. In the intestine only, a cytidine deaminase converts the <strong>C in codon CAA</strong> (glutamine) to U, creating <strong>UAA</strong> — a stop codon. This produces a <strong>shorter ApoB-48</strong> protein in the intestine vs full-length <strong>ApoB-100</strong> in the liver. Two different proteins from one gene!
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Translation & mRNA stability (Transferrin) -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">05</div>
+          <div>
+            <div class="section-title">mRNA Stability: The Transferrin Receptor</div>
+            <div class="section-subtitle">Iron-responsive elements (IREs) & IRPs</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>Context</h3>
+        <p><strong>Transferrin</strong> is a plasma protein that transports iron. It binds to <strong>transferrin receptors (TfRs)</strong> on cell surfaces. The cell must regulate TfR expression based on its iron needs.</p>
+
+        <h3>The IRE–IRP system</h3>
+        <ul>
+          <li>The TfR mRNA has <strong>iron-responsive elements (IREs)</strong> — stem-loop structures — in its <strong>3' UTR</strong>.</li>
+          <li>IREs can bind <strong>iron-regulatory proteins (IRPs)</strong>.</li>
+        </ul>
+
+        <div class="compare">
+          <div class="compare-col">
+            <div class="col-title">Low intracellular iron</div>
+            <ul>
+              <li>IRPs have no iron to bind</li>
+              <li>IRPs bind to IREs on TfR mRNA</li>
+              <li>mRNA is <strong>stabilised</strong> → more TfR synthesised</li>
+              <li>Cell imports more iron via transferrin</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="col-title">High intracellular iron</div>
+            <ul>
+              <li>IRPs preferentially bind iron (not IREs)</li>
+              <li>IREs are unbound → mRNA is <strong>degraded</strong></li>
+              <li>Less TfR made</li>
+              <li>Iron import decreases</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-box green">
+          <div class="kbtitle">Elegant feedback</div>
+          The IRE–IRP system is a classic post-transcriptional feedback loop: iron regulates the stability of the very mRNA that encodes the protein responsible for importing iron.
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Protein modification -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">06</div>
+          <div>
+            <div class="section-title">Regulation by Modifying Proteins</div>
+            <div class="section-subtitle">Ubiquitin–proteasome system & lysosomal degradation</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>The Ubiquitin–Proteasome Pathway</h3>
+        <p>Cells need to degrade damaged, misfolded, or regulatory proteins in a controlled, ATP-dependent way.</p>
+
+        <ol class="steps">
+          <li><strong>Ubiquitination</strong>: Small globular ubiquitin proteins are covalently attached to the target protein.</li>
+          <li><strong>Polyubiquitin chain</strong>: Multiple ubiquitin molecules are added, forming a chain — this is the degradation signal.</li>
+          <li><strong>Recognition by proteasome</strong>: The 26S proteasome recognises the polyubiquitin tag.</li>
+          <li><strong>Unfolding & degradation</strong>: The proteasome unfolds the protein and cleaves it into short peptides (amino acids enter the amino acid pool).</li>
+          <li><strong>Ubiquitin recycling</strong>: Ubiquitin molecules are released and reused.</li>
+        </ol>
+
+        <div class="key-box red">
+          <div class="kbtitle">⚡ Energy note</div>
+          The ubiquitin–proteasome pathway is <strong>ATP-dependent</strong>. This distinguishes it from lysosomal degradation, which uses acid hydrolysis and does <strong>not</strong> require energy (ATP).
+        </div>
+
+        <h3>Lysosomal Degradation</h3>
+        <p>Proteins can also be degraded in <strong>lysosomes</strong> via acid hydrolases. This is an energy-independent process and is particularly important for extracellular proteins taken up by endocytosis.</p>
+
+        <div class="pearl">
+          <span class="pearl-icon">💊</span>
+          <div class="pearl-body">
+            <strong>Clinical Pearl – Proteasome Inhibitors</strong>
+            Bortezomib (Velcade) inhibits the 26S proteasome and is used to treat multiple myeloma. By blocking protein degradation, it causes accumulation of pro-apoptotic proteins in cancer cells.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Hormones & HREs -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">07</div>
+          <div>
+            <div class="section-title">Hormones & Gene Programmes</div>
+            <div class="section-subtitle">HREs, cis/trans elements, intracellular vs cell-surface receptors</div>
+          </div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <h3>How hormones regulate genes</h3>
+        <p>Hormones act as signals to switch entire gene programmes on or off. They do so via <strong>hormone-responsive elements (HREs)</strong> — specific DNA sequences that act as <em>cis</em>-acting regulatory sequences. These are bound by <em>trans</em>-acting protein factors (transcription factors).</p>
+
+        <div class="compare">
+          <div class="compare-col">
+            <div class="col-title">Intracellular Receptors (e.g. Steroids)</div>
+            <ul>
+              <li>Steroid hormones (e.g. cortisol) are <strong>lipid-soluble</strong> → cross the membrane</li>
+              <li>Bind to intracellular receptor → conformational change exposes DNA-binding domain</li>
+              <li>Hormone-receptor complex (dimer) enters nucleus</li>
+              <li>Binds to <strong>GRE</strong> (glucocorticoid response element)</li>
+              <li>Recruits coactivators → activates RNA Pol II → gene transcription</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <div class="col-title">Cell-Surface Receptors (e.g. Glucagon)</div>
+            <ul>
+              <li>Peptide hormones (e.g. glucagon) are <strong>water-soluble</strong> → cannot cross the membrane</li>
+              <li>Bind cell-surface receptor → activates adenylyl cyclase → ATP → <strong>cAMP</strong></li>
+              <li>cAMP activates PKA → phosphorylates <strong>CREB</strong> transcription factor</li>
+              <li>Phospho-CREB binds to <strong>CRE</strong> (cAMP response element)</li>
+              <li>Activates transcription machinery</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-box">
+          <div class="kbtitle">Terminology</div>
+          <strong>Cis-acting</strong> elements (HREs, enhancers, silencers) are DNA sequences on the same chromosome as the gene they regulate. <strong>Trans-acting</strong> factors (TFs, activators, repressors) are proteins encoded elsewhere that diffuse to and bind the cis elements.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content tab -->
+
+  <!-- ═══════════════ SUMMARY TAB ═══════════════ -->
+  <div id="tab-summary" class="tab-panel">
+    <div class="section-card open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">∑</div>
+          <div><div class="section-title">Quick-Reference Summary Table</div></div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body" style="padding-top:16px;">
+        <table class="sum-table">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Mechanism</th>
+              <th>Key Players</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chromatin</strong></td>
+              <td>Histone acetylation / deacetylation</td>
+              <td>HATs, HDACs, histones H2A/B/H3/H4</td>
+              <td>Open (euchromatin) or closed (heterochromatin)</td>
+            </tr>
+            <tr>
+              <td><strong>Transcription</strong></td>
+              <td>TF binding to promoter; enhancers/silencers</td>
+              <td>Activators, repressors, coactivators, RNA Pol II, TATA box</td>
+              <td>Gene ON or OFF</td>
+            </tr>
+            <tr>
+              <td><strong>mRNA processing</strong></td>
+              <td>Capping, splicing, polyadenylation, alternative splicing</td>
+              <td>Spliceosome, poly-A polymerase</td>
+              <td>Multiple proteins from one gene</td>
+            </tr>
+            <tr>
+              <td><strong>RNA editing</strong></td>
+              <td>Base deamination (C→U)</td>
+              <td>ApoB, cytidine deaminase</td>
+              <td>ApoB-100 (liver) vs ApoB-48 (intestine)</td>
+            </tr>
+            <tr>
+              <td><strong>mRNA stability</strong></td>
+              <td>IRE–IRP binding protects or exposes mRNA</td>
+              <td>TfR mRNA, IREs, IRPs, iron</td>
+              <td>TfR expression regulated by iron levels</td>
+            </tr>
+            <tr>
+              <td><strong>Translation</strong></td>
+              <td>5' UTR binding by regulatory proteins; poly-A tail</td>
+              <td>Regulatory proteins, poly-A tail</td>
+              <td>Ribosome access blocked or permitted</td>
+            </tr>
+            <tr>
+              <td><strong>Protein degradation</strong></td>
+              <td>Ubiquitin tagging → proteasome; lysosomal acid hydrolysis</td>
+              <td>Ubiquitin, 26S proteasome, lysosomes</td>
+              <td>Protein half-life controlled; amino acid recycling</td>
+            </tr>
+            <tr>
+              <td><strong>Hormone signalling</strong></td>
+              <td>HRE binding by hormone-receptor complexes</td>
+              <td>GR/GRE (steroids), CREB/CRE (cAMP pathway)</td>
+              <td>Entire gene programmes switched on/off</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-num">⚡</div>
+          <div><div class="section-title">High-Yield Exam Facts</div></div>
+        </div>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="section-body">
+        <ul style="font-size:14px; margin-top:12px;">
+          <li>Nucleosome core = <strong>H2A, H2B, H3, H4 (×2)</strong>. H1 is the <em>linker</em> histone.</li>
+          <li>Euchromatin = <strong>acetylated</strong> (open, active). Heterochromatin = <strong>deacetylated</strong> (closed, silent).</li>
+          <li>RNA Pol II needs transcription factors; alone it cannot initiate transcription.</li>
+          <li>Enhancers work by <strong>DNA looping</strong> and can be far from the promoter.</li>
+          <li>ApoB: liver makes <strong>ApoB-100</strong>; intestine makes <strong>ApoB-48</strong> via C→U RNA editing (CAA→UAA stop codon).</li>
+          <li>Low iron → IRPs bind IREs → TfR mRNA stabilised → more iron uptake.</li>
+          <li>High iron → IRPs bind iron → IREs unbound → TfR mRNA degraded → less uptake.</li>
+          <li>Ubiquitin-proteasome: ATP-dependent. Lysosomal degradation: energy-<strong>independent</strong>.</li>
+          <li>Steroids use <strong>intracellular</strong> receptors (GRE). Glucagon uses <strong>cell-surface</strong> receptor → cAMP → CREB/CRE.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MCQ TAB ═══════════════ -->
+  <div id="tab-mcq" class="tab-panel">
+    <div class="score-bar">
+      <div>Score: <span class="score-num" id="scoreDisplay">0 / 15</span></div>
+      <button class="reset-btn" onclick="resetMCQ()">↺ Reset</button>
+    </div>
+    <div class="mcq-wrap" id="mcqContainer"></div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+/* ── Theme ── */
+function toggleTheme(){
+  const b = document.body;
+  b.setAttribute('data-theme', b.getAttribute('data-theme')==='light' ? '' : 'light');
+}
+
+/* ── Tabs ── */
+function showTab(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── Sections ── */
+function toggleSection(header){
+  header.parentElement.classList.toggle('open');
+}
+
+/* ── MCQ Data ── */
+const questions = [
+  {
+    q: "Which of the following best describes euchromatin?",
+    opts: [
+      "Tightly packed DNA inaccessible to RNA polymerase",
+      "Loosely packed chromatin associated with active transcription",
+      "DNA condensed by histone deacetylases",
+      "Chromatin found exclusively in centromeres"
+    ],
+    ans: 1,
+    exp: "Euchromatin is loosely packed, contains acetylated histones (via HATs), and represents actively transcribed regions. Heterochromatin is the tightly packed, transcriptionally silent form."
+  },
+  {
+    q: "What is the primary effect of histone acetyltransferases (HATs) on chromatin?",
+    opts: [
+      "They add methyl groups to histone tails, compacting DNA",
+      "They acetylate lysine residues on histones, reducing DNA-histone affinity and opening chromatin",
+      "They deacetylate histones, forming heterochromatin",
+      "They phosphorylate RNA polymerase to initiate transcription"
+    ],
+    ans: 1,
+    exp: "HATs add acetyl groups (from Acetyl-CoA) to lysine residues on histone tails. This neutralises the positive charge of lysine, weakening its interaction with negatively-charged DNA, opening up chromatin (euchromatin)."
+  },
+  {
+    q: "A nucleosome core particle consists of:",
+    opts: [
+      "Two copies each of H1, H2A, H2B, and H3",
+      "One copy each of H1, H2A, H2B, H3, and H4",
+      "Two copies each of H2A, H2B, H3, and H4",
+      "Four copies of H1 with associated linker DNA"
+    ],
+    ans: 2,
+    exp: "The nucleosome core is an octamer of two copies each of H2A, H2B, H3, and H4 around which ~147 bp of DNA is wound. H1 is the linker histone that sits outside the core."
+  },
+  {
+    q: "Transcription factors are required because:",
+    opts: [
+      "They synthesise the mRNA directly",
+      "RNA polymerase II cannot bind the promoter without them",
+      "They remove introns from pre-mRNA",
+      "They form the ribosome subunits needed for translation"
+    ],
+    ans: 1,
+    exp: "Eukaryotic RNA polymerase II requires a set of transcription factors (general/basal TFs) to assemble at the promoter (particularly the TATA box) before it can initiate transcription."
+  },
+  {
+    q: "An enhancer sequence differs from a promoter in that:",
+    opts: [
+      "Enhancers are found only downstream of the coding sequence",
+      "Enhancers can be thousands of base pairs away from the gene and act via DNA looping",
+      "Enhancers directly bind RNA polymerase II without needing activator proteins",
+      "Enhancers only function in heterochromatin"
+    ],
+    ans: 1,
+    exp: "Enhancers are cis-acting DNA elements that can be very far upstream (or downstream) from the promoter. Activator proteins bound to enhancers contact the transcription initiation complex at the promoter through DNA looping."
+  },
+  {
+    q: "Alternative splicing of pre-mRNA allows a single gene to produce multiple proteins. This works by:",
+    opts: [
+      "Duplicating the gene before transcription",
+      "Including different combinations of exons in the mature mRNA",
+      "Adding extra nucleotides to the 3' poly-A tail",
+      "Changing the reading frame at the start codon"
+    ],
+    ans: 1,
+    exp: "Alternative splicing involves the spliceosome including or excluding specific exons, generating different mRNA variants from the same pre-mRNA. This dramatically expands proteome diversity."
+  },
+  {
+    q: "What modification to the 3' end of mRNA is required for its translation?",
+    opts: [
+      "Addition of a 7-methylguanosine cap",
+      "Removal of all introns",
+      "Addition of a poly-A tail",
+      "Binding of an iron-regulatory protein"
+    ],
+    ans: 2,
+    exp: "A poly-A tail (~200 adenosine residues) added to the 3' end is essential for mRNA stability, nuclear export, and efficient translation. mRNAs without a poly-A tail cannot be translated."
+  },
+  {
+    q: "In RNA editing of the ApoB mRNA in the small intestine:",
+    opts: [
+      "An adenosine is converted to inosine, creating a longer protein",
+      "A cytidine is deaminated to uridine, converting a glutamine codon (CAA) to a stop codon (UAA)",
+      "An intron is retained, adding extra sequence to produce ApoB-100",
+      "The 5' cap is methylated differently, altering ribosome binding"
+    ],
+    ans: 1,
+    exp: "In intestinal cells, cytidine deaminase converts the C in codon CAA (Gln) to U, producing UAA — a stop codon. This truncates the protein to ApoB-48. The liver lacks this editing and produces the full ApoB-100."
+  },
+  {
+    q: "When intracellular iron levels are HIGH, what happens to transferrin receptor (TfR) expression?",
+    opts: [
+      "IRPs bind to IREs on TfR mRNA, stabilising it and increasing TfR production",
+      "IRPs preferentially bind iron, leaving IREs unbound; the mRNA is degraded and TfR production falls",
+      "More mRNA is transcribed from the TfR gene to compensate",
+      "The TfR protein is ubiquitinated and destroyed by the proteasome"
+    ],
+    ans: 1,
+    exp: "High iron causes IRPs to bind iron rather than IREs. Without IRP protection, the TfR mRNA is degraded, reducing TfR synthesis and limiting further iron import — a negative feedback loop."
+  },
+  {
+    q: "Iron-responsive elements (IREs) on TfR mRNA are located at the:",
+    opts: [
+      "5' cap site",
+      "Start codon region",
+      "3' untranslated region (3' UTR)",
+      "Intron sequences"
+    ],
+    ans: 2,
+    exp: "TfR mRNA has multiple IRE stem-loop structures in its 3' UTR. When IRPs bind these elements, the mRNA is protected from endonucleolytic cleavage and stabilised."
+  },
+  {
+    q: "In the ubiquitin–proteasome pathway, which of the following is CORRECT?",
+    opts: [
+      "It requires no energy (ATP) and occurs spontaneously in the cytoplasm",
+      "A polyubiquitin chain is attached to the target protein, which is then degraded by the 26S proteasome in an ATP-dependent manner",
+      "Ubiquitin is permanently degraded along with the target protein",
+      "It occurs exclusively in lysosomes via acid hydrolysis"
+    ],
+    ans: 1,
+    exp: "The ubiquitin–proteasome pathway is ATP-dependent. Ubiquitin is recycled after degradation. Lysosomal degradation is the separate, energy-independent pathway using acid hydrolases."
+  },
+  {
+    q: "How does cortisol (a steroid hormone) regulate gene expression?",
+    opts: [
+      "It binds a cell-surface receptor, generating cAMP and activating CREB",
+      "It is lipid-soluble, crosses the membrane, binds the glucocorticoid receptor, and the complex binds GREs to regulate transcription",
+      "It directly inhibits histone deacetylases, forcing chromatin to open",
+      "It binds IREs on specific mRNAs to stabilise them"
+    ],
+    ans: 1,
+    exp: "Cortisol is a steroid and uses an intracellular (cytoplasmic/nuclear) receptor. The cortisol-GR complex dimerises, translocates to the nucleus, and binds glucocorticoid response elements (GREs) to regulate target gene transcription."
+  },
+  {
+    q: "Glucagon regulates gene expression via which second messenger pathway?",
+    opts: [
+      "Glucagon → intracellular receptor → GRE → transcription",
+      "Glucagon → cell-surface receptor → adenylyl cyclase → cAMP → PKA → CREB phosphorylation → CRE binding → transcription",
+      "Glucagon → IRE binding → mRNA stabilisation",
+      "Glucagon → HDAC activation → heterochromatin formation"
+    ],
+    ans: 1,
+    exp: "Glucagon is a peptide hormone that cannot cross the membrane. It binds a G-protein coupled receptor, activates adenylyl cyclase, increases cAMP, activates PKA, which phosphorylates CREB. Phospho-CREB then binds the CRE and activates transcription."
+  },
+  {
+    q: "A researcher finds that a cell line produces an mRNA but no protein is made. The 5' UTR contains a regulatory element. Which mechanism best explains this?",
+    opts: [
+      "The gene's enhancer has been deleted",
+      "A regulatory protein bound to the 5' UTR is blocking ribosome attachment",
+      "The poly-A tail has been extended beyond 200 nucleotides",
+      "The gene has been methylated and moved to heterochromatin"
+    ],
+    ans: 1,
+    exp: "Regulatory proteins binding the 5' UTR can sterically block ribosome attachment to the mRNA, preventing translation initiation — a post-transcriptional control mechanism."
+  },
+  {
+    q: "Which statement correctly compares the two main intracellular protein degradation routes?",
+    opts: [
+      "Both the proteasome and lysosomes are ATP-dependent",
+      "The proteasome uses acid hydrolysis; lysosomes use ubiquitin tagging",
+      "The ubiquitin–proteasome pathway is ATP-dependent; lysosomal degradation uses acid hydrolysis and does not require energy",
+      "Lysosomes degrade proteins using the 26S proteasome complex"
+    ],
+    ans: 2,
+    exp: "Key distinction: ubiquitin–proteasome = ATP-dependent, cytosolic, for specific tagged proteins. Lysosomal = acid hydrolases, energy-independent, handles extracellular/bulk proteins."
+  }
+];
+
+/* ── MCQ Engine ── */
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+function buildMCQ(){
+  const c = document.getElementById('mcqContainer');
+  c.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = 'card-'+qi;
+
+    const qtext = document.createElement('div');
+    qtext.className = 'mcq-q';
+    qtext.innerHTML = `<span class="qnum">Q${qi+1}.</span>${q.q}`;
+    card.appendChild(qtext);
+
+    const opts = document.createElement('div');
+    opts.className = 'mcq-opts';
+    q.opts.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = `${['A','B','C','D'][oi]}. ${opt}`;
+      btn.onclick = () => answer(qi, oi, btn);
+      opts.appendChild(btn);
+    });
+    card.appendChild(opts);
+
+    const fb = document.createElement('div');
+    fb.className = 'mcq-feedback';
+    fb.id = 'fb-'+qi;
+    card.appendChild(fb);
+
+    c.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qi, oi, btn){
+  if(answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const card = document.getElementById('card-'+qi);
+  const fb = document.getElementById('fb-'+qi);
+  const btns = card.querySelectorAll('.opt-btn');
+
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+
+  if(oi === q.ans){
+    score++;
+    card.classList.add('answered-correct');
+    fb.className = 'mcq-feedback correct show';
+    fb.innerHTML = `<strong>✓ Correct!</strong> ${q.exp}`;
+  } else {
+    btn.classList.add('wrong');
+    card.classList.add('answered-wrong');
+    fb.className = 'mcq-feedback wrong show';
+    fb.innerHTML = `<strong>✗ Incorrect.</strong> ${q.exp}`;
+  }
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('scoreDisplay').textContent = `${score} / ${questions.length}`;
+}
+
+function resetMCQ(){
+  answered = new Array(questions.length).fill(false);
+  score = 0;
+  buildMCQ();
+}
+
+buildMCQ();
+</script>
+</body>
+</html>

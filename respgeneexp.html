@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gene Expression in Prokaryotes | RCSI Respiratory</title>
+<style>
+  /* ─── CSS Variables ─── */
+  :root {
+    --bg:          #0f1117;
+    --surface:     #181c26;
+    --surface2:    #1e2333;
+    --border:      #2a3047;
+    --accent:      #4f8ef7;
+    --accent2:     #38c9a0;
+    --accent3:     #f7c34f;
+    --danger:      #f75a5a;
+    --text:        #e4e8f0;
+    --text-muted:  #7a86a1;
+    --tab-active:  #4f8ef7;
+    --correct:     #38c9a0;
+    --wrong:       #f75a5a;
+    --tag-bg:      #1e2e4a;
+    --tag-text:    #4f8ef7;
+  }
+  [data-theme="light"] {
+    --bg:          #f3f5fb;
+    --surface:     #ffffff;
+    --surface2:    #edf0f8;
+    --border:      #d0d8ec;
+    --accent:      #2563eb;
+    --accent2:     #0ea87a;
+    --accent3:     #d97706;
+    --danger:      #dc2626;
+    --text:        #1a2035;
+    --text-muted:  #6b7a99;
+    --tab-active:  #2563eb;
+    --correct:     #0ea87a;
+    --wrong:       #dc2626;
+    --tag-bg:      #dbeafe;
+    --tag-text:    #1d4ed8;
+  }
+
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* ─── Header ─── */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .site-header .breadcrumb {
+    font-size: .78rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .site-header .breadcrumb a { color: var(--accent); }
+  .site-header .breadcrumb span { opacity: .5; }
+  .site-header h1 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--text);
+  }
+  .header-right { display: flex; align-items: center; gap: .75rem; }
+  .badge {
+    font-size: .7rem;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: .18rem .55rem;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: .03em;
+  }
+  .theme-toggle {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: .3rem .65rem;
+    cursor: pointer;
+    font-size: .8rem;
+    transition: background .2s;
+  }
+  .theme-toggle:hover { background: var(--border); }
+
+  /* ─── Tab Bar ─── */
+  .tabs {
+    display: flex;
+    gap: .25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    font-size: .82rem;
+    font-weight: 600;
+    padding: .75rem .9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s;
+    letter-spacing: .02em;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--tab-active); border-bottom-color: var(--tab-active); }
+
+  /* ─── Content Panes ─── */
+  .content { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .pane { display: none; }
+  .pane.active { display: block; }
+
+  /* ─── Section headings ─── */
+  .pane h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 2rem 0 .6rem;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: .01em;
+  }
+  .pane h2:first-child { margin-top: 0; }
+  .pane h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin: 1.4rem 0 .4rem;
+  }
+  .pane p { margin-bottom: .8rem; color: var(--text); }
+  .pane ul, .pane ol { padding-left: 1.4rem; margin-bottom: .9rem; }
+  .pane li { margin-bottom: .35rem; }
+  .pane strong { color: var(--text); font-weight: 700; }
+
+  /* ─── Info Cards ─── */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .card.green  { border-left-color: var(--accent2); }
+  .card.yellow { border-left-color: var(--accent3); }
+  .card.red    { border-left-color: var(--danger);  }
+
+  /* ─── Key Concept Pill ─── */
+  .pill {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: 20px;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: .15rem .55rem;
+    margin-right: .3rem;
+    margin-bottom: .3rem;
+    letter-spacing: .03em;
+  }
+
+  /* ─── Comparison Table ─── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.4rem;
+    font-size: .88rem;
+  }
+  .compare-table th {
+    background: var(--surface2);
+    color: var(--accent);
+    text-align: left;
+    padding: .6rem .9rem;
+    border-bottom: 2px solid var(--border);
+    font-weight: 700;
+    font-size: .8rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .compare-table td {
+    padding: .55rem .9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .compare-table tr:hover td { background: var(--surface2); }
+
+  /* ─── Flow Diagram ─── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    margin: 1rem 0 1.4rem;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .5rem 1rem;
+    font-size: .85rem;
+    flex: 1;
+    text-align: center;
+  }
+  .flow-box.accent  { border-color: var(--accent);  color: var(--accent);  background: var(--tag-bg); }
+  .flow-box.green   { border-color: var(--accent2); color: var(--accent2); }
+  .flow-box.yellow  { border-color: var(--accent3); color: var(--accent3); }
+  .flow-arrow { color: var(--text-muted); font-size: 1.1rem; text-align: center; }
+
+  /* ─── MCQ ─── */
+  .mcq-section { display: flex; flex-direction: column; gap: 1.5rem; }
+  .mcq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+  }
+  .mcq-q {
+    font-weight: 700;
+    font-size: .92rem;
+    margin-bottom: .9rem;
+    line-height: 1.5;
+  }
+  .mcq-q .qnum {
+    color: var(--accent);
+    font-weight: 800;
+    margin-right: .4rem;
+  }
+  .options { display: flex; flex-direction: column; gap: .45rem; }
+  .opt-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 7px;
+    padding: .55rem .85rem;
+    cursor: pointer;
+    text-align: left;
+    font-size: .87rem;
+    line-height: 1.45;
+    transition: border-color .15s, background .15s;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--tag-bg); }
+  .opt-btn .opt-letter {
+    font-weight: 800;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 1.1rem;
+  }
+  .opt-btn.correct { border-color: var(--correct); background: rgba(56,201,160,.1); }
+  .opt-btn.correct .opt-letter { color: var(--correct); }
+  .opt-btn.wrong   { border-color: var(--wrong);   background: rgba(247,90,90,.1);  }
+  .opt-btn.wrong   .opt-letter { color: var(--wrong);   }
+  .opt-btn:disabled { cursor: default; }
+  .explanation {
+    display: none;
+    margin-top: .9rem;
+    padding: .75rem 1rem;
+    background: var(--surface2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 6px;
+    font-size: .84rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent2); }
+
+  /* ─── Score Banner ─── */
+  .score-banner {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-banner.show { display: block; }
+  .score-banner .score-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .score-banner p { color: var(--text-muted); font-size: .88rem; margin-top: .3rem; }
+  .reset-btn {
+    margin-top: .8rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: .5rem 1.3rem;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .reset-btn:hover { opacity: .88; }
+
+  /* ─── Responsive ─── */
+  @media(max-width:600px){
+    .site-header h1 { font-size: .88rem; }
+    .content { padding: 1.2rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+  <div>
+    <div class="breadcrumb">
+      <a href="index.html">🏠 Home</a>
+      <span>›</span>
+      <span>Biochemistry &amp; Genetics</span>
+    </div>
+    <h1>Regulation of Gene Expression in Prokaryotes</h1>
+  </div>
+  <div class="header-right">
+    <span class="badge">Dr Lucienne Vassallo Gatt</span>
+    <button class="theme-toggle" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<!-- ─── TAB BAR ─── -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('operon',this)">The Operon</button>
+  <button class="tab-btn" onclick="showTab('lac',this)">lac Operon</button>
+  <button class="tab-btn" onclick="showTab('trp',this)">trp Operon</button>
+  <button class="tab-btn" onclick="showTab('translation',this)">Translation Control</button>
+  <button class="tab-btn" onclick="showTab('eukaryotes',this)">Eukaryote Contrast</button>
+  <button class="tab-btn" onclick="showTab('mcq',this)">MCQs ✎</button>
+</nav>
+
+<!-- ─── CONTENT ─── -->
+<main class="content">
+
+  <!-- ══════════════ OVERVIEW ══════════════ -->
+  <section id="tab-overview" class="pane active">
+    <h2>Gene Expression — The Basics</h2>
+    <p><strong>Gene expression</strong> is the process by which genetic information is converted into a biologically functional molecule — either a protein or a functional RNA (the <em>gene product</em>).</p>
+    <div class="card">
+      <strong>Two classes of genes:</strong>
+      <ul style="margin-top:.5rem">
+        <li><strong>Constitutive genes</strong> — expressed continuously to maintain basic cellular functions.</li>
+        <li><strong>Regulated genes</strong> — switched ON or OFF in response to environmental/metabolic demands. Critical for differentiation, development, and adaptation.</li>
+      </ul>
+    </div>
+
+    <h2>Prokaryotes vs. Eukaryotes</h2>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Feature</th><th>Prokaryotes</th><th>Eukaryotes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DNA location</td><td>Cytoplasm (no nucleus)</td><td>Nucleus</td></tr>
+        <tr><td>Transcription + Translation</td><td>Occur almost simultaneously</td><td>Separated by nuclear membrane</td></tr>
+        <tr><td>mRNA processing</td><td>Minimal / none</td><td>5' cap, 3' poly-A tail, splicing of introns</td></tr>
+        <tr><td>Introns</td><td>Rare / absent</td><td>Abundant — exons interrupted by introns</td></tr>
+        <tr><td>Primary control point</td><td>Transcriptional level</td><td>Mainly transcriptional; also post-transcriptional &amp; post-translational</td></tr>
+        <tr><td>mRNA</td><td>Polycistronic (multiple proteins from one mRNA)</td><td>Monocistronic</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Gene Components</h2>
+    <p>Every gene contains:</p>
+    <ul>
+      <li><strong>Exons</strong> — coding sequences that appear in mature mRNA</li>
+      <li><strong>Introns</strong> — non-coding intervening sequences (spliced out in eukaryotes)</li>
+      <li><strong>Start &amp; Stop signals</strong> — mark where transcription/translation begins and ends</li>
+      <li><strong>Regulatory control elements</strong> — DNA sequences that modulate transcription</li>
+    </ul>
+
+    <h2>Control of Transcription</h2>
+    <div class="card yellow">
+      <strong>Cis-acting elements</strong> — DNA sequences flanking the gene on the <em>same chromosome</em> (e.g. promoters, operators, enhancers). They have no product; they are sites on DNA.
+    </div>
+    <div class="card">
+      <strong>Trans-acting factors</strong> — Molecules (usually proteins) that bind to cis-acting DNA sequences to activate or repress transcription. They are typically encoded on a <em>different chromosome</em> and diffuse to their target. Trans factors can be both activators and repressors.
+    </div>
+    <p>In prokaryotes, trans-acting proteins bind regulatory elements in bacterial DNA to start or stop transcription.</p>
+  </section>
+
+  <!-- ══════════════ THE OPERON ══════════════ -->
+  <section id="tab-operon" class="pane">
+    <h2>The Operon Model</h2>
+    <p>An <strong>operon</strong> is an entire segment of bacterial DNA comprising a cluster of genes arranged in sequence, transcribed as a single unit into one <strong>polycistronic mRNA</strong>. This allows co-regulation of functionally related genes with a single switch.</p>
+
+    <h3>Structural Components</h3>
+    <table class="compare-table">
+      <thead><tr><th>Component</th><th>Symbol</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Regulatory gene</strong></td><td>I</td><td>Encodes the repressor protein (trans-acting factor)</td></tr>
+        <tr><td><strong>Promoter</strong></td><td>P</td><td>RNA polymerase binding site — where transcription is initiated</td></tr>
+        <tr><td><strong>Operator</strong></td><td>O</td><td>Cis-acting DNA sequence; repressor binds here to block transcription</td></tr>
+        <tr><td><strong>Structural genes</strong></td><td>X, Y, Z (or lacZ, lacY, lacA)</td><td>Genes encoding the functional proteins; transcribed together into polycistronic mRNA</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card green">
+      <strong>Key principle:</strong> The operon allows a bacterium to respond rapidly to metabolic changes by switching entire metabolic pathways on or off in a single transcriptional event.
+    </div>
+
+    <h3>Regulatory Logic</h3>
+    <div class="flow">
+      <div class="flow-row"><div class="flow-box accent">Regulatory gene (I)</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ encodes</div></div>
+      <div class="flow-row"><div class="flow-box yellow">Repressor protein</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ binds to</div></div>
+      <div class="flow-row"><div class="flow-box">Operator (O)</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ blocks RNA polymerase at</div></div>
+      <div class="flow-row"><div class="flow-box">Promoter (P)</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ preventing transcription of</div></div>
+      <div class="flow-row"><div class="flow-box green">Structural genes (X, Y, Z) → polycistronic mRNA → proteins</div></div>
+    </div>
+
+    <h3>Two Major Examples</h3>
+    <ul>
+      <li><strong>lac operon</strong> — inducible; normally OFF, turned ON when lactose is present (negative control + positive control)</li>
+      <li><strong>trp operon</strong> — repressible; normally ON, turned OFF when tryptophan is abundant (negative control via co-repressor)</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════ LAC OPERON ══════════════ -->
+  <section id="tab-lac" class="pane">
+    <h2>The lac Operon — Inducible System</h2>
+    <p>Controls genes encoding enzymes for <strong>lactose metabolism</strong> in <em>E. coli</em>. It has dual control: <strong>negative control</strong> (repressor) and <strong>positive control</strong> (CAP/cAMP).</p>
+
+    <h3>Structural Genes</h3>
+    <table class="compare-table">
+      <thead><tr><th>Gene</th><th>Protein Encoded</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td>lacZ</td><td>β-galactosidase</td><td>Cleaves lactose → glucose + galactose</td></tr>
+        <tr><td>lacY</td><td>Galactoside permease</td><td>Membrane transporter; brings lactose into the cell</td></tr>
+        <tr><td>lacA</td><td>Thiogalactosidase transacetylase</td><td>Acetylates non-metabolisable galactosides for excretion</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Scenario A — Glucose present, No lactose → Operon OFF</h2>
+    <div class="card red">
+      <ul>
+        <li>Repressor protein (lacI product) binds the operator → <strong>blocks RNA polymerase</strong> → no mRNA, no enzymes</li>
+        <li>Glucose activates adenylyl cyclase inhibition → <strong>low cAMP</strong> → CAP unbound → CAP binding site empty → RNA pol cannot initiate efficiently (catabolite repression)</li>
+        <li><strong>Double off</strong>: repressor blocks, and CAP positive signal absent</li>
+      </ul>
+    </div>
+
+    <h2>Scenario B — No glucose, Lactose present → Operon ON</h2>
+    <div class="card green">
+      <ul>
+        <li>A small amount of lactose enters via baseline permease → converted to <strong>allolactose</strong> (the true inducer)</li>
+        <li>Allolactose binds repressor → <strong>conformational change</strong> → repressor can no longer bind operator → operator free</li>
+        <li>Absence of glucose → adenylyl cyclase <strong>active</strong> → high cAMP → cAMP binds <strong>CAP</strong> → CAP-cAMP complex binds CAP binding site → <strong>stimulates RNA polymerase</strong></li>
+        <li>Both barriers removed: transcription proceeds → lacZ, lacY, lacA expressed</li>
+      </ul>
+    </div>
+
+    <h2>Scenario C — Both glucose AND lactose present → Operon OFF</h2>
+    <div class="card yellow">
+      <p><strong>Critical exam point:</strong> Even though allolactose inactivates the repressor, glucose suppresses cAMP production → CAP binding site remains empty → RNA polymerase cannot efficiently initiate → <strong>operon is OFF</strong>.</p>
+      <p>This is <strong>catabolite repression</strong> — the cell preferentially uses glucose (the preferred energy source) over lactose.</p>
+    </div>
+
+    <h3>Summary Table</h3>
+    <table class="compare-table">
+      <thead><tr><th>Glucose</th><th>Lactose</th><th>Repressor state</th><th>CAP state</th><th>Transcription</th></tr></thead>
+      <tbody>
+        <tr><td>+</td><td>−</td><td>Active (bound to operator)</td><td>Inactive (no cAMP)</td><td>None</td></tr>
+        <tr><td>−</td><td>+</td><td>Inactive (allolactose bound)</td><td>Active (cAMP bound)</td><td>Maximum</td></tr>
+        <tr><td>+</td><td>+</td><td>Inactive</td><td>Inactive (no cAMP)</td><td>None / minimal</td></tr>
+        <tr><td>−</td><td>−</td><td>Active</td><td>Active (cAMP present)</td><td>None (repressor blocks)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card">
+      <strong>Catabolite repression mechanism:</strong> Glucose inhibits adenylyl cyclase → ↓ cAMP → CAP not activated → even with repressor off, RNA polymerase lacks the positive boost needed. The CAP-cAMP complex is a classical example of a positive activator (trans-acting factor) binding a cis-acting element.
+    </div>
+  </section>
+
+  <!-- ══════════════ TRP OPERON ══════════════ -->
+  <section id="tab-trp" class="pane">
+    <h2>The trp Operon — Repressible System</h2>
+    <p>Controls five genes (trpE, trpD, trpC, trpB, trpA) encoding enzymes for <strong>tryptophan biosynthesis</strong>. This is the opposite logic to the lac operon — the system is <strong>normally ON</strong> and turns OFF when tryptophan is available.</p>
+
+    <h3>Repressor Control</h3>
+    <div class="card">
+      <ul>
+        <li>The trp repressor protein alone is <strong>inactive (aporepressor)</strong> — cannot bind the operator on its own</li>
+        <li>Tryptophan acts as a <strong>co-repressor</strong> — it binds the aporepressor, causing a conformational change</li>
+        <li>Tryptophan-repressor complex → <strong>binds operator</strong> → blocks RNA polymerase → synthesis of trp biosynthesis enzymes stops</li>
+        <li>When tryptophan is absent → repressor dissociates from operator → RNA polymerase proceeds → tryptophan produced</li>
+      </ul>
+    </div>
+
+    <table class="compare-table">
+      <thead><tr><th>Tryptophan present?</th><th>Repressor state</th><th>Operator</th><th>Transcription</th></tr></thead>
+      <tbody>
+        <tr><td>Yes (high)</td><td>Active (trp + aporepressor)</td><td>Blocked</td><td>Stopped</td></tr>
+        <tr><td>No (low)</td><td>Inactive (aporepressor alone)</td><td>Free</td><td>Proceeds</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Attenuation — Additional Fine-Tuning</h2>
+    <p>The trp operon has a second, more nuanced control layer called <strong>attenuation</strong>, unique to bacteria (relies on coupled transcription-translation).</p>
+    <div class="card yellow">
+      <ul>
+        <li>A <strong>leader sequence (attenuator region)</strong> precedes the structural genes</li>
+        <li>The leader mRNA can fold into two alternative secondary structures:
+          <ol>
+            <li>A <strong>hairpin loop = transcription terminator</strong> → premature termination</li>
+            <li>An <strong>antiterminator structure</strong> → allows read-through</li>
+          </ol>
+        </li>
+        <li>The choice depends on <strong>ribosome position</strong> on the nascent leader mRNA</li>
+        <li><strong>If tryptophan is abundant</strong>: charged tRNA<sup>Trp</sup> available → ribosome translates smoothly through the leader → stalls at a specific position → <strong>terminator hairpin</strong> forms → transcription terminated prematurely</li>
+        <li><strong>If tryptophan is scarce</strong>: uncharged tRNA<sup>Trp</sup> → ribosome stalls earlier → <strong>antiterminator hairpin</strong> forms instead → transcription continues into structural genes</li>
+      </ul>
+    </div>
+
+    <div class="card green">
+      <strong>Why attenuation works only in prokaryotes:</strong> It requires the ribosome to be translating the mRNA <em>as it is being transcribed</em> — only possible because transcription and translation are coupled in the cytoplasm. Eukaryotes cannot do this (nucleus separates the two processes).
+    </div>
+
+    <h3>lac vs trp — Comparative Summary</h3>
+    <table class="compare-table">
+      <thead><tr><th>Feature</th><th>lac operon</th><th>trp operon</th></tr></thead>
+      <tbody>
+        <tr><td>Default state</td><td>OFF (repressed)</td><td>ON (expressed)</td></tr>
+        <tr><td>Type</td><td>Inducible</td><td>Repressible</td></tr>
+        <tr><td>Signal molecule</td><td>Allolactose (inducer)</td><td>Tryptophan (co-repressor)</td></tr>
+        <tr><td>Signal action</td><td>Inactivates repressor → ON</td><td>Activates repressor → OFF</td></tr>
+        <tr><td>Additional control</td><td>CAP-cAMP (positive control)</td><td>Attenuation</td></tr>
+        <tr><td>Metabolic logic</td><td>Catabolism: use substrate if glucose absent</td><td>Biosynthesis: don't make what you already have</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══════════════ TRANSLATION CONTROL ══════════════ -->
+  <section id="tab-translation" class="pane">
+    <h2>Regulation at the rRNA Level &amp; Translation</h2>
+    <p>Gene expression in prokaryotes can also be regulated <em>after</em> transcription, at the level of translation and ribosome function.</p>
+
+    <h3>The Stringent Response (Amino Acid Starvation)</h3>
+    <div class="card red">
+      <p><strong>Trigger:</strong> Amino acid starvation → uncharged (empty) tRNAs accumulate in the A site of the 70S ribosome.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-row"><div class="flow-box yellow">Uncharged tRNA in ribosomal A site</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ activates</div></div>
+      <div class="flow-row"><div class="flow-box accent">Stringent factor (RelA protein)</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ catalyses: ATP + GDP →</div></div>
+      <div class="flow-row"><div class="flow-box yellow">ppGpp (Guanosine 5'-diphosphate 3'-diphosphate)</div></div>
+      <div class="flow-row"><div class="flow-arrow">↓ causes</div></div>
+      <div class="flow-row"><div class="flow-box red">Selective inhibition of transcription of rRNA, tRNA, and some mRNAs</div></div>
+    </div>
+
+    <div class="card green">
+      <strong>Key nuance:</strong> ppGpp does <em>NOT</em> inhibit mRNAs coding for amino acid biosynthesis enzymes — so new amino acids can still be produced to relieve starvation. Only ribosome-related transcription is suppressed.
+    </div>
+
+    <table class="compare-table">
+      <thead><tr><th>What ppGpp inhibits</th><th>What ppGpp does NOT inhibit</th></tr></thead>
+      <tbody>
+        <tr><td>rRNA transcription</td><td>mRNA for amino acid biosynthesis</td></tr>
+        <tr><td>tRNA transcription</td><td>(so cells can still make amino acids)</td></tr>
+        <tr><td>Some mRNAs (growth-related)</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Stringent Controls</h3>
+    <ul>
+      <li>Minimise protein synthesis globally until amino acids become available again</li>
+      <li>Prevent wasteful production of ribosomes that have no substrates</li>
+      <li>This is an emergency energy-conservation response</li>
+    </ul>
+
+    <h3>Excess Ribosomal Proteins</h3>
+    <div class="card">
+      <p>Ribosomal proteins are made in equimolar amounts with rRNA. If rRNA synthesis falls (e.g. during starvation), <strong>excess ribosomal proteins accumulate</strong>. These can then bind to their own mRNA and <strong>inhibit translation</strong> as a feedback mechanism — preventing further ribosomal protein production.</p>
+    </div>
+
+    <h3>Summary of Regulatory Levels in Prokaryotes</h3>
+    <ul>
+      <li><strong>Primary:</strong> Transcriptional control (operons, repressors, activators)</li>
+      <li><strong>Secondary:</strong> Attenuation (coupled transcription-translation hairpin)</li>
+      <li><strong>Tertiary:</strong> Translational control (ppGpp stringent response, ribosomal protein feedback)</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════ EUKARYOTES ══════════════ -->
+  <section id="tab-eukaryotes" class="pane">
+    <h2>More Complex Gene Regulation in Eukaryotes</h2>
+    <p>Eukaryotic gene regulation is substantially more complex, with control exerted at multiple stages. Most control still occurs at the <strong>transcriptional level</strong>, but additional layers exist.</p>
+
+    <h3>Transcriptional Initiation Complex</h3>
+    <div class="card">
+      <p>RNA Polymerase II (the enzyme for mRNA genes in eukaryotes) <strong>cannot initiate transcription alone</strong>. It requires assembly of a full complex:</p>
+      <ul style="margin-top:.5rem">
+        <li><strong>GTFs (General Transcription Factors)</strong> — assemble at the TATA box to form the preinitiation complex with Pol II</li>
+        <li><strong>Activators (Specific Transcription Factors)</strong> — DNA-binding proteins that bind enhancer elements; have a DNA-binding domain and a transcription activation domain</li>
+        <li><strong>Co-activators / Mediator</strong> — bridge between activators and the Pol II basal machinery</li>
+      </ul>
+      <p style="margin-top:.5rem">Regulation is achieved through <em>specific combinations</em> of these protein factors — combinatorial control.</p>
+    </div>
+
+    <h3>Additional Eukaryotic Regulatory Levels</h3>
+    <table class="compare-table">
+      <thead><tr><th>Level</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Chromatin remodelling</td><td>Histone acetylation/methylation opens or condenses chromatin; DNA methylation (CpG) silences genes</td></tr>
+        <tr><td>Transcriptional</td><td>Activators, repressors, GTFs, enhancers, silencers (as above)</td></tr>
+        <tr><td>Post-transcriptional</td><td>Alternative splicing of pre-mRNA (mRNA isoforms), 5' cap, 3' poly-A tail stability, mRNA export</td></tr>
+        <tr><td>Translational</td><td>miRNA / siRNA binding to mRNA → degradation or translational silencing</td></tr>
+        <tr><td>Post-translational</td><td>Protein modification (phosphorylation, ubiquitination), protein degradation via proteasome</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card yellow">
+      <strong>Exam emphasis:</strong> <em>"Most of gene control in eukaryotes occurs at the transcriptional stage"</em> — specifically at the point of initiation complex assembly. Some DNA binding proteins inhibit transcription (transcriptional repressors).
+    </div>
+
+    <h3>Key Contrast with Prokaryotes</h3>
+    <table class="compare-table">
+      <thead><tr><th>Feature</th><th>Prokaryotes</th><th>Eukaryotes</th></tr></thead>
+      <tbody>
+        <tr><td>Operon-based control</td><td>Yes — polycistronic</td><td>No — monocistronic, no operons</td></tr>
+        <tr><td>RNA Polymerase</td><td>Single RNA pol for all RNA types</td><td>RNA Pol I (rRNA), Pol II (mRNA), Pol III (tRNA)</td></tr>
+        <tr><td>Coupled transcription-translation</td><td>Yes — enables attenuation</td><td>No — nucleus separates them</td></tr>
+        <tr><td>Chromatin</td><td>No histones (nucleoid-associated proteins)</td><td>DNA wrapped around histones — accessible chromatin needed</td></tr>
+        <tr><td>mRNA life</td><td>Typically minutes</td><td>Hours to days</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══════════════ MCQ ══════════════ -->
+  <section id="tab-mcq" class="pane">
+    <h2>Practice MCQs</h2>
+    <div id="score-banner" class="score-banner">
+      <div class="score-num" id="score-display">0 / 15</div>
+      <p id="score-msg">Complete all questions to see your score.</p>
+      <button class="reset-btn" onclick="resetQuiz()">↺ Reset Quiz</button>
+    </div>
+    <div class="mcq-section" id="mcq-container"></div>
+  </section>
+
+</main>
+
+<script>
+/* ─── Tab switching ─── */
+function showTab(id, btn) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─── Theme toggle ─── */
+function toggleTheme() {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ─── MCQ Data ─── */
+const questions = [
+  {
+    q: "In prokaryotes, which of the following is the PRIMARY site of gene expression control?",
+    opts: ["Post-translational modification","Transcriptional initiation","mRNA splicing","Ribosomal assembly"],
+    ans: 1,
+    exp: "In prokaryotes, gene expression is controlled mainly at the transcriptional level. Because there is no nuclear membrane, transcription and translation occur simultaneously, making transcriptional control the most efficient checkpoint."
+  },
+  {
+    q: "Which component of the lac operon encodes the repressor protein?",
+    opts: ["Promoter (P)","Operator (O)","Regulatory gene (I)","Structural gene lacZ"],
+    ans: 2,
+    exp: "The regulatory gene (I) encodes the repressor protein, which is a trans-acting factor. The promoter (P) is the RNA polymerase binding site; the operator (O) is the cis-acting DNA sequence where the repressor binds."
+  },
+  {
+    q: "The TRUE inducer of the lac operon is:",
+    opts: ["Lactose","Glucose","Allolactose","cAMP"],
+    ans: 2,
+    exp: "Allolactose is the actual inducer. When a small amount of lactose enters the cell via baseline permease, it is converted to allolactose by β-galactosidase. Allolactose binds the repressor protein, causing a conformational change that prevents operator binding."
+  },
+  {
+    q: "When glucose is present alongside lactose, the lac operon is switched OFF primarily because:",
+    opts: ["The repressor binds more tightly to the operator","Glucose inhibits adenylyl cyclase, reducing cAMP, so CAP cannot activate transcription","Allolactose is degraded by glucose","Lactose cannot enter the cell"],
+    ans: 1,
+    exp: "Glucose inhibits adenylyl cyclase → low cAMP → CAP remains unbound → CAP binding site on DNA is empty → RNA polymerase cannot efficiently initiate transcription. This is catabolite repression. The repressor may already be inactive (due to allolactose), but the positive activation signal from CAP-cAMP is absent."
+  },
+  {
+    q: "CAP (catabolite activator protein) increases transcription of the lac operon when:",
+    opts: ["Glucose levels are high","cAMP levels are high and glucose is absent","Lactose levels are low","The repressor is bound to the operator"],
+    ans: 1,
+    exp: "When glucose is absent, adenylyl cyclase is active and produces cAMP. cAMP binds CAP, and the CAP-cAMP complex binds the CAP binding site near the promoter, stimulating RNA polymerase and enhancing transcription. This is positive control."
+  },
+  {
+    q: "The trp operon is best described as:",
+    opts: ["An inducible operon — normally OFF, turned ON by tryptophan","A repressible operon — normally ON, turned OFF when tryptophan is abundant","An inducible operon — normally ON, turned OFF by tryptophan","A constitutive operon — always expressed"],
+    ans: 1,
+    exp: "The trp operon is repressible. It is normally ON because its aporepressor alone cannot bind the operator. When tryptophan (the co-repressor) binds the aporepressor, the complex changes conformation, binds the operator, and blocks transcription. The cell shuts off production when the end product is already available."
+  },
+  {
+    q: "In the trp operon, tryptophan acts as a:",
+    opts: ["Inducer","Activator","Co-repressor","Allosteric inhibitor of RNA polymerase"],
+    ans: 2,
+    exp: "Tryptophan is a co-repressor — it binds to the inactive aporepressor (the trp repressor gene product) to create the active repressor complex. This complex then binds the trp operator and blocks transcription of the tryptophan biosynthesis genes."
+  },
+  {
+    q: "Attenuation in the trp operon relies on which bacterial property?",
+    opts: ["Separate nucleus allowing mRNA processing before translation","Coupled transcription and translation in the cytoplasm","High-fidelity RNA splicing","Multiple RNA polymerases with different specificities"],
+    ans: 1,
+    exp: "Attenuation requires coupled transcription and translation — only possible in prokaryotes. The ribosome translates the nascent leader mRNA as it is being transcribed. The position of the ribosome (determined by availability of charged tRNA-Trp) dictates whether a terminator hairpin or an antiterminator hairpin forms in the mRNA."
+  },
+  {
+    q: "When tryptophan is SCARCE, what happens at the attenuator region of the trp operon?",
+    opts: ["The terminator hairpin forms and transcription terminates prematurely","Ribosome stalls early; the antiterminator hairpin forms and transcription continues","The repressor binds the operator more tightly","cAMP activates the attenuator"],
+    ans: 1,
+    exp: "With scarce tryptophan, uncharged tRNA-Trp is prevalent → ribosome stalls at the Trp codons in the leader → allows the antiterminator secondary structure to form in the nascent mRNA → RNA polymerase reads through into the structural genes → tryptophan biosynthesis enzymes are produced."
+  },
+  {
+    q: "A cis-acting DNA element is best defined as:",
+    opts: ["A protein that moves between chromosomes to regulate genes","A DNA sequence that regulates expression of genes on the same chromosome","An enzyme that modifies histones","A molecule that enters the cell and activates transcription"],
+    ans: 1,
+    exp: "Cis-acting elements are DNA sequences that regulate genes located on the same chromosome. They cannot diffuse — they act in position. Examples include promoters, operators, and enhancers. Trans-acting factors (usually proteins) bind to cis-acting elements."
+  },
+  {
+    q: "What does the stringent response in E. coli produce as its key signalling molecule?",
+    opts: ["cAMP","ppGpp","ATP","AMP"],
+    ans: 1,
+    exp: "During amino acid starvation, uncharged tRNA accumulates in the ribosomal A site, activating the stringent factor RelA. RelA catalyses the synthesis of ppGpp (Guanosine 5'-diphosphate 3'-diphosphate) from ATP and GDP. ppGpp selectively inhibits transcription of rRNA, tRNA, and growth-related mRNAs."
+  },
+  {
+    q: "During the stringent response, which mRNAs are NOT inhibited by ppGpp?",
+    opts: ["rRNA","tRNA","mRNAs encoding amino acid biosynthesis enzymes","mRNAs encoding ribosomal proteins"],
+    ans: 2,
+    exp: "ppGpp selectively inhibits rRNA, tRNA, and some growth-related mRNAs. However, mRNAs encoding amino acid biosynthesis enzymes are NOT inhibited — the cell still needs to produce new amino acids to overcome the starvation. This allows continued amino acid production while slowing overall protein synthesis."
+  },
+  {
+    q: "An operon produces a polycistronic mRNA. This means that:",
+    opts: ["Each gene is transcribed from its own promoter","Multiple proteins are encoded in a single mRNA transcript","The mRNA is processed by splicing before translation","Translation requires multiple ribosomes, each on a separate mRNA"],
+    ans: 1,
+    exp: "A polycistronic mRNA encodes multiple proteins from a single transcript. This is characteristic of prokaryotic operons — all structural genes downstream of one promoter-operator unit are co-transcribed into one long mRNA, allowing simultaneous regulation of all functionally related proteins."
+  },
+  {
+    q: "In eukaryotes, which of the following is required for RNA Polymerase II to initiate transcription?",
+    opts: ["A repressor protein bound to the TATA box","General transcription factors (GTFs), activators, and co-activators assembled at the promoter","An operon with a functional operator","Allosteric activation by cAMP"],
+    ans: 1,
+    exp: "RNA Polymerase II cannot initiate transcription alone. It requires GTFs to assemble at the TATA box, specific activators binding enhancers, and co-activators/mediator bridging these components. This complex combinatorial control allows exquisite specificity in eukaryotic gene expression — most gene control in eukaryotes occurs at this stage."
+  },
+  {
+    q: "Which scenario results in MAXIMUM transcription from the lac operon?",
+    opts: ["High glucose, no lactose","High glucose, high lactose","No glucose, high lactose","No glucose, no lactose"],
+    ans: 2,
+    exp: "Maximum transcription requires BOTH conditions: (1) Repressor inactivated — needs allolactose (derived from lactose present), and (2) CAP-cAMP active — needs low/absent glucose so adenylyl cyclase is active. Only when glucose is absent AND lactose is present are both the negative control (repressor) and positive control (CAP) simultaneously satisfied."
+  }
+];
+
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = 'mcq-' + i;
+    card.innerHTML = `
+      <div class="mcq-q"><span class="qnum">Q${i+1}.</span>${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o, j) => `
+          <button class="opt-btn" onclick="answer(${i},${j})">
+            <span class="opt-letter">${String.fromCharCode(65+j)}.</span>
+            <span>${o}</span>
+          </button>`).join('')}
+      </div>
+      <div class="explanation" id="exp-${i}"><strong>Explanation:</strong> ${q.exp}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function answer(qi, choice) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const card = document.getElementById('mcq-' + qi);
+  const btns = card.querySelectorAll('.opt-btn');
+  btns.forEach((btn, j) => {
+    btn.disabled = true;
+    if (j === q.ans) btn.classList.add('correct');
+    else if (j === choice && choice !== q.ans) btn.classList.add('wrong');
+  });
+  document.getElementById('exp-' + qi).classList.add('show');
+  if (choice === q.ans) score++;
+  updateScore();
+}
+
+function updateScore() {
+  const done = answered.filter(Boolean).length;
+  const banner = document.getElementById('score-banner');
+  const disp = document.getElementById('score-display');
+  const msg = document.getElementById('score-msg');
+  disp.textContent = score + ' / ' + done;
+  if (done === questions.length) {
+    banner.classList.add('show');
+    const pct = Math.round(score / questions.length * 100);
+    msg.textContent = pct >= 80 ? `Excellent! ${pct}% — solid grasp of prokaryotic gene regulation.`
+                    : pct >= 60 ? `Good effort! ${pct}% — review the lac/trp operon details.`
+                    : `${pct}% — revisit the lecture notes and try again.`;
+  }
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  score = 0;
+  document.getElementById('score-banner').classList.remove('show');
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
